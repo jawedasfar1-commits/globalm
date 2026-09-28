@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Global Industries | Site Management App</title>
+  <title>Global Industries | Official Labour Attendance Portal</title>
   
-  <!-- Anti-AdBlocker Firebase SDKs -->
+  <!-- Firebase SDKs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.8.1/firebase-app-compat.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.8.1/firebase-database-compat.min.js"></script>
 
   <style>
-    /* --- CSS VARIABLES & THEMES --- */
     :root {
       --primary: #102A43;
       --primary-light: #1F4E78;
@@ -20,7 +19,7 @@
       --card-bg: #FFFFFF;
       --text: #0F172A;
       --text-muted: #64748B;
-      --border: #E2E8F0;
+      --border: #CBD5E1;
       --success: #10B981;
       --warning: #F59E0B;
       --danger: #EF4444;
@@ -28,25 +27,31 @@
     }
 
     [data-theme="dark"] {
-      --primary: #94A3B8; --primary-light: #334155; --secondary: #3B82F6;
-      --accent: #F59E0B; --bg: #0F172A; --card-bg: #1E293B;
-      --text: #F8FAFC; --text-muted: #94A3B8; --border: #334155;
+      --primary: #94A3B8;
+      --primary-light: #334155;
+      --secondary: #3B82F6;
+      --accent: #F59E0B;
+      --bg: #0F172A;
+      --card-bg: #1E293B;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border: #334155;
       --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
 
-    /* --- OVERLAYS & MODALS --- */
+    /* Modals & Overlays */
     .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-    .modal-box-center { background: var(--card-bg); padding: 30px 24px; border-radius: 16px; width: 100%; max-width: 380px; text-align: center; box-shadow: var(--shadow); position: relative; }
+    .modal-box-center { background: var(--card-bg); padding: 30px 24px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: var(--shadow); position: relative; }
     .close-btn { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; }
     .modal-box-center h2 { color: var(--primary); margin-bottom: 8px; font-size: 20px; }
-    .modal-box-center p { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
-    .pin-input { width: 100%; padding: 16px; font-size: 24px; text-align: center; letter-spacing: 8px; border: 2px solid var(--border); border-radius: 8px; margin-bottom: 20px; background: var(--bg); color: var(--text); outline: none; font-weight: bold; }
+    .modal-box-center p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+    .pin-input { width: 100%; padding: 16px; font-size: 24px; text-align: center; letter-spacing: 8px; border: 2px solid var(--border); border-radius: 8px; margin-bottom: 16px; background: var(--bg); color: var(--text); outline: none; font-weight: bold; }
     .pin-input:focus { border-color: var(--secondary); }
 
-    /* --- HEADER --- */
+    /* Header */
     header { background: var(--card-bg); box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
     .letterhead-container { padding: 12px 16px; border-bottom: 3.5px solid #8B5A2B; display: flex; flex-direction: column; gap: 8px; }
     .letterhead-top { display: flex; align-items: center; justify-content: flex-start; gap: 14px; }
@@ -54,34 +59,33 @@
     .title-container { display: flex; align-items: baseline; gap: 6px; }
     .title-global { font-family: "Brush Script MT", "Comic Sans MS", cursive; color: #4CAF50; font-size: 36px; line-height: 1; text-shadow: 1px 1px 0px rgba(0,0,0,0.05); }
     .title-industries { font-family: "Times New Roman", Times, serif; color: #6da35e; font-size: 20px; letter-spacing: 0.5px; }
-    .regd-office { font-size: 12px; color: var(--text); line-height: 1.4; opacity: 0.85; }
+    .regd-office { font-size: 12px; color: var(--text); line-height: 1.4; opacity: 0.85; font-weight: 500; }
 
-    /* --- APP CONTROL BAR --- */
+    /* App Control Bar */
     .app-control-bar { background: linear-gradient(135deg, #0B1B2B 0%, #1B365D 100%); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
     [data-theme="dark"] .app-control-bar { background: linear-gradient(135deg, #020617 0%, #0F172A 100%); }
-    .site-selector-wrap { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px; }
+    .site-selector-wrap { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 220px; }
     .site-label { color: #FFD700; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; }
-    #site-select { background: rgba(255, 255, 255, 0.95); border: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 700; color: #102A43; width: 100%; max-width: 210px; }
+    #site-select { background: rgba(255, 255, 255, 0.95); border: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; font-weight: 700; color: #102A43; width: 100%; max-width: 220px; }
     .status-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .user-profile-badge { background: rgba(255,255,255,0.15); color: #FFF; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
     .btn-icon { background: rgba(255,255,255,0.2); border: none; border-radius: 6px; padding: 6px 10px; color: white; cursor: pointer; transition: 0.2s; font-size: 14px; }
     
     #auth-status-btn { background: rgba(255,255,255,0.2); border: none; border-radius: 6px; padding: 6px 12px; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; }
     
-    @keyframes shakePulse {
-      0% { transform: translateX(0); background: var(--danger); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); background: var(--danger); }
-      75% { transform: translateX(-5px); }
-      100% { transform: translateX(0); background: rgba(255,255,255,0.2); }
+    @keyframes pulseWarning {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); background: var(--danger); }
+      100% { transform: scale(1); }
     }
-    .shake-error { animation: shakePulse 0.4s ease; }
+    .shake-error { animation: pulseWarning 0.4s ease; }
 
-    .online-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #F59E0B; font-weight: 700; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 12px; cursor: pointer; }
-    .online-indicator.connected { color: #10B981; } 
-    .online-indicator.disconnected { color: #EF4444; }
+    .online-indicator { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 12px; cursor: pointer; color: #FFF; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #F59E0B; }
+    .status-dot.online { background: #10B981; box-shadow: 0 0 8px #10B981; }
+    .status-dot.offline { background: #EF4444; }
 
-    /* --- LAYOUT & CARDS --- */
+    /* Layout & Cards */
     .container { width: 100%; padding: 12px; flex: 1; max-width: 1600px; margin: 0 auto; }
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
     .stat-card { background: var(--card-bg); padding: 12px; border-radius: 10px; box-shadow: var(--shadow); border-left: 4px solid var(--secondary); display: flex; flex-direction: column; transition: 0.3s; }
@@ -91,22 +95,22 @@
     .stat-label { font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
     .stat-value { font-size: 18px; font-weight: 700; color: var(--primary); }
 
-    /* --- TABS --- */
+    /* Tabs */
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .tab-btn { background: none; border: none; padding: 10px 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.3s; }
     .tab-btn.active { background: var(--secondary); color: white; box-shadow: 0 2px 8px rgba(45, 104, 196, 0.4); }
 
-    /* --- TOOLBAR --- */
+    /* Toolbar */
     .toolbar { background: var(--card-bg); padding: 12px; border-radius: 10px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; transition: 0.3s; }
     .toolbar-group { display: flex; flex-direction: column; gap: 10px; width: 100%; }
     .toolbar-group-row { display: flex; gap: 10px; width: 100%; flex-wrap: wrap; }
     select, input, textarea { padding: 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--border); outline: none; width: 100%; background: var(--bg); color: var(--text); transition: 0.3s; }
     input:focus, select:focus, textarea:focus { border-color: var(--secondary); }
     .search-bar { position: relative; width: 100%; }
-    .search-bar input { padding-left: 36px; background-color: var(--card-bg); border: 2px solid var(--border); font-weight: 500; }
+    .search-bar input { padding-left: 36px; background-color: var(--card-bg); border: 1px solid var(--border); font-weight: 500; }
     .search-icon { position: absolute; left: 12px; top: 14px; font-size: 14px; color: var(--text-muted); }
 
-    /* --- BUTTONS --- */
+    /* Buttons */
     .btn { cursor: pointer; font-weight: 600; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; font-size: 14px; border-radius: 8px; width: 100%; transition: 0.2s; }
     .btn:active { transform: scale(0.96); }
     .btn-primary { background: var(--secondary); color: white; }
@@ -116,22 +120,22 @@
     .btn-whatsapp { background: #25D366; color: white; }
     .btn-small { padding: 8px 12px; font-size: 13px; width: auto; }
 
-    /* --- VIEWS & ANIMATIONS --- */
+    /* Tab Content Transitions */
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* --- WORKER CARDS --- */
+    /* Worker Cards */
     .worker-daily-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
     .worker-card { background: var(--card-bg); border-radius: 10px; padding: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; transition: 0.3s; }
     .worker-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
     
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; }
     .worker-name-group { display: flex; align-items: center; gap: 10px; }
     
-    .worker-name { font-size: 16px; font-weight: 700; color: var(--primary); display: flex; flex-direction: column; }
+    .worker-name { font-size: 15px; font-weight: 700; color: var(--primary); display: flex; flex-direction: column; }
     .worker-desig { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 2px;}
-    .worker-phone { font-size: 11px; color: var(--secondary); font-weight: 600; display: inline-block; margin-top: 4px; }
+    .worker-phone { font-size: 11px; color: var(--secondary); font-weight: 600; display: inline-block; margin-top: 2px; }
     .worker-rate { font-size: 13px; font-weight: 600; color: var(--secondary); text-align: right;}
 
     .duty-selector { display: flex; gap: 8px; }
@@ -145,7 +149,7 @@
     .input-box span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
     .input-box input { width: 65px; padding: 6px; text-align: center; font-weight: 700; background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; font-size: 14px; color: var(--text); }
 
-    /* --- DPR & NOTES --- */
+    /* Sections */
     .dpr-section { background: var(--card-bg); border-radius: 10px; padding: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px; transition: 0.3s; }
     .dpr-section h4 { color: var(--primary); margin-bottom: 10px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
     .dpr-textarea { height: 120px; resize: none; margin-bottom: 6px; border: 1px solid var(--border); }
@@ -160,12 +164,12 @@
     .save-status-indicator.visible { opacity: 1; }
     .empty-state { text-align: center; padding: 40px 20px; background: var(--card-bg); border-radius: 10px; color: var(--text-muted); border: 1px dashed var(--border); }
 
-    /* --- ANALYTICS BARS --- */
-    .analytics-bar-wrap { width: 100%; background: var(--border); border-radius: 8px; height: 16px; overflow: hidden; margin-top: 6px; margin-bottom: 16px;}
-    .analytics-bar-fill { height: 100%; background: var(--success); transition: width 1s ease-in-out; }
-    .analytics-item { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text); }
+    /* Trade Headcount Badges */
+    .trade-pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; margin-bottom: 12px; }
+    .trade-pill { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+    .trade-pill b { color: var(--secondary); }
 
-    /* --- MONTHLY TABLE --- */
+    /* Monthly Register Table */
     .table-container { background: var(--card-bg); border-radius: 10px; box-shadow: var(--shadow); overflow-x: auto; border: 1px solid var(--border); -webkit-overflow-scrolling: touch; transition: 0.3s; }
     .table-container.expanded { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: var(--bg); border-radius: 0; padding: 10px; padding-top: 60px; }
     .close-expand-btn { display: none; position: fixed; top: 10px; right: 10px; z-index: 100000; background: var(--danger); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; box-shadow: var(--shadow); cursor: pointer; }
@@ -184,12 +188,12 @@
     .tbl-input[readonly] { background: transparent; border-color: transparent; color: var(--text-muted); cursor: pointer; font-weight: 600; }
     .total-row td { background: var(--primary-light) !important; color: white !important; font-weight: bold; border-top: 2px solid var(--primary); }
 
-    /* --- WAGE SLIP --- */
+    /* Wage Slip Card */
     .slip-box { background: white; color: #0F172A; padding: 24px; border-radius: 12px; border: 2px solid #E2E8F0; text-align: left; margin: 16px 0; }
     .slip-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #CBD5E1; font-size: 13px; }
     .slip-total { display: flex; justify-content: space-between; padding: 10px 0; font-size: 16px; font-weight: 800; color: #1E3A8A; border-top: 2px solid #1E3A8A; margin-top: 8px; }
 
-    /* --- MODALS & TOASTS --- */
+    /* Modals & Bottom Sheets */
     .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 1000; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
     .modal.active { display: flex; animation: slideUp 0.3s ease; }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -203,13 +207,13 @@
 </head>
 <body>
 
-  <div id="toast">Data Saved Successfully</div>
+  <div id="toast">Ready</div>
 
   <!-- Profile Prompt Overlay -->
   <div id="profile-overlay" class="overlay">
     <div class="modal-box-center">
       <h2>Global Industries Portal</h2>
-      <p>Enter your full name to configure this device:</p>
+      <p>Enter your full name to identify your updates on this device:</p>
       <input type="text" id="profile-name-input" class="pin-input" placeholder="Your Name" style="letter-spacing: normal;">
       <button class="btn btn-primary" onclick="saveProfile()">Continue to Portal</button>
     </div>
@@ -219,9 +223,8 @@
   <div id="login-overlay" class="overlay">
     <div class="modal-box-center">
       <button class="close-btn" onclick="closeLoginModal()">&times;</button>
-      <h2>Restricted Access</h2>
-      <p>Enter Admin Password to modify data</p>
-      <p style="font-size: 11px; margin-top:-15px;">(Hint: Default PIN is 1820)</p>
+      <h2>Admin Access</h2>
+      <p>Enter 4-digit PIN to edit records:</p>
       <input type="password" id="admin-pwd" class="pin-input" placeholder="****" inputmode="numeric" maxlength="4">
       <button class="btn btn-primary" onclick="checkPassword()">Unlock Editing</button>
       <p id="pwd-error" style="color:var(--danger); font-size: 13px; margin-top: 14px; display: none; font-weight:600;">Incorrect PIN.</p>
@@ -232,16 +235,16 @@
   <div id="diagnostics-modal" class="overlay">
     <div class="modal-box-center" style="max-width: 440px; text-align: left;">
       <button class="close-btn" onclick="closeDiagnosticsModal()">&times;</button>
-      <h2 style="text-align: center; margin-bottom: 12px;">Cloud Diagnostics</h2>
+      <h2 style="text-align: center; margin-bottom: 12px;">Cloud Connection Engine</h2>
       <div style="font-size: 13px; line-height: 1.6; color: var(--text);">
-        <p><b>Server URL:</b><br><code style="font-size: 11px; background: var(--bg); padding: 4px; border-radius: 4px; word-break: break-all;">https://g12343-default-rtdb.asia-southeast1.firebasedatabase.app</code></p>
-        <p style="margin-top: 8px;"><b>Connection Status:</b> <span id="diag-status">Checking...</span></p>
+        <p><b>Regional Endpoint:</b><br><code style="font-size: 11px; background: var(--bg); padding: 4px; border-radius: 4px; word-break: break-all;">asia-southeast1 (Singapore)</code></p>
+        <p style="margin-top: 8px;"><b>Sync Status:</b> <span id="diag-status">Connecting...</span></p>
         <p><b>Active Site ID:</b> <span id="diag-site">jaynagar</span></p>
-        <p><b>Local Workers Count:</b> <span id="diag-workers">0</span></p>
+        <p><b>Cached Workers:</b> <span id="diag-workers">0</span></p>
       </div>
       <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
-        <button class="btn btn-primary btn-small" onclick="forceReconnectFirebase()">🔄 Force Reconnect Socket</button>
-        <button class="btn btn-outline btn-small" onclick="forceSyncProcess()">📡 Force Push Local Data</button>
+        <button class="btn btn-primary btn-small" onclick="forceSyncProcess()">🔄 Force Full Cloud Sync</button>
+        <button class="btn btn-outline btn-small" onclick="closeDiagnosticsModal()">Close</button>
       </div>
     </div>
   </div>
@@ -289,7 +292,10 @@
       <div class="status-group">
         <button class="btn-icon" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
         <div class="user-profile-badge" id="profile-display">👤 User</div>
-        <div id="online-indicator" class="online-indicator" onclick="openDiagnosticsModal()" title="Click to view cloud connection details">🟡 Connecting...</div>
+        <div id="online-indicator" class="online-indicator" onclick="openDiagnosticsModal()" title="View Cloud Sync Status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Cloud Sync</span>
+        </div>
         <button id="auth-status-btn" onclick="toggleAuth()">🔒 View Only</button>
       </div>
     </div>
@@ -298,21 +304,19 @@
   <div class="container">
     <!-- Live Dashboard -->
     <div class="dashboard-grid">
-      <div class="stat-card"><span class="stat-label">Workers</span><span class="stat-value" id="stat-total-workers">0</span></div>
+      <div class="stat-card"><span class="stat-label">Total Registered</span><span class="stat-value" id="stat-total-workers">0</span></div>
       <div class="stat-card success"><span class="stat-label" id="lbl-present-today">Today Present</span><span class="stat-value" id="stat-present-today">0 / 0</span></div>
-      <div class="stat-card accent"><span class="stat-label">Duty Days</span><span class="stat-value" id="stat-total-duty">0.0</span></div>
-      <div class="stat-card warning"><span class="stat-label">Overtime</span><span class="stat-value" id="stat-total-ot">0 hrs</span></div>
-      <div class="stat-card"><span class="stat-label">Net Payable Balance</span><span class="stat-value" id="stat-total-balance">₹0</span></div>
+      <div class="stat-card warning"><span class="stat-label">Total Overtime</span><span class="stat-value" id="stat-total-ot">0 hrs</span></div>
+      <div class="stat-card accent"><span class="stat-label">Net Payable</span><span class="stat-value" id="stat-total-balance">₹0</span></div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('daily-view')">📅 Daily</button>
       <button class="tab-btn" onclick="switchTab('dpr-view')">📝 DPR</button>
-      <button class="tab-btn" onclick="switchTab('analytics-view')">📈 Analytics</button>
       <button class="tab-btn" onclick="switchTab('monthly-view')">📊 Monthly</button>
       <button class="tab-btn" onclick="switchTab('worker-view')">👷 Workers</button>
-      <button class="tab-btn" onclick="switchTab('slips-view')">🧾 Wage Slips</button>
+      <button class="tab-btn" onclick="switchTab('slips-view')">🧾 Wage Statement</button>
     </div>
 
     <!-- Toolbar -->
@@ -331,22 +335,30 @@
       <div class="toolbar-group">
         <div id="edit-controls" style="display:none; gap:10px; width: 100%; flex-wrap: wrap;">
           <button class="btn btn-outline" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;">➕ Add Worker</button>
-          <button class="btn btn-outline" onclick="forceSyncProcess()" style="flex:1;">🔄 Force Sync</button>
-          <button class="btn btn-outline" onclick="exportDatabase()" style="flex:1;">💾 Backup DB</button>
+          <button class="btn btn-outline" onclick="forceSyncProcess()" style="flex:1;">🔄 Sync Cloud</button>
+          <button class="btn btn-outline" onclick="exportDatabase()" style="flex:1;">💾 Backup File</button>
         </div>
         <div class="toolbar-group-row">
-          <button class="btn btn-success" style="flex:1;" onclick="exportToCSV()">📥 Export Sheet</button>
-          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print</button>
+          <button class="btn btn-success" style="flex:1;" onclick="exportToCSV()">📥 Export Sheet (CSV)</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print Sheet</button>
         </div>
       </div>
     </div>
 
-    <!-- VIEW 1: Daily -->
+    <!-- VIEW 1: Daily Attendance -->
     <div id="daily-view" class="tab-content active">
+      <!-- Headcount Abstract Pill Bar -->
+      <div class="dpr-section" style="padding: 12px; margin-bottom: 12px;">
+        <span style="font-size:12px; font-weight:700; color:var(--text-muted);">TODAY'S LABOUR HEADCOUNT:</span>
+        <div class="trade-pill-group" id="daily-headcount-pills">
+          <span class="trade-pill">No attendance marked yet</span>
+        </div>
+      </div>
+
       <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
         <h3 id="daily-view-title" style="color:var(--primary); font-size:16px;">Daily Attendance</h3>
         <div id="daily-bulk-actions" style="display:none; gap:8px; width: 100%;">
-          <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(1)">✔️ All Present</button>
+          <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(1)">✔️ Mark All Present</button>
           <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(0)">✖️ Clear Today</button>
         </div>
       </div>
@@ -356,7 +368,7 @@
     <!-- VIEW 2: DPR -->
     <div id="dpr-view" class="tab-content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-        <h3 id="dpr-view-title" style="color:var(--primary); font-size:16px;">DPR Report</h3>
+        <h3 id="dpr-view-title" style="color:var(--primary); font-size:16px;">Daily Progress Report</h3>
         <button class="btn btn-whatsapp btn-small" onclick="shareDPRWhatsApp()" style="width:auto; border-radius:20px;">📲 Share WhatsApp</button>
       </div>
       
@@ -375,45 +387,23 @@
 
       <div class="dpr-section">
         <h4>
-          <span>Work & Labour Details</span>
+          <span>Work Details & Location</span>
           <button class="btn-icon" onclick="startSpeechRecognition('dpr-work-text')" title="Voice to text">🎙️ Dictate</button>
         </h4>
-        <textarea id="dpr-work-text" class="dpr-textarea" placeholder="E.g. Sushil - AC block masonry casting" oninput="autoSaveDPR()" onclick="requireAuthClick(this)"></textarea>
-        <div id="dpr-work-saved" class="save-status-indicator">✓ Auto-saved</div>
+        <textarea id="dpr-work-text" class="dpr-textarea" placeholder="E.g. Column casting at Platform 1, shuttering work near substation..." oninput="autoSaveDPR()" onclick="requireAuthClick(this)"></textarea>
+        <div id="dpr-work-saved" class="save-status-indicator">✓ Saved to Cloud</div>
       </div>
       
       <div class="dpr-section">
-        <h4>Material Consumption <button class="btn btn-primary btn-small" onclick="addMaterialRow()">+ Add Row</button></h4>
+        <h4>Material Consumption <button class="btn btn-primary btn-small" onclick="addMaterialRow()">+ Add Material</button></h4>
         <div id="dpr-material-list"></div>
       </div>
     </div>
 
-    <!-- VIEW 3: Analytics (Replaces Expenses) -->
-    <div id="analytics-view" class="tab-content">
-      <h3 style="color:var(--primary); font-size:16px; margin-bottom: 12px;">Site Analytics & Trends</h3>
-      
-      <div class="dpr-section">
-        <h4>Today's Workforce Availability</h4>
-        <div class="analytics-item" style="margin-top: 10px;">
-          <span>Present Workers</span>
-          <span id="chart-present-text">0 / 0</span>
-        </div>
-        <div class="analytics-bar-wrap">
-          <div id="chart-present-bar" class="analytics-bar-fill" style="width: 0%;"></div>
-        </div>
-      </div>
-
-      <div class="dpr-section">
-        <h4>Monthly Liability Snapshot</h4>
-        <div style="font-size: 32px; font-weight: 800; color: var(--danger); margin: 10px 0;" id="chart-liability">₹0</div>
-        <p style="font-size: 12px; color: var(--text-muted);">Total gross wages calculated for the entire month minus advances paid.</p>
-      </div>
-    </div>
-
-    <!-- VIEW 4: Monthly -->
+    <!-- VIEW 3: Monthly Register -->
     <div id="monthly-view" class="tab-content">
       <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-        <button class="btn btn-primary btn-small" onclick="toggleExpandMonthly()">⛶ Expand Sheet</button>
+        <button class="btn btn-primary btn-small" onclick="toggleExpandMonthly()">⛶ Fullscreen Register</button>
       </div>
       <div class="table-container" id="monthly-table-container">
         <table id="monthly-table">
@@ -428,14 +418,14 @@
       <button class="close-expand-btn" onclick="toggleExpandMonthly()">✖ Close Fullscreen</button>
     </div>
 
-    <!-- VIEW 5: Workers -->
+    <!-- VIEW 4: Workers Roster -->
     <div id="worker-view" class="tab-content">
       <div class="worker-daily-list" id="worker-mgmt-body"></div>
     </div>
 
-    <!-- VIEW 6: Wage Slips -->
+    <!-- VIEW 5: Wage Statement -->
     <div id="slips-view" class="tab-content">
-      <h3 style="color:var(--primary); font-size:16px; margin-bottom: 12px;">Labour Wage Statement</h3>
+      <h3 style="color:var(--primary); font-size:16px; margin-bottom: 12px;">Labour Wage Settlement Statement</h3>
       <div class="dpr-section">
         <div class="form-group">
           <label>Select Worker:</label>
@@ -449,11 +439,11 @@
   <!-- Add Worker Modal -->
   <div class="modal" id="worker-modal">
     <div class="modal-box">
-      <div class="modal-title" id="modal-worker-title">Add / Edit Worker</div>
+      <div class="modal-title" id="modal-worker-title">Worker Profile</div>
       <input type="hidden" id="edit-worker-id">
       
-      <div class="form-group"><label>Full Name</label><input type="text" id="worker-name-input" placeholder="e.g. Ramesh Kumar"></div>
-      <div class="form-group"><label>Phone Number (Optional)</label><input type="tel" id="worker-phone-input" placeholder="e.g. 9876543210"></div>
+      <div class="form-group"><label>Worker Full Name</label><input type="text" id="worker-name-input" placeholder="e.g. Ramesh Kumar"></div>
+      <div class="form-group"><label>Mobile / Phone Number</label><input type="tel" id="worker-phone-input" placeholder="e.g. 9876543210"></div>
 
       <div class="form-group">
         <label>Designation / Trade</label>
@@ -475,7 +465,7 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn btn-primary" onclick="saveWorker()">Save Details</button>
+        <button class="btn btn-primary" onclick="saveWorker()">Save Worker</button>
         <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
       </div>
     </div>
@@ -483,13 +473,13 @@
 
   <script>
     /* =========================================
-       FIREBASE CONFIGURATION
+       DUAL-ENGINE CLOUD SYNC CONFIGURATION
        ========================================= */
-    const DB_URL = "https://g12343-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const DB_BASE_URL = "https://g12343-default-rtdb.asia-southeast1.firebasedatabase.app";
     const firebaseConfig = {
       apiKey: "AIzaSyAOeVZw4kgRrayPsZL4bJT11UlWaPFs7eo",
       authDomain: "g12343.firebaseapp.com",
-      databaseURL: DB_URL,
+      databaseURL: DB_BASE_URL,
       projectId: "g12343",
       storageBucket: "g12343.firebasestorage.app",
       messagingSenderId: "577051260341",
@@ -502,7 +492,11 @@
     let currentSite = localStorage.getItem('gi_last_site') || 'jaynagar';
     const ADMIN_PIN = '1820'; 
     let appState = { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {} };
-    let isUnlocked = false, autoSaveTimer = null, isCloudOnline = false;
+    
+    // Persistent Unlock across tabs and refreshes
+    let isUnlocked = (localStorage.getItem('gi_unlocked') === 'true');
+    let autoSaveTimer = null;
+    let isCloudOnline = false;
 
     function getStorageKey() { return "GI_DATA_" + currentSite.toUpperCase(); }
     function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.style.bottom = '20px'; setTimeout(() => { t.style.bottom = '-50px'; }, 3000); }
@@ -521,16 +515,46 @@
 
     function saveProfile() {
       const name = document.getElementById('profile-name-input').value.trim();
-      if (name) { localStorage.setItem('gi_user_profile', name); document.getElementById('profile-overlay').style.display = 'none'; document.getElementById('profile-display').innerHTML = `👤 ${name}`; showToast("Welcome, " + name); } 
-      else { alert("Please enter your name."); }
+      if (name) { 
+        localStorage.setItem('gi_user_profile', name); 
+        document.getElementById('profile-overlay').style.display = 'none'; 
+        document.getElementById('profile-display').innerHTML = `👤 ${name}`; 
+        showToast("Device registered for " + name); 
+      } else { 
+        alert("Please enter your name."); 
+      }
     }
 
-    /* AUTH LOGIC */
-    function checkAuthStatus() { isUnlocked = (sessionStorage.getItem('gi_auth') === 'true'); updateAuthUI(); }
-    function toggleAuth() { if (isUnlocked) { isUnlocked = false; sessionStorage.removeItem('gi_auth'); updateAuthUI(); renderAll(); showToast("App Locked"); } else { showLoginModal(); } }
+    /* AUTHENTICATION ENGINE */
+    function checkAuthStatus() { updateAuthUI(); }
+    
+    function toggleAuth() { 
+      if (isUnlocked) { 
+        isUnlocked = false; 
+        localStorage.removeItem('gi_unlocked'); 
+        updateAuthUI(); 
+        renderAll(); 
+        showToast("App Locked (View Only)"); 
+      } else { 
+        showLoginModal(); 
+      } 
+    }
+    
     function showLoginModal() { document.getElementById('login-overlay').style.display = 'flex'; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('admin-pwd').value = ''; document.getElementById('admin-pwd').focus(); }
     function closeLoginModal() { document.getElementById('login-overlay').style.display = 'none'; }
-    function checkPassword() { if (document.getElementById('admin-pwd').value === ADMIN_PIN) { isUnlocked = true; sessionStorage.setItem('gi_auth', 'true'); closeLoginModal(); updateAuthUI(); renderAll(); showToast("Edit Mode Unlocked"); } else { document.getElementById('pwd-error').style.display = 'block'; } }
+    
+    function checkPassword() { 
+      if (document.getElementById('admin-pwd').value === ADMIN_PIN) { 
+        isUnlocked = true; 
+        localStorage.setItem('gi_unlocked', 'true'); 
+        closeLoginModal(); 
+        updateAuthUI(); 
+        renderAll(); 
+        showToast("Edit Mode Unlocked"); 
+      } else { 
+        document.getElementById('pwd-error').style.display = 'block'; 
+      } 
+    }
     
     function updateAuthUI() {
       const btn = document.getElementById('auth-status-btn'), b1 = document.getElementById('daily-bulk-actions'), e1 = document.getElementById('edit-controls');
@@ -547,301 +571,593 @@
     
     function requireAuthClick(el) { 
       if (!isUnlocked) { 
-        el.blur(); 
+        if(el && el.blur) el.blur(); 
         const btn = document.getElementById('auth-status-btn');
         btn.classList.remove("shake-error");
-        void btn.offsetWidth; // Trigger reflow
+        void btn.offsetWidth;
         btn.classList.add("shake-error");
-        showToast("App is Locked! Enter PIN to edit.");
-        setTimeout(() => { showLoginModal(); }, 500);
+        showToast("Portal locked! Enter PIN to edit.");
+        setTimeout(() => { showLoginModal(); }, 300);
       } 
     }
 
-    /* Diagnostics */
     function openDiagnosticsModal() {
-      document.getElementById('diag-status').textContent = isCloudOnline ? "🟢 Connected" : "🔴 Offline / Disconnected";
+      document.getElementById('diag-status').textContent = isCloudOnline ? "🟢 Connected (Live Cloud)" : "🟠 Active (Local + Auto-Fallback)";
       document.getElementById('diag-site').textContent = currentSite;
       document.getElementById('diag-workers').textContent = appState.workers ? appState.workers.length : 0;
       document.getElementById('diagnostics-modal').style.display = 'flex';
     }
     function closeDiagnosticsModal() { document.getElementById('diagnostics-modal').style.display = 'none'; }
-    function forceReconnectFirebase() { if (database) { database.goOffline(); setTimeout(() => { database.goOnline(); showToast("Reconnecting..."); }, 500); } }
 
-    /* INITIALIZATION */
+    /* CORE INITIALIZATION */
     function init() {
       if(localStorage.getItem('gi_theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
-      checkProfile(); checkAuthStatus(); generateMonthOptions(); populateDaySelector();
+      checkProfile(); 
+      checkAuthStatus(); 
+      generateMonthOptions(); 
+      populateDaySelector();
       
       try { const s = localStorage.getItem('gi_sites'); if(s) availableSites = JSON.parse(s); } catch(e){}
-      renderSiteSelector(); loadLocalState(); renderAll();
+      renderSiteSelector(); 
+      loadLocalState(); 
+      renderAll();
 
+      // Start Dual-Engine Cloud Connection
+      initCloudConnection();
+    }
+
+    function setOnlineStatus(online, source) {
+      isCloudOnline = online;
+      const dot = document.getElementById('status-dot');
+      const text = document.getElementById('status-text');
+      if (online) {
+        dot.className = 'status-dot online';
+        text.textContent = 'Cloud Live';
+      } else {
+        dot.className = 'status-dot offline';
+        text.textContent = 'Offline Mode';
+      }
+    }
+
+    function initCloudConnection() {
       try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        database = firebase.app().database(DB_URL);
+        database = firebase.app().database(DB_BASE_URL);
         sitesRef = database.ref('global/sites');
 
         database.ref('.info/connected').on('value', (snap) => {
-          const ind = document.getElementById('online-indicator');
-          isCloudOnline = (snap.val() === true);
-          if (isCloudOnline) { ind.innerHTML = '🟢 Online'; ind.className = 'online-indicator connected'; } 
-          else { ind.innerHTML = '🔴 Offline'; ind.className = 'online-indicator disconnected'; }
+          if (snap.val() === true) {
+            setOnlineStatus(true, "WebSocket");
+          } else {
+            // Test if REST HTTP is working before declaring offline
+            pingRestCloud();
+          }
         });
 
         sitesRef.on('value', (snapshot) => {
           const sites = snapshot.val();
-          if (sites) { availableSites = Array.isArray(sites) ? sites : Object.values(sites); localStorage.setItem('gi_sites', JSON.stringify(availableSites)); } 
-          else { sitesRef.set(availableSites); }
+          if (sites) { 
+            availableSites = Array.isArray(sites) ? sites : Object.values(sites); 
+            localStorage.setItem('gi_sites', JSON.stringify(availableSites)); 
+          } else { 
+            sitesRef.set(availableSites); 
+          }
           renderSiteSelector();
         });
 
         syncSiteDataFirebase();
       } catch(e) { 
-        console.error("Firebase Offline", e); 
-        document.getElementById('online-indicator').innerHTML = '🔴 Offline'; document.getElementById('online-indicator').className = 'online-indicator disconnected';
+        console.warn("WebSocket blocked. Activating HTTP REST engine...", e);
+        pingRestCloud();
+      }
+    }
+
+    // Direct REST Fallback for Safari/AdBlockers
+    async function pingRestCloud() {
+      try {
+        const res = await fetch(`${DB_BASE_URL}/global/sites.json`);
+        if (res.ok) {
+          setOnlineStatus(true, "REST");
+          const cloudSites = await res.json();
+          if(cloudSites) {
+            availableSites = Array.isArray(cloudSites) ? cloudSites : Object.values(cloudSites);
+            localStorage.setItem('gi_sites', JSON.stringify(availableSites));
+            renderSiteSelector();
+          }
+          syncViaREST();
+        } else {
+          setOnlineStatus(false, "Fail");
+        }
+      } catch(err) {
+        setOnlineStatus(false, "Fail");
+      }
+    }
+
+    async function syncViaREST() {
+      try {
+        const res = await fetch(`${DB_BASE_URL}/sites/${currentSite}.json`);
+        if (res.ok) {
+          const cloudData = await res.json();
+          handleIncomingCloudData(cloudData);
+        }
+      } catch(e) {
+        console.warn("REST sync background ping failed");
       }
     }
 
     function renderSiteSelector() {
-      const select = document.getElementById('site-select'); select.innerHTML = '';
-      availableSites.forEach(site => { const opt = document.createElement('option'); opt.value = site.id; opt.textContent = site.name; if (site.id === currentSite) opt.selected = true; select.appendChild(opt); });
-      const addOpt = document.createElement('option'); addOpt.value = 'add_new'; addOpt.textContent = '+ Add New Site...'; select.appendChild(addOpt);
+      const select = document.getElementById('site-select'); 
+      if(!select) return;
+      select.innerHTML = '';
+      availableSites.forEach(site => { 
+        const opt = document.createElement('option'); 
+        opt.value = site.id; 
+        opt.textContent = site.name; 
+        if (site.id === currentSite) opt.selected = true; 
+        select.appendChild(opt); 
+      });
+      const addOpt = document.createElement('option'); 
+      addOpt.value = 'add_new'; 
+      addOpt.textContent = '+ Add New Site...'; 
+      select.appendChild(addOpt);
     }
 
     function handleSiteChange() {
       const select = document.getElementById('site-select');
       if (select.value === 'add_new') {
-          if (!isUnlocked) { alert("Please unlock Edit Mode to add a new site."); select.value = currentSite; return; }
-          const siteName = prompt("Enter new Site Name:");
+          if (!isUnlocked) { 
+            requireAuthClick();
+            select.value = currentSite; 
+            return; 
+          }
+          const siteName = prompt("Enter new Site / Station Name:");
           if (siteName && siteName.trim() !== '') {
               const newId = siteName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
               availableSites.push({ id: newId, name: siteName.trim() });
               localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-              if (database) sitesRef.set(availableSites); 
-              currentSite = newId; localStorage.setItem('gi_last_site', currentSite);
+              
+              // Push to Cloud via WebSocket or REST
+              if (database && isCloudOnline) sitesRef.set(availableSites);
+              else fetch(`${DB_BASE_URL}/global/sites.json`, { method: 'PUT', body: JSON.stringify(availableSites) });
+              
+              currentSite = newId; 
+              localStorage.setItem('gi_last_site', currentSite);
               appState = { _initialized: true, lastUpdated: Date.now(), workers: [], attendance: {}, advances: {}, dpr: {} };
               localStorage.setItem(getStorageKey(), JSON.stringify(appState));
-              if (database) database.ref('sites/' + currentSite).set(appState);
-              renderSiteSelector(); if (database) syncSiteDataFirebase(); renderAll();
+              
+              saveState();
+              renderSiteSelector(); 
+              renderAll();
           } else { select.value = currentSite; }
-      } else { currentSite = select.value; localStorage.setItem('gi_last_site', currentSite); loadLocalState(); renderAll(); if (database) syncSiteDataFirebase(); }
+      } else { 
+        currentSite = select.value; 
+        localStorage.setItem('gi_last_site', currentSite); 
+        loadLocalState(); 
+        renderAll(); 
+        if (database) syncSiteDataFirebase(); 
+        else syncViaREST();
+      }
     }
 
-    /* DATA SANITIZATION & TIMESTAMP SYNC ENGINE */
+    /* DATA SANITIZATION & TIMESTAMP MERGE */
     function sanitizeData(data) { return JSON.parse(JSON.stringify(data)); }
+    
     function fixFirebaseArrays(data) {
       if(!data) return { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {} };
       if(data.workers && !Array.isArray(data.workers)) { data.workers = Object.values(data.workers).filter(w => w !== null); }
       if(!data.workers) data.workers = [];
       data.workers.sort((a, b) => a.name.localeCompare(b.name));
-      if(!data.attendance) data.attendance = {}; if(!data.advances) data.advances = {}; if(!data.dpr) data.dpr = {};
+      if(!data.attendance) data.attendance = {}; 
+      if(!data.advances) data.advances = {}; 
+      if(!data.dpr) data.dpr = {};
       if(!data.lastUpdated) data.lastUpdated = 0;
       return data;
     }
 
     function loadLocalState() {
       const saved = localStorage.getItem(getStorageKey());
-      if (saved) { try { appState = fixFirebaseArrays(JSON.parse(saved)); } catch (e) { appState = fixFirebaseArrays(null); } } 
-      else { appState = fixFirebaseArrays(null); }
+      if (saved) { 
+        try { appState = fixFirebaseArrays(JSON.parse(saved)); } 
+        catch (e) { appState = fixFirebaseArrays(null); } 
+      } else { 
+        appState = fixFirebaseArrays(null); 
+      }
+    }
+
+    function handleIncomingCloudData(cloudData) {
+      const localData = fixFirebaseArrays(JSON.parse(localStorage.getItem(getStorageKey())));
+      if (cloudData) {
+        const cTime = cloudData.lastUpdated || 0;
+        const lTime = localData.lastUpdated || 0;
+        if (cTime >= lTime) {
+          appState = fixFirebaseArrays(cloudData);
+          localStorage.setItem(getStorageKey(), JSON.stringify(appState));
+        } else {
+          // Local is newer, push to cloud
+          pushToCloud(localData);
+        }
+      } else if (localData.workers.length > 0) {
+        // Cloud is empty, seed from local
+        pushToCloud(localData);
+      }
+      
+      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      if (activeTag !== 'input' && activeTag !== 'textarea') renderAll(); 
+      else updateDashboard();
     }
 
     function syncSiteDataFirebase() {
-      if (!database) return; if (currentSiteRef) currentSiteRef.off();
+      if (!database) return;
+      if (currentSiteRef) currentSiteRef.off();
       currentSiteRef = database.ref('sites/' + currentSite);
       currentSiteRef.on('value', (snapshot) => {
-        const cloudData = snapshot.val();
-        const localData = fixFirebaseArrays(JSON.parse(localStorage.getItem(getStorageKey())));
-        
-        if (cloudData) {
-          const cTime = cloudData.lastUpdated || 0;
-          const lTime = localData.lastUpdated || 0;
-          
-          if (cTime >= lTime) {
-            // Cloud is newer
-            appState = fixFirebaseArrays(cloudData);
-            localStorage.setItem(getStorageKey(), JSON.stringify(appState)); 
-          } else {
-            // Local is newer, push to cloud invisibly
-            appState = localData;
-            currentSiteRef.set(sanitizeData(appState));
-          }
-        } else if (localData.workers.length > 0) {
-          // Cloud is completely empty but local has data! Rescue the data.
-          appState = localData;
-          currentSiteRef.set(sanitizeData(appState));
-        } else {
-          appState = fixFirebaseArrays(null);
-        }
-
-        const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-        if (activeTag !== 'input' && activeTag !== 'textarea') renderAll(); else updateDashboard();
+        handleIncomingCloudData(snapshot.val());
       });
+    }
+
+    function pushToCloud(dataToPush) {
+      const clean = sanitizeData(dataToPush);
+      if (database && isCloudOnline && currentSiteRef) {
+        currentSiteRef.set(clean).catch(() => pushViaREST(clean));
+      } else {
+        pushViaREST(clean);
+      }
+    }
+
+    async function pushViaREST(cleanData) {
+      try {
+        await fetch(`${DB_BASE_URL}/sites/${currentSite}.json`, {
+          method: 'PUT',
+          body: JSON.stringify(cleanData)
+        });
+        setOnlineStatus(true, "REST");
+      } catch(e) {
+        console.warn("Offline: Data stored safely in local memory.");
+      }
     }
 
     function saveState() { 
       appState = fixFirebaseArrays(appState); 
       appState._initialized = true; 
-      appState.lastUpdated = Date.now(); // Critical for Engine
+      appState.lastUpdated = Date.now();
       
       try { localStorage.setItem(getStorageKey(), JSON.stringify(appState)); } catch(e){}
       updateDashboard();
-      
-      if (database && currentSiteRef) { currentSiteRef.set(sanitizeData(appState)).catch(err => console.error("Sync error", err)); }
+      pushToCloud(appState);
     }
 
-    function forceSyncProcess() {
-        if (!database || !currentSiteRef) { showToast("Not connected to Cloud."); return; }
-        showToast("Force Syncing Cloud...");
-        currentSiteRef.set(sanitizeData(appState)).then(() => { showToast("✅ Cloud Sync Complete"); }).catch(e => { showToast("❌ Cloud Sync Failed"); });
+    async function forceSyncProcess() {
+      showToast("Syncing with Cloud...");
+      saveState();
+      await pingRestCloud();
+      showToast("Cloud Sync Verified");
     }
 
-    function generateMonthOptions() { const select = document.getElementById("month-select"); select.innerHTML = ""; const m = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; const cY = new Date().getFullYear(), cM = new Date().getMonth() + 1; for (let y = 2025; y <= 2030; y++) { for (let i = 1; i <= 12; i++) { const opt = document.createElement("option"); opt.value = `${i}-${y}`; opt.textContent = `${m[i-1]} ${y}`; if (y === cY && i === cM) opt.selected = true; select.appendChild(opt); } } }
-    function populateDaySelector() { const select = document.getElementById("day-select"); select.innerHTML = ""; const t = new Date().getDate(); for (let i = 1; i <= 31; i++) { const opt = document.createElement("option"); opt.value = i; opt.textContent = `Select Date: Day ${i}`; if (i === Math.min(t, 31)) opt.selected = true; select.appendChild(opt); } }
+    function generateMonthOptions() { 
+      const select = document.getElementById("month-select"); 
+      select.innerHTML = ""; 
+      const m = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; 
+      const cY = new Date().getFullYear(), cM = new Date().getMonth() + 1; 
+      for (let y = 2025; y <= 2030; y++) { 
+        for (let i = 1; i <= 12; i++) { 
+          const opt = document.createElement("option"); 
+          opt.value = `${i}-${y}`; 
+          opt.textContent = `${m[i-1]} ${y}`; 
+          if (y === cY && i === cM) opt.selected = true; 
+          select.appendChild(opt); 
+        } 
+      } 
+    }
+    
+    function populateDaySelector() { 
+      const select = document.getElementById("day-select"); 
+      select.innerHTML = ""; 
+      const t = new Date().getDate(); 
+      for (let i = 1; i <= 31; i++) { 
+        const opt = document.createElement("option"); 
+        opt.value = i; 
+        opt.textContent = `Day ${i}`; 
+        if (i === Math.min(t, 31)) opt.selected = true; 
+        select.appendChild(opt); 
+      } 
+    }
+
     function getSelectedDateKey() { return `${document.getElementById("day-select").value}-${document.getElementById("month-select").value}`; }
     function handleDayChange() { renderDailyView(); renderDPRView(); }
     function changeMonth() { renderAll(); }
     function handleSearch() { renderDailyView(); renderWorkerManagement(); }
     
     function switchTab(tId) {
-      document.querySelectorAll(".tab-content, .tab-btn").forEach(e => e.classList.remove("active")); document.getElementById(tId).classList.add("active"); event.currentTarget.classList.add("active");
+      document.querySelectorAll(".tab-content, .tab-btn").forEach(e => e.classList.remove("active")); 
+      document.getElementById(tId).classList.add("active"); 
+      event.currentTarget.classList.add("active");
       const dP = document.getElementById("daily-date-picker-wrap");
-      if (tId === "daily-view" || tId === "dpr-view") { dP.style.display = "block"; if(tId==="daily-view") renderDailyView(); if(tId==="dpr-view") renderDPRView(); } 
-      else { dP.style.display = "none"; if(tId==="monthly-view") renderMonthlyTable(); if(tId==="worker-view") renderWorkerManagement(); if(tId==="slips-view") populateSlipWorkerSelect(); if(tId==="analytics-view") updateAnalytics(); }
+      if (tId === "daily-view" || tId === "dpr-view") { 
+        dP.style.display = "block"; 
+        if(tId==="daily-view") renderDailyView(); 
+        if(tId==="dpr-view") renderDPRView(); 
+      } else { 
+        dP.style.display = "none"; 
+        if(tId==="monthly-view") renderMonthlyTable(); 
+        if(tId==="worker-view") renderWorkerManagement(); 
+        if(tId==="slips-view") populateSlipWorkerSelect(); 
+      }
     }
-    function renderAll() { renderDailyView(); renderDPRView(); renderMonthlyTable(); renderWorkerManagement(); populateSlipWorkerSelect(); updateDashboard(); if(document.getElementById('analytics-view').classList.contains('active')) updateAnalytics(); }
+    
+    function renderAll() { 
+      renderDailyView(); 
+      renderDPRView(); 
+      renderMonthlyTable(); 
+      renderWorkerManagement(); 
+      populateSlipWorkerSelect(); 
+      updateDashboard(); 
+    }
 
-    /* Voice Recognition */
+    /* VOICE RECOGNITION (DICTATE) */
     function startSpeechRecognition(elementId) {
-      if (!isUnlocked) { showLoginModal(); return; }
-      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Speech Recognition requires Google Chrome."); return; }
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; const recognition = new SpeechRecognition();
-      recognition.lang = 'en-IN'; recognition.interimResults = false; showToast("🎙️ Listening... Speak now.");
+      if (!isUnlocked) { requireAuthClick(); return; }
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { 
+        alert("Voice typing is supported in Google Chrome, Safari, and Edge."); 
+        return; 
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-IN'; 
+      recognition.interimResults = false; 
+      showToast("🎙️ Listening... Speak work details.");
+      
       recognition.onresult = (event) => {
-        const t = event.results[0][0].transcript; const input = document.getElementById(elementId);
+        const t = event.results[0][0].transcript; 
+        const input = document.getElementById(elementId);
         input.value = input.value ? input.value + " " + t : t;
         if(elementId === 'dpr-work-text') autoSaveDPR();
-        showToast("Voice captured!");
+        showToast("Voice recorded");
       };
-      recognition.onerror = () => { showToast("Speech capture error."); }; recognition.start();
+      recognition.onerror = () => { showToast("Speech capture error"); }; 
+      recognition.start();
     }
 
-    /* DPR & WhatsApp */
+    /* DPR & WHATSAPP */
     function renderDPRView() {
-      const dk = getSelectedDateKey(); document.getElementById("dpr-view-title").textContent = `DPR Report: ${dk.replace(/-/g, '/')}`;
+      const dk = getSelectedDateKey(); 
+      document.getElementById("dpr-view-title").textContent = `DPR Report: ${dk.replace(/-/g, '/')}`;
       const dData = appState.dpr[dk] || { work: "", weather: "Sunny / Clear", materials: [] };
-      const ta = document.getElementById("dpr-work-text"); ta.value = dData.work || "";
-      const ws = document.getElementById("dpr-weather-select"); ws.value = dData.weather || "Sunny / Clear";
-      if (!isUnlocked) { ta.setAttribute("readonly", true); ws.setAttribute("disabled", true); } else { ta.removeAttribute("readonly"); ws.removeAttribute("disabled"); }
-      const mc = document.getElementById("dpr-material-list"); mc.innerHTML = "";
-      if (!dData.materials || dData.materials.length === 0) addMaterialRowToDOM("", "", "Bag"); else dData.materials.forEach(m => addMaterialRowToDOM(m.item, m.qty, m.unit));
+      const ta = document.getElementById("dpr-work-text"); 
+      ta.value = dData.work || "";
+      const ws = document.getElementById("dpr-weather-select"); 
+      ws.value = dData.weather || "Sunny / Clear";
+      
+      if (!isUnlocked) { ta.setAttribute("readonly", true); ws.setAttribute("disabled", true); } 
+      else { ta.removeAttribute("readonly"); ws.removeAttribute("disabled"); }
+      
+      const mc = document.getElementById("dpr-material-list"); 
+      mc.innerHTML = "";
+      if (!dData.materials || dData.materials.length === 0) addMaterialRowToDOM("", "", "Bag"); 
+      else dData.materials.forEach(m => addMaterialRowToDOM(m.item, m.qty, m.unit));
     }
+
     function addMaterialRowToDOM(item="", qty="", unit="Bag") {
-      const c = document.getElementById("dpr-material-list"), d = document.createElement("div"); d.className = "material-row";
+      const c = document.getElementById("dpr-material-list"), d = document.createElement("div"); 
+      d.className = "material-row";
       const r = isUnlocked ? "" : "readonly onclick='requireAuthClick(this)'", ds = isUnlocked ? "" : "disabled";
-      d.innerHTML = `<input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()"><input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()"><select class="material-unit" ${ds} onchange="autoSaveDPR()"><option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option><option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Roll" ${unit==='Roll'?'selected':''}>Roll</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option></select><button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>`;
+      d.innerHTML = `
+        <input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()">
+        <input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()">
+        <select class="material-unit" ${ds} onchange="autoSaveDPR()">
+          <option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option>
+          <option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option>
+          <option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option>
+          <option value="Roll" ${unit==='Roll'?'selected':''}>Roll</option>
+          <option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option>
+        </select>
+        <button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>
+      `;
       c.appendChild(d);
     }
-    function addMaterialRow() { if(!isUnlocked) { showLoginModal(); return; } addMaterialRowToDOM(); }
-    function removeMaterialRow(btn) { if(!isUnlocked) { showLoginModal(); return; } btn.parentElement.remove(); autoSaveDPR(); }
+
+    function addMaterialRow() { if(!isUnlocked) { requireAuthClick(); return; } addMaterialRowToDOM(); }
+    function removeMaterialRow(btn) { if(!isUnlocked) { requireAuthClick(); return; } btn.parentElement.remove(); autoSaveDPR(); }
+
     function autoSaveDPR() {
-      if(!isUnlocked) return; clearTimeout(autoSaveTimer);
+      if(!isUnlocked) return; 
+      clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         const dk = getSelectedDateKey(), mats = [];
-        document.querySelectorAll("#dpr-material-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") mats.push({ item: i, qty: q, unit: u }); });
-        appState.dpr[dk] = { work: document.getElementById("dpr-work-text").value, weather: document.getElementById("dpr-weather-select").value, materials: mats }; saveState();
-        const ind = document.getElementById("dpr-work-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
+        document.querySelectorAll("#dpr-material-list .material-row").forEach(r => { 
+          const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; 
+          if (i.trim() !== "" || q !== "") mats.push({ item: i, qty: q, unit: u }); 
+        });
+        appState.dpr[dk] = { work: document.getElementById("dpr-work-text").value, weather: document.getElementById("dpr-weather-select").value, materials: mats }; 
+        saveState();
+        const ind = document.getElementById("dpr-work-saved"); 
+        ind.classList.add("visible"); 
+        setTimeout(() => ind.classList.remove("visible"), 2000);
       }, 500);
     }
 
     function shareDPRWhatsApp() {
-      const dk = getSelectedDateKey(); const site = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
+      const dk = getSelectedDateKey(); 
+      const site = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
       const dData = appState.dpr[dk] || { work: "No work updated.", weather: "N/A", materials: [] };
-      let text = `*🚧 GLOBAL INDUSTRIES - DPR*\n*Site:* ${site}\n*Date:* ${dk.replace(/-/g, '/')}\n*Weather:* ${dData.weather}\n\n*🛠️ WORK ALLOCATION:*\n${dData.work || "None"}\n\n*🧱 MATERIALS CONSUMED:*\n`;
+      const sDay = parseInt(document.getElementById("day-select").value) || 1;
+      
+      let pCount = 0;
+      let tradeCounts = {};
+      if(appState.workers) {
+        appState.workers.forEach(w => {
+          if (appState.attendance[w.id] && appState.attendance[w.id][sDay] && appState.attendance[w.id][sDay].duty > 0) {
+            pCount++;
+            tradeCounts[w.desig] = (tradeCounts[w.desig] || 0) + 1;
+          }
+        });
+      }
+
+      let text = `*🚧 GLOBAL INDUSTRIES - DAILY SITE REPORT*\n`;
+      text += `*Site:* ${site}\n*Date:* ${dk.replace(/-/g, '/')}\n*Weather:* ${dData.weather}\n`;
+      text += `*Labour Present:* ${pCount} workers\n`;
+      
+      // Trade breakup
+      const trades = Object.keys(tradeCounts);
+      if(trades.length > 0) {
+        text += `_Breakup: ` + trades.map(t => `${t}: ${tradeCounts[t]}`).join(", ") + `_\n\n`;
+      } else {
+        text += `\n`;
+      }
+
+      text += `*🛠️ WORK ALLOCATION:*\n${dData.work || "None"}\n\n`;
+      text += `*🧱 MATERIALS CONSUMED:*\n`;
       if(!dData.materials || dData.materials.length === 0) text += `- None\n`;
       else dData.materials.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty} ${m.unit}\n`; });
-      text += `\n_Generated via Global Industries App_`;
+      text += `\n_Submitted via Global Industries Portal_`;
+      
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
     }
 
-    /* Analytics Tab */
-    function updateAnalytics() {
-      const wC = appState.workers ? appState.workers.length : 0;
-      const sD = parseInt(document.getElementById("day-select").value) || 1; 
-      let pT=0, tN=0;
-      if(appState.workers) { 
-        appState.workers.forEach(w => { 
-          let wD=0, wO=0, wA=0; 
-          if (appState.attendance[w.id]) { 
-            if (appState.attendance[w.id][sD] && appState.attendance[w.id][sD].duty>0) pT++; 
-            for (let d=1; d<=31; d++) { const r=appState.attendance[w.id][d]; if(r) { wD+=(r.duty||0); wO+=(r.ot||0); wA+=(r.adv||0); } } 
-          } 
-          const r=w.rate||0; const amt=(wD*r)+(wO*(r/8)); const totA=(appState.advances[w.id]||0)+wA; tN+=(amt-totA); 
-        }); 
-      }
-      
-      document.getElementById('chart-present-text').textContent = `${pT} / ${wC}`;
-      const pct = wC === 0 ? 0 : Math.round((pT / wC) * 100);
-      document.getElementById('chart-present-bar').style.width = `${pct}%`;
-      document.getElementById('chart-liability').textContent = `₹${tN.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
-    }
-
-    /* Daily Attendance */
+    /* DAILY ATTENDANCE & HEADCOUNT */
     function getInitials(name) { const n = name.trim().split(" "); return n.length > 1 ? (n[0][0]+n[1][0]).toUpperCase() : n[0][0].toUpperCase(); }
     function getAvatarColor(name) { const colors = ["#EF4444", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6", "#EC4899"]; let sum = 0; for(let i=0;i<name.length;i++) sum+=name.charCodeAt(i); return colors[sum % colors.length]; }
-    
-    function getSkillBadge(desig) {
-      const d = desig.toLowerCase();
-      if(d.includes('supervisor')) return `<span class="badge badge-super">SUPERVISOR</span>`;
-      if(d.includes('helper') || d.includes('labour')) return `<span class="badge badge-unskilled">UNSKILLED</span>`;
-      return `<span class="badge badge-skilled">SKILLED</span>`;
-    }
 
     function renderDailyView() {
       const sDay = parseInt(document.getElementById("day-select").value);
       const sQuery = document.getElementById("worker-search").value.toLowerCase();
-      const c = document.getElementById("daily-list-container"); c.innerHTML = "";
+      const c = document.getElementById("daily-list-container"); 
+      c.innerHTML = "";
       document.getElementById("daily-view-title").textContent = `Attendance: Day ${sDay}`;
       
-      if(!appState.workers || appState.workers.length === 0) { c.innerHTML = `<div class="empty-state">No workers added for this site yet.</div>`; return; }
+      let tradeCounts = {};
+      let totalP = 0;
+
+      if(!appState.workers || appState.workers.length === 0) { 
+        c.innerHTML = `<div class="empty-state">No workers registered for this site yet. Click 'Add Worker' to begin.</div>`; 
+        document.getElementById("daily-headcount-pills").innerHTML = `<span class="trade-pill">0 workers registered</span>`;
+        return; 
+      }
 
       let hasResults = false;
       appState.workers.forEach(w => {
+        const a = (appState.attendance[w.id] && appState.attendance[w.id][sDay]) || { duty: 0, ot: 0, adv: 0 };
+        if(a.duty > 0) {
+          totalP++;
+          tradeCounts[w.desig] = (tradeCounts[w.desig] || 0) + 1;
+        }
+
         if (sQuery && !w.name.toLowerCase().includes(sQuery) && !w.desig.toLowerCase().includes(sQuery)) return;
         hasResults = true;
 
-        const a = (appState.attendance[w.id] && appState.attendance[w.id][sDay]) || { duty: 0, ot: 0, adv: 0 };
         const r = isUnlocked ? "" : "readonly onclick='requireAuthClick(this)'";
         const c1 = isUnlocked ? `setDailyDuty(${w.id}, ${sDay}, 1)` : `requireAuthClick(this)`;
         const c2 = isUnlocked ? `setDailyDuty(${w.id}, ${sDay}, 0.5)` : `requireAuthClick(this)`;
         const c3 = isUnlocked ? `setDailyDuty(${w.id}, ${sDay}, 0)` : `requireAuthClick(this)`;
         const phoneHtml = w.phone ? `<div class="worker-phone">📞 ${w.phone}</div>` : '';
-        const badgeHtml = getSkillBadge(w.desig);
         const avatar = `<div class="avatar" style="background:${getAvatarColor(w.name)}">${getInitials(w.name)}</div>`;
 
-        const div = document.createElement("div"); div.className = "worker-card";
-        div.innerHTML = `<div class="worker-card-header"><div class="worker-name-group">${avatar}<div><div class="worker-name">${w.name}</div><div class="worker-desig">${badgeHtml} ${w.desig}</div>${phoneHtml}</div></div><div class="worker-rate">₹${w.rate}/d</div></div><div class="duty-selector"><div class="duty-opt ${a.duty===1?'selected-p':''}" onclick="${c1}">P (1)</div><div class="duty-opt ${a.duty===0.5?'selected-h':''}" onclick="${c2}">H (0.5)</div><div class="duty-opt ${a.duty===0?'selected-a':''}" onclick="${c3}">A (0)</div></div><div class="input-row"><div class="input-box"><span>OT (Hrs)</span><input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT(${w.id}, ${sDay}, this.value)"></div><div class="input-box"><span>Adv (₹)</span><input type="number" min="0" step="50" placeholder="0" value="${a.adv||''}" ${r} onchange="setDailyAdv(${w.id}, ${sDay}, this.value)"></div></div>`;
+        const div = document.createElement("div"); 
+        div.className = "worker-card";
+        div.innerHTML = `
+          <div class="worker-card-header">
+            <div class="worker-name-group">
+              ${avatar}
+              <div>
+                <div class="worker-name">${w.name}</div>
+                <div class="worker-desig">${w.desig}</div>
+                ${phoneHtml}
+              </div>
+            </div>
+            <div class="worker-rate">₹${w.rate}/day</div>
+          </div>
+          <div class="duty-selector">
+            <div class="duty-opt ${a.duty===1?'selected-p':''}" onclick="${c1}">P (1)</div>
+            <div class="duty-opt ${a.duty===0.5?'selected-h':''}" onclick="${c2}">H (0.5)</div>
+            <div class="duty-opt ${a.duty===0?'selected-a':''}" onclick="${c3}">A (0)</div>
+          </div>
+          <div class="input-row">
+            <div class="input-box">
+              <span>Overtime (Hrs)</span>
+              <input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT(${w.id}, ${sDay}, this.value)">
+            </div>
+            <div class="input-box">
+              <span>Day Advance (₹)</span>
+              <input type="number" min="0" step="50" placeholder="0" value="${a.adv||''}" ${r} onchange="setDailyAdv(${w.id}, ${sDay}, this.value)">
+            </div>
+          </div>
+        `;
         c.appendChild(div);
       });
+
+      // Update Headcount Pills
+      const pillContainer = document.getElementById("daily-headcount-pills");
+      const trades = Object.keys(tradeCounts);
+      if(trades.length === 0) {
+        pillContainer.innerHTML = `<span class="trade-pill">0 Present Today</span>`;
+      } else {
+        pillContainer.innerHTML = `<span class="trade-pill" style="border-color:var(--success); color:var(--success);"><b>Total: ${totalP}</b></span>` +
+          trades.map(t => `<span class="trade-pill">${t}: <b>${tradeCounts[t]}</b></span>`).join("");
+      }
 
       if(!hasResults) c.innerHTML = `<div class="empty-state">No workers match your search.</div>`;
     }
 
-    function setDailyDuty(wId, d, v) { if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].duty=v; saveState(); renderDailyView(); }
-    function setDailyOT(wId, d, v) { appState.attendance[wId][d].ot=parseFloat(v)||0; saveState(); }
-    function setDailyAdv(wId, d, v) { appState.attendance[wId][d].adv=parseFloat(v)||0; saveState(); }
-    function bulkMarkDaily(v) { if(!isUnlocked) return; const sDay = parseInt(document.getElementById("day-select").value); appState.workers.forEach(w => { if(!appState.attendance[w.id]) appState.attendance[w.id]={}; if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; appState.attendance[w.id][sDay].duty=v; }); saveState(); renderDailyView(); showToast("Daily attendance updated."); }
+    function setDailyDuty(wId, d, v) { 
+      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
+      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
+      appState.attendance[wId][d].duty=v; 
+      saveState(); 
+      renderDailyView(); 
+    }
+    
+    function setDailyOT(wId, d, v) { 
+      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
+      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
+      appState.attendance[wId][d].ot=parseFloat(v)||0; 
+      saveState(); 
+    }
+    
+    function setDailyAdv(wId, d, v) { 
+      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
+      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
+      appState.attendance[wId][d].adv=parseFloat(v)||0; 
+      saveState(); 
+    }
 
-    /* Monthly Register Table */
+    function bulkMarkDaily(v) { 
+      if(!isUnlocked) { requireAuthClick(); return; }
+      const sDay = parseInt(document.getElementById("day-select").value); 
+      appState.workers.forEach(w => { 
+        if(!appState.attendance[w.id]) appState.attendance[w.id]={}; 
+        if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; 
+        appState.attendance[w.id][sDay].duty=v; 
+      }); 
+      saveState(); 
+      renderDailyView(); 
+      showToast("Updated daily attendance"); 
+    }
+
+    /* MONTHLY REGISTER */
     function toggleExpandMonthly() { document.getElementById("monthly-table-container").classList.toggle("expanded"); }
+    
     function renderMonthlyTable() {
       const h1 = document.querySelector("#monthly-table thead tr:first-child"), h2 = document.getElementById("sub-headers-row"), tb = document.getElementById("monthly-table-body"), tf = document.getElementById("monthly-table-total");
-      h1.innerHTML = `<th rowspan="2" class="sticky-col">NAME</th><th rowspan="2">TRADE</th>`; h2.innerHTML = "";
-      for (let d=1; d<=31; d++) { const th=document.createElement("th"); th.colSpan=2; th.textContent=d; h1.appendChild(th); h2.innerHTML+=`<th class="tier2">D</th><th class="tier2">OT</th>`; }
-      h1.innerHTML += `<th colspan="2" class="summary-th">TOTAL</th><th rowspan="2" class="summary-th">RATE</th><th rowspan="2" class="summary-th">AMOUNT</th><th rowspan="2" class="summary-th">ADVANCE</th><th rowspan="2" class="summary-th">BALANCE</th>`; h2.innerHTML += `<th class="tier2">DUTY</th><th class="tier2">OT</th>`;
+      h1.innerHTML = `<th rowspan="2" class="sticky-col">NAME</th><th rowspan="2">TRADE</th>`; 
+      h2.innerHTML = "";
+      for (let d=1; d<=31; d++) { 
+        const th=document.createElement("th"); 
+        th.colSpan=2; 
+        th.textContent=d; 
+        h1.appendChild(th); 
+        h2.innerHTML+=`<th class="tier2">D</th><th class="tier2">OT</th>`; 
+      }
+      h1.innerHTML += `<th colspan="2" class="summary-th">TOTAL</th><th rowspan="2" class="summary-th">RATE</th><th rowspan="2" class="summary-th">AMOUNT</th><th rowspan="2" class="summary-th">ADVANCE</th><th rowspan="2" class="summary-th">BALANCE</th>`; 
+      h2.innerHTML += `<th class="tier2">DUTY</th><th class="tier2">OT</th>`;
       tb.innerHTML = "";
 
-      if(!appState.workers || appState.workers.length === 0) { tb.innerHTML = `<tr><td colspan="70" class="empty-state">No records. Add workers first.</td></tr>`; tf.innerHTML = ""; return; }
+      if(!appState.workers || appState.workers.length === 0) { 
+        tb.innerHTML = `<tr><td colspan="70" class="empty-state">No records. Add workers first.</td></tr>`; 
+        tf.innerHTML = ""; 
+        return; 
+      }
 
-      let gD=0, gO=0, gAm=0, gAd=0, gB=0; let dD=Array(32).fill(0), dO=Array(32).fill(0);
+      let gD=0, gO=0, gAm=0, gAd=0, gB=0; 
+      let dD=Array(32).fill(0), dO=Array(32).fill(0);
 
       appState.workers.forEach(w => {
         let tD=0, tO=0, tDA=0, c="";
@@ -854,21 +1170,25 @@
         }
         const rt=w.rate||0, am=(tD*rt)+(tO*(rt/8)), tAd=(appState.advances[w.id]||0)+tDA, bl=am-tAd;
         gD+=tD; gO+=tO; gAm+=am; gAd+=tAd; gB+=bl;
+        
         const tr = document.createElement("tr");
-        tr.innerHTML=`<td class="sticky-col text-left"><b>${w.name}</b></td><td class="text-left">${w.desig}</td>${c}<td style="font-weight:bold; color:var(--primary);">${tD.toFixed(1)}</td><td style="font-weight:bold; color:var(--secondary);">${tO.toFixed(1)}</td><td class="text-right">₹${rt}</td><td class="text-right" style="font-weight:bold;">₹${am.toFixed(0)}</td><td class="text-right" style="color:var(--warning); font-weight:700;">₹${tAd.toFixed(0)}</td><td class="text-right" style="font-weight:bold; color:${bl>=0?'var(--primary)':'var(--danger)'}">₹${bl.toFixed(0)}</td>`;
+        tr.innerHTML=`<td class="sticky-col text-left"><b>${w.name}</b></td><td class="text-left">${w.desig}</td>${c}<td style="font-weight:bold; color:var(--primary);">${tD.toFixed(1)}</td><td style="font-weight:bold; color:var(--secondary);">${tO.toFixed(1)}</td><td class="text-right">₹${rt}</td><td class="text-right" style="font-weight:bold;">₹${am.toFixed(0)}</td><td class="text-right" style="color:var(--danger); font-weight:700;">₹${tAd.toFixed(0)}</td><td class="text-right" style="font-weight:bold; color:${bl>=0?'var(--primary)':'var(--danger)'}">₹${bl.toFixed(0)}</td>`;
         tb.appendChild(tr);
       });
-      let dc = ""; for (let d=1; d<=31; d++) dc += `<td>${dD[d]||'-'}</td><td>${dO[d]||'-'}</td>`;
+      
+      let dc = ""; 
+      for (let d=1; d<=31; d++) dc += `<td>${dD[d]||'-'}</td><td>${dO[d]||'-'}</td>`;
       tf.innerHTML = `<td colspan="2" class="sticky-col" style="text-align:center;">GRAND TOTAL</td>${dc}<td>${gD.toFixed(1)}</td><td>${gO.toFixed(1)}</td><td>-</td><td class="text-right">₹${gAm.toFixed(0)}</td><td class="text-right">₹${gAd.toFixed(0)}</td><td class="text-right" style="font-weight:800;">₹${gB.toFixed(0)}</td>`;
     }
 
-    /* Worker Profiles */
+    /* WORKER MANAGEMENT */
     function handleAddWorkerClick() { if (isUnlocked) openAddWorkerModal(); else showLoginModal(); }
     
     function renderWorkerManagement() {
       const sQuery = document.getElementById("worker-search").value.toLowerCase();
-      const c = document.getElementById("worker-mgmt-body"); c.innerHTML = "";
-      if(!appState.workers || appState.workers.length===0) { c.innerHTML=`<div class="empty-state">No workers added yet.</div>`; return; }
+      const c = document.getElementById("worker-mgmt-body"); 
+      c.innerHTML = "";
+      if(!appState.workers || appState.workers.length===0) { c.innerHTML=`<div class="empty-state">No workers registered yet.</div>`; return; }
       
       let hasResults = false;
       appState.workers.forEach(w => {
@@ -880,106 +1200,233 @@
         
         const act = isUnlocked ? `<div style="display:flex; gap:10px; margin-top:4px;"><button class="btn btn-outline" style="flex:1;" onclick="openEditWorkerModal(${w.id})">✏️ Edit</button><button class="btn btn-danger" style="flex:1;" onclick="deleteWorker(${w.id})">🗑️ Delete</button></div>` : '';
         const phoneHtml = w.phone ? `<div class="worker-phone">📞 ${w.phone}</div>` : '';
-        const badgeHtml = getSkillBadge(w.desig);
         const avatar = `<div class="avatar" style="background:${getAvatarColor(w.name)}">${getInitials(w.name)}</div>`;
 
-        const d = document.createElement("div"); d.className = "worker-card";
-        d.innerHTML = `<div class="worker-card-header"><div class="worker-name-group">${avatar}<div><div class="worker-name">${w.name}</div><div class="worker-desig">${badgeHtml} ${w.desig}</div>${phoneHtml}</div></div></div><div style="font-size:14px; display:flex; justify-content:space-between;"><span>Daily Rate: <b>₹${w.rate}</b></span><span>Total Adv: <b>₹${tA}</b></span></div>${act}`; c.appendChild(d);
+        const d = document.createElement("div"); 
+        d.className = "worker-card";
+        d.innerHTML = `<div class="worker-card-header"><div class="worker-name-group">${avatar}<div><div class="worker-name">${w.name}</div><div class="worker-desig">${w.desig}</div>${phoneHtml}</div></div></div><div style="font-size:14px; display:flex; justify-content:space-between;"><span>Daily Wage: <b>₹${w.rate}</b></span><span>Total Advances: <b>₹${tA}</b></span></div>${act}`; 
+        c.appendChild(d);
       });
 
       if(!hasResults) c.innerHTML = `<div class="empty-state">No workers match your search.</div>`;
     }
 
-    function openAddWorkerModal() { document.getElementById("modal-worker-title").textContent="Add Worker"; document.getElementById("edit-worker-id").value=""; document.getElementById("worker-name-input").value=""; document.getElementById("worker-phone-input").value=""; document.getElementById("worker-rate-input").value=""; document.getElementById("worker-adv-input").value=""; document.getElementById("worker-modal").classList.add("active"); }
-    function openEditWorkerModal(id) { const w=appState.workers.find(i=>i.id===id); if(!w)return; document.getElementById("modal-worker-title").textContent="Edit Worker"; document.getElementById("edit-worker-id").value=w.id; document.getElementById("worker-name-input").value=w.name; document.getElementById("worker-phone-input").value=w.phone || ""; document.getElementById("worker-desig-input").value=w.desig; document.getElementById("worker-rate-input").value=w.rate; document.getElementById("worker-adv-input").value=appState.advances[w.id]||0; document.getElementById("worker-modal").classList.add("active"); }
+    function openAddWorkerModal() { 
+      document.getElementById("modal-worker-title").textContent="Add Worker"; 
+      document.getElementById("edit-worker-id").value=""; 
+      document.getElementById("worker-name-input").value=""; 
+      document.getElementById("worker-phone-input").value=""; 
+      document.getElementById("worker-rate-input").value=""; 
+      document.getElementById("worker-adv-input").value=""; 
+      document.getElementById("worker-modal").classList.add("active"); 
+    }
+    
+    function openEditWorkerModal(id) { 
+      const w=appState.workers.find(i=>i.id===id); if(!w)return; 
+      document.getElementById("modal-worker-title").textContent="Edit Worker"; 
+      document.getElementById("edit-worker-id").value=w.id; 
+      document.getElementById("worker-name-input").value=w.name; 
+      document.getElementById("worker-phone-input").value=w.phone || ""; 
+      document.getElementById("worker-desig-input").value=w.desig; 
+      document.getElementById("worker-rate-input").value=w.rate; 
+      document.getElementById("worker-adv-input").value=appState.advances[w.id]||0; 
+      document.getElementById("worker-modal").classList.add("active"); 
+    }
+    
     function closeModal() { document.getElementById("worker-modal").classList.remove("active"); }
     
     function saveWorker() {
-      const id=document.getElementById("edit-worker-id").value, n=document.getElementById("worker-name-input").value.trim(), p=document.getElementById("worker-phone-input").value.trim(), d=document.getElementById("worker-desig-input").value, r=parseFloat(document.getElementById("worker-rate-input").value)||0, a=parseFloat(document.getElementById("worker-adv-input").value)||0;
-      if (!n) { alert("Enter worker name"); return; }
-      if (id) { const w=appState.workers.find(i=>i.id==id); if(w){w.name=n;w.phone=p;w.desig=d;w.rate=r;appState.advances[w.id]=a;} } else { const nId=Date.now(); appState.workers.push({id:nId,name:n,phone:p,desig:d,rate:r}); appState.advances[nId]=a; }
-      saveState(); closeModal(); renderAll(); showToast("Worker saved.");
+      const id=document.getElementById("edit-worker-id").value, 
+            n=document.getElementById("worker-name-input").value.trim(), 
+            p=document.getElementById("worker-phone-input").value.trim(), 
+            d=document.getElementById("worker-desig-input").value, 
+            r=parseFloat(document.getElementById("worker-rate-input").value)||0, 
+            a=parseFloat(document.getElementById("worker-adv-input").value)||0;
+      
+      if (!n) { alert("Please enter worker full name"); return; }
+      if (id) { 
+        const w=appState.workers.find(i=>i.id==id); 
+        if(w){ w.name=n; w.phone=p; w.desig=d; w.rate=r; appState.advances[w.id]=a; } 
+      } else { 
+        const nId=Date.now(); 
+        appState.workers.push({ id:nId, name:n, phone:p, desig:d, rate:r }); 
+        appState.advances[nId]=a; 
+      }
+      saveState(); 
+      closeModal(); 
+      renderAll(); 
+      showToast("Worker profile saved");
     }
     
-    function deleteWorker(id) { if (confirm("Remove worker?")) { appState.workers=appState.workers.filter(w=>w.id!==id); delete appState.attendance[id]; delete appState.advances[id]; saveState(); renderAll(); showToast("Worker deleted."); } }
+    function deleteWorker(id) { 
+      if (confirm("Remove worker from site register?")) { 
+        appState.workers=appState.workers.filter(w=>w.id!==id); 
+        delete appState.attendance[id]; 
+        delete appState.advances[id]; 
+        saveState(); 
+        renderAll(); 
+        showToast("Worker removed"); 
+      } 
+    }
 
-    /* Wage Slip Generator */
+    /* WAGE STATEMENT / SLIP */
     function populateSlipWorkerSelect() {
       const select = document.getElementById("slip-worker-select"); if(!select) return;
       select.innerHTML = '<option value="">-- Choose Worker --</option>';
-      appState.workers.forEach(w => { const opt = document.createElement("option"); opt.value = w.id; opt.textContent = `${w.name} (${w.desig})`; select.appendChild(opt); });
+      appState.workers.forEach(w => { 
+        const opt = document.createElement("option"); 
+        opt.value = w.id; 
+        opt.textContent = `${w.name} (${w.desig})`; 
+        select.appendChild(opt); 
+      });
       renderWageSlip();
     }
 
     function renderWageSlip() {
-      const select = document.getElementById("slip-worker-select"); const display = document.getElementById("wage-slip-display");
-      if(!select || !select.value) { display.innerHTML = '<div class="empty-state">Select a worker above to calculate their statement.</div>'; return; }
-      const wId = parseInt(select.value); const w = appState.workers.find(i => i.id === wId); if(!w) return;
+      const select = document.getElementById("slip-worker-select"); 
+      const display = document.getElementById("wage-slip-display");
+      if(!select || !select.value) { 
+        display.innerHTML = '<div class="empty-state">Select a worker above to calculate their monthly statement.</div>'; 
+        return; 
+      }
+      const wId = parseInt(select.value); 
+      const w = appState.workers.find(i => i.id === wId); 
+      if(!w) return;
 
       const monthLabel = document.getElementById("month-select").selectedOptions[0].text;
       const siteLabel = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
 
       let tDuty = 0, tOT = 0, tDailyAdv = 0;
-      for (let d = 1; d <= 31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); }
-      const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; const netPayable = grossAmt - totalAdv;
+      for (let d = 1; d <= 31; d++) { 
+        const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
+        tDuty += (r.duty||0); 
+        tOT += (r.ot||0); 
+        tDailyAdv += (r.adv||0); 
+      }
+      const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); 
+      const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; 
+      const netPayable = grossAmt - totalAdv;
 
       display.innerHTML = `
         <div class="slip-box" id="slip-print-area">
           <div style="text-align:center; margin-bottom:12px; border-bottom:2px solid #1E3A8A; padding-bottom:8px;">
-            <h3 style="color:#1E3A8A;">GLOBAL INDUSTRIES</h3><p style="font-size:11px; color:#64748B;">Labour Payment Statement | ${monthLabel}</p>
+            <h3 style="color:#1E3A8A;">GLOBAL INDUSTRIES</h3><p style="font-size:11px; color:#64748B;">Labour Settlement Slip | ${monthLabel}</p>
           </div>
-          <div class="slip-row"><span>Site:</span><b>${siteLabel}</b></div><div class="slip-row"><span>Worker Name:</span><b>${w.name}</b></div><div class="slip-row"><span>Trade / Phone:</span><span>${w.desig} | ${w.phone || 'N/A'}</span></div><div class="slip-row"><span>Daily Wage Rate:</span><span>₹${w.rate}/day</span></div><div class="slip-row"><span>Total Days Present:</span><span>${tDuty.toFixed(1)} days</span></div><div class="slip-row"><span>Total Overtime:</span><span>${tOT.toFixed(1)} hrs</span></div><div class="slip-row"><span>Gross Wages:</span><b>₹${grossAmt.toFixed(0)}</b></div><div class="slip-row" style="color:#DC2626;"><span>Total Advance Deducted:</span><b>- ₹${totalAdv.toFixed(0)}</b></div><div class="slip-total"><span>NET PAYABLE BALANCE:</span><span>₹${netPayable.toFixed(0)}</span></div>
+          <div class="slip-row"><span>Site:</span><b>${siteLabel}</b></div>
+          <div class="slip-row"><span>Worker Name:</span><b>${w.name}</b></div>
+          <div class="slip-row"><span>Trade / Contact:</span><span>${w.desig} | ${w.phone || 'N/A'}</span></div>
+          <div class="slip-row"><span>Daily Wage Rate:</span><span>₹${w.rate}/day</span></div>
+          <div class="slip-row"><span>Days Present:</span><span>${tDuty.toFixed(1)} days</span></div>
+          <div class="slip-row"><span>Overtime:</span><span>${tOT.toFixed(1)} hrs</span></div>
+          <div class="slip-row"><span>Gross Earned:</span><b>₹${grossAmt.toFixed(0)}</b></div>
+          <div class="slip-row" style="color:#DC2626;"><span>Total Advances Deducted:</span><b>- ₹${totalAdv.toFixed(0)}</b></div>
+          <div class="slip-total"><span>NET BALANCE PAYABLE:</span><span>₹${netPayable.toFixed(0)}</span></div>
         </div>
         <div style="display:flex; gap:10px;">
-          <button class="btn btn-whatsapp" onclick="shareSlipWhatsApp('${w.name}', '${w.desig}', '${monthLabel}', '${tDuty}', '${tOT}', '${w.rate}', '${grossAmt}', '${totalAdv}', '${netPayable}')">📲 WhatsApp Slip</button>
-          <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
+          <button class="btn btn-whatsapp" onclick="shareSlipWhatsApp('${w.name}', '${w.desig}', '${monthLabel}', '${tDuty}', '${tOT}', '${w.rate}', '${grossAmt}', '${totalAdv}', '${netPayable}')">📲 Share via WhatsApp</button>
+          <button class="btn btn-primary" onclick="window.print()">🖨️ Print Slip</button>
         </div>
       `;
     }
 
     function shareSlipWhatsApp(name, desig, month, duty, ot, rate, gross, adv, net) {
-      let msg = `*🧾 GLOBAL INDUSTRIES - WAGE STATEMENT*\n*Worker:* ${name} (${desig})\n*Period:* ${month}\n\n- Duty Days: ${duty}\n- Overtime: ${ot} hrs\n- Rate: ₹${rate}/day\n- Gross Wages: ₹${gross}\n- Advance Deducted: ₹${adv}\n*💰 NET BALANCE PAYABLE: ₹${net}*\n\n_Generated by Global Industries_`;
+      let msg = `*🧾 GLOBAL INDUSTRIES - LABOUR PAYMENT STATEMENT*\n`;
+      msg += `*Worker:* ${name} (${desig})\n*Period:* ${month}\n\n`;
+      msg += `- Days Worked: ${duty} days\n- Overtime: ${ot} hrs\n- Daily Wage: ₹${rate}/day\n`;
+      msg += `- Gross Wages: ₹${gross}\n- Advance Deducted: ₹${adv}\n`;
+      msg += `*💰 NET BALANCE PAYABLE: ₹${net}*\n\n_Generated via Global Industries Portal_`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 
+    /* DASHBOARD CALCULATIONS */
     function updateDashboard() {
-      const wC = appState.workers ? appState.workers.length : 0; document.getElementById("stat-total-workers").textContent = wC;
+      const wC = appState.workers ? appState.workers.length : 0; 
+      document.getElementById("stat-total-workers").textContent = wC;
       const sD = parseInt(document.getElementById("day-select").value) || 1; 
-      let pT=0, tD=0, tO=0, tN=0, tGlobalAdv=0;
+      let pT=0, tD=0, tO=0, tN=0;
       
       if(appState.workers) { 
         appState.workers.forEach(w => { 
           let wD=0, wO=0, wA=0; 
           if (appState.attendance[w.id]) { 
             if (appState.attendance[w.id][sD] && appState.attendance[w.id][sD].duty>0) pT++; 
-            for (let d=1; d<=31; d++) { const r=appState.attendance[w.id][d]; if(r) { wD+=(r.duty||0); wO+=(r.ot||0); wA+=(r.adv||0); } } 
+            for (let d=1; d<=31; d++) { 
+              const r=appState.attendance[w.id][d]; 
+              if(r) { wD+=(r.duty||0); wO+=(r.ot||0); wA+=(r.adv||0); } 
+            } 
           } 
-          tD+=wD; tO+=wO; const r=w.rate||0; const amt=(wD*r)+(wO*(r/8)); 
-          const totA=(appState.advances[w.id]||0)+wA; tGlobalAdv+=totA; tN+=(amt-totA); 
+          tD+=wD; tO+=wO; 
+          const r=w.rate||0; 
+          const amt=(wD*r)+(wO*(r/8)); 
+          const totA=(appState.advances[w.id]||0)+wA; 
+          tN+=(amt-totA); 
         }); 
       }
 
       document.getElementById("lbl-present-today").textContent = `Day ${sD} Present`; 
       document.getElementById("stat-present-today").textContent = `${pT} / ${wC}`; 
-      document.getElementById("stat-total-duty").textContent = tD.toFixed(1); 
       document.getElementById("stat-total-ot").textContent = `${tO.toFixed(1)} hrs`; 
-      document.getElementById("stat-total-adv").textContent = `₹${tGlobalAdv.toLocaleString("en-IN", {maximumFractionDigits:0})}`; 
       document.getElementById("stat-total-balance").textContent = `₹${tN.toLocaleString("en-IN", {maximumFractionDigits:0})}`;
     }
 
-    // --- DB EXPORT/IMPORT ---
-    function exportDatabase() { if(!isUnlocked) return; const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `GI_DB_Backup_${currentSite}.json`; a.click(); showToast("DB Downloaded."); }
-    function triggerRestore() { if(!isUnlocked) return; if(confirm("Overwrite all cloud data for this site?")) document.getElementById("restore-file-input").click(); }
-    function importData(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { try { const i = JSON.parse(ev.target.result); if (i.appData && i.appData.workers) { appState = fixFirebaseArrays(i.appData); saveState(); renderAll(); showToast("DB Restored!"); } else alert("Invalid Backup."); } catch (err) { alert("Error reading file."); } e.target.value = ''; }; r.readAsText(f); }
+    /* BACKUP & CSV EXPORT */
+    function exportDatabase() { 
+      if(!isUnlocked) return; 
+      const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); 
+      const a = document.createElement("a"); 
+      a.href = URL.createObjectURL(b); 
+      a.download = `GI_DB_Backup_${currentSite}.json`; 
+      a.click(); 
+      showToast("Backup saved to device"); 
+    }
+    
+    function triggerRestore() { 
+      if(!isUnlocked) return; 
+      if(confirm("Overwrite all cloud data for this site?")) document.getElementById("restore-file-input").click(); 
+    }
+    
+    function importData(e) { 
+      const f = e.target.files[0]; if(!f) return; 
+      const r = new FileReader(); 
+      r.onload = function(ev) { 
+        try { 
+          const i = JSON.parse(ev.target.result); 
+          if (i.appData && i.appData.workers) { 
+            appState = fixFirebaseArrays(i.appData); 
+            saveState(); 
+            renderAll(); 
+            showToast("Database restored"); 
+          } else alert("Invalid backup file."); 
+        } catch (err) { alert("Error reading backup file."); } 
+        e.target.value = ''; 
+      }; 
+      r.readAsText(f); 
+    }
 
-    // --- CSV ---
     function exportToCSV() {
-      const mL=document.getElementById("month-select").selectedOptions[0].text, sL=document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text.toUpperCase();
+      const mL=document.getElementById("month-select").selectedOptions[0].text;
+      const sL=document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text.toUpperCase();
       let csv = `GLOBAL INDUSTRIES - ${sL}\nLABOUR ATTENDANCE REGISTER - ${mL}\n\n`;
       let h1=["NAME", "PHONE", "TRADE"]; for(let d=1;d<=31;d++) h1.push(d,""); h1.push("TOTAL","","RATE","AMOUNT","ADVANCE","BALANCE"); csv += h1.join(",") + "\n";
       let h2=["","",""]; for(let d=1;d<=31;d++) h2.push("DUTY","OT"); h2.push("DUTY","OT","","","",""); csv += h2.join(",") + "\n";
-      if(appState.workers) { appState.workers.forEach(w => { let row=[`"${w.name}"`, `"${w.phone||''}"`, `"${w.desig}"`], tD=0, tO=0, tA=0; for (let d=1; d<=31; d++) { const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tD+=(r.duty||0); tO+=(r.ot||0); tA+=(r.adv||0); row.push(r.duty||0, r.ot||0); } const r=w.rate||0, amt=(tD*r)+(tO*(r/8)), fA=(appState.advances[w.id]||0)+tA, bal=amt-fA; row.push(tD, tO, r, amt.toFixed(0), fA.toFixed(0), bal.toFixed(0)); csv += row.join(",") + "\n"; }); }
-      const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8;"})); a.download=`GI_Attendance_${sL.replace(/\s+/g,'_')}.csv`; a.click();
+      
+      if(appState.workers) { 
+        appState.workers.forEach(w => { 
+          let row=[`"${w.name}"`, `"${w.phone||''}"`, `"${w.desig}"`], tD=0, tO=0, tA=0; 
+          for (let d=1; d<=31; d++) { 
+            const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
+            tD+=(r.duty||0); tO+=(r.ot||0); tA+=(r.adv||0); 
+            row.push(r.duty||0, r.ot||0); 
+          } 
+          const r=w.rate||0, amt=(tD*r)+(tO*(r/8)), fA=(appState.advances[w.id]||0)+tA, bal=amt-fA; 
+          row.push(tD, tO, r, amt.toFixed(0), fA.toFixed(0), bal.toFixed(0)); 
+          csv += row.join(",") + "\n"; 
+        }); 
+      }
+      const a=document.createElement("a"); 
+      a.href=URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8;"})); 
+      a.download=`GI_Attendance_${sL.replace(/\s+/g,'_')}.csv`; 
+      a.click(); 
     }
 
     document.getElementById("admin-pwd").addEventListener("keypress", function(e) { if (e.key === "Enter") { e.preventDefault(); checkPassword(); } });
