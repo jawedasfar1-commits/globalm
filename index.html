@@ -8,6 +8,9 @@
   <!-- Anti-AdBlocker Firebase SDKs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.8.1/firebase-app-compat.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.8.1/firebase-database-compat.min.js"></script>
+  
+  <!-- PDF Generation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     /* =========================================
@@ -25,7 +28,7 @@
       --primary: #94A3B8; --primary-light: #334155; --secondary: #3B82F6;
       --accent: #F59E0B; --bg: #0F172A; --card-bg: #1E293B;
       --text: #F8FAFC; --text-muted: #94A3B8; --border: #334155;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -57,26 +60,23 @@
     .regd-office { font-size: 13px; color: var(--text); line-height: 1.4; opacity: 0.85; font-weight: 500; }
 
     /* =========================================
-       APP CONTROL BAR (MATCHES IMAGE)
+       APP CONTROL BAR 
        ========================================= */
     .app-control-bar { background: linear-gradient(135deg, #0B1B2B 0%, #152E4D 100%); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 2px solid var(--accent); }
     [data-theme="dark"] .app-control-bar { background: linear-gradient(135deg, #020617 0%, #0F172A 100%); }
     .site-selector-wrap { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px; }
     .site-label { color: #FFD700; font-weight: 800; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; }
-    
-    /* Beautiful Rounded Select */
     #site-select { background: #FFFFFF; border: none; padding: 10px 16px; border-radius: 20px; font-size: 14px; font-weight: 800; color: #102A43; width: 100%; max-width: 280px; cursor: pointer; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23102A43%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 14px top 50%; background-size: 10px auto; }
     
-    .btn-delete-site { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.5); padding: 8px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; display: none; font-weight: bold; transition: 0.2s;}
-    .btn-delete-site:hover { background: #EF4444; color: white; }
-
     .status-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .user-profile-badge { background: rgba(255,255,255,0.15); color: #FFF; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
     .btn-icon { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 34px; height: 34px; color: white; cursor: pointer; transition: 0.2s; font-size: 15px; display: flex; align-items: center; justify-content: center;}
     .btn-icon:hover { background: rgba(255,255,255,0.4); transform: scale(1.05); }
     
     #auth-status-btn { background: rgba(255,255,255,0.2); border: none; border-radius: 20px; padding: 8px 16px; color: white; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s ease; }
-    
+    #lang-toggle-btn { background: rgba(255,215,0,0.2); color: #FFD700; border: 1px solid rgba(255,215,0,0.5); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+    #lang-toggle-btn:hover { background: #FFD700; color: #102A43; }
+
     @keyframes pulseWarning { 0% { transform: scale(1); } 50% { transform: scale(1.08); background: var(--danger); box-shadow: 0 0 15px var(--danger);} 100% { transform: scale(1); } }
     .shake-error { animation: pulseWarning 0.4s ease; }
 
@@ -89,7 +89,7 @@
        DASHBOARD & NAVIGATION
        ========================================= */
     .container { width: 100%; padding: 20px; flex: 1; max-width: 1600px; margin: 0 auto; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { background: var(--card-bg); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); border-left: 6px solid var(--secondary); display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden;}
     .stat-card:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1); }
     .stat-card.accent { border-left-color: var(--accent); }
@@ -116,7 +116,7 @@
     input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: var(--card-bg); box-shadow: 0 0 0 3px rgba(45,104,196,0.1); }
     
     .search-bar { position: relative; width: 100%; }
-    .search-bar input { padding-left: 44px; background-color: var(--card-bg); }
+    .search-bar input { padding-left: 44px; background-color: var(--card-bg); border: 1px solid var(--border); font-weight: 500; }
     .search-icon { position: absolute; left: 16px; top: 18px; font-size: 18px; color: var(--text-muted); }
 
     .btn { cursor: pointer; font-weight: 800; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; font-size: 15px; border-radius: 10px; width: 100%; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
@@ -137,7 +137,7 @@
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Worker Cards (Official UI) */
+    /* Worker Cards */
     .worker-daily-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; }
     .worker-card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; transition: 0.3s; }
     .worker-card:hover { border-color: var(--secondary); box-shadow: 0 10px 20px rgba(45,104,196,0.08); }
@@ -168,35 +168,38 @@
     .input-box span { font-size: 13px; color: var(--text-muted); font-weight: 800; }
     .input-box input { width: 75px; padding: 10px; text-align: center; font-weight: 900; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; font-size: 15px; color: var(--text); }
 
-    /* Sections (DPR, Machinery, Notes) */
+    /* Sections */
     .dpr-section { background: var(--card-bg); border-radius: 16px; padding: 22px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; transition: 0.3s; }
     .dpr-section h4 { color: var(--primary); margin-bottom: 16px; font-size: 17px; display: flex; justify-content: space-between; align-items: center; font-weight: 900;}
-    .dpr-textarea { height: 160px; resize: none; margin-bottom: 10px; font-size: 15px; line-height: 1.5;}
-    
+    .dpr-textarea { height: 140px; resize: none; margin-bottom: 8px; }
     .weather-row { display: flex; gap: 16px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border);}
     .weather-row label { font-size: 14px; font-weight: 800; color: var(--primary); white-space: nowrap; }
     
     #rain-settings { display: none; gap: 16px; margin-top: 16px; padding: 16px; background: rgba(59, 130, 246, 0.08); border-radius: 12px; border: 1px solid #BFDBFE; animation: fadeIn 0.3s ease;}
 
-    .material-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border);}
+    .material-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border);}
     .material-item { flex: 2; border: none; background: var(--card-bg);}
     .material-qty { flex: 1; text-align: center; border: none; background: var(--card-bg);}
     .material-unit { flex: 1; border: none; background: var(--card-bg);}
     .btn-remove-row { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 14px; font-weight: bold; cursor: pointer; transition: 0.2s;}
     .btn-remove-row:hover { background: var(--danger); color: white; }
 
-    .save-status-indicator { font-size: 13px; font-weight: 800; color: var(--success); text-align: right; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; gap:6px; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 20px;}
+    .save-status-indicator { font-size: 12px; font-weight: 700; color: var(--success); text-align: right; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; gap:4px; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 20px;}
     .save-status-indicator.visible { opacity: 1; }
     .empty-state { text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: 16px; color: var(--text-muted); border: 2px dashed var(--border); font-weight: 700; font-size: 16px;}
 
+    .trade-pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .trade-pill { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+    .trade-pill b { color: var(--secondary); font-weight: 800;}
+
     /* Monthly Register Table */
-    .table-container { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); overflow-x: auto; border: 1px solid var(--border); -webkit-overflow-scrolling: touch; transition: 0.3s; }
-    .table-container.expanded { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: var(--bg); border-radius: 0; padding: 16px; padding-top: 80px; }
+    .table-container { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); overflow-x: auto; border: 1px solid var(--border); -webkit-overflow-scrolling: touch; transition: 0.3s; }
+    .table-container.expanded { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: var(--bg); border-radius: 0; padding: 10px; padding-top: 80px; }
     .close-expand-btn { display: none; position: fixed; top: 16px; right: 16px; z-index: 100000; background: var(--danger); color: white; border: none; padding: 14px 24px; border-radius: 10px; font-weight: 800; box-shadow: var(--shadow); cursor: pointer; }
     .table-container.expanded + .close-expand-btn { display: block; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; color: var(--text); }
     th, td { border: 1px solid var(--border); padding: 14px 10px; text-align: center; }
-    th { background: var(--primary-light); color: white; font-weight: 800; font-size: 14px;}
+    th { background: var(--primary-light); color: white; font-weight: 700; font-size: 14px;}
     th.tier2 { background: var(--secondary); font-size: 12px; color: white;}
     th.summary-th { background: var(--primary); color: white; font-size: 14px;}
     td.text-left { text-align: left; }
@@ -214,7 +217,7 @@
     .slip-total { display: flex; justify-content: space-between; padding: 16px 0; font-size: 20px; font-weight: 900; color: #1E3A8A; border-top: 3px solid #1E3A8A; margin-top: 12px; }
 
     /* Modals & Toasts */
-    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 1000; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 1000; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
     .modal.active { display: flex; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     .modal-box { background: var(--card-bg); border-radius: 24px 24px 0 0; width: 100%; max-width: 550px; padding: 32px; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
@@ -246,10 +249,10 @@
   <!-- Profile Configuration Overlay -->
   <div id="profile-overlay" class="overlay">
     <div class="modal-box-center">
-      <h2>Global Industries</h2>
-      <p>Enter your full name to identify your updates on this device:</p>
+      <h2>Global Industries Portal</h2>
+      <p data-i18n="Enter Name">Enter your full name to identify your updates on this device:</p>
       <input type="text" id="profile-name-input" class="pin-input" placeholder="Your Name" style="letter-spacing: normal;">
-      <button class="btn btn-primary" onclick="saveProfile()">Continue to Portal</button>
+      <button class="btn btn-primary" onclick="saveProfile()" data-i18n="Continue">Continue to Portal</button>
     </div>
   </div>
 
@@ -257,11 +260,11 @@
   <div id="login-overlay" class="overlay">
     <div class="modal-box-center">
       <button class="close-btn" onclick="closeLoginModal()">&times;</button>
-      <h2>Admin Access</h2>
-      <p>Enter 4-digit PIN to edit site records:</p>
+      <h2 data-i18n="Admin Access">Admin Access</h2>
+      <p data-i18n="Enter PIN">Enter 4-digit PIN to edit site records:</p>
       <input type="password" id="admin-pwd" class="pin-input" placeholder="****" inputmode="numeric" maxlength="4">
-      <button class="btn btn-primary" onclick="checkPassword()">Unlock Editing</button>
-      <p id="pwd-error" style="color:var(--danger); font-size: 14px; margin-top: 16px; display: none; font-weight:800;">Incorrect PIN. Try again.</p>
+      <button class="btn btn-primary" onclick="checkPassword()" data-i18n="Unlock Editing">Unlock Editing</button>
+      <p id="pwd-error" style="color:var(--danger); font-size: 14px; margin-top: 16px; display: none; font-weight:800;" data-i18n="Incorrect PIN">Incorrect PIN. Try again.</p>
     </div>
   </div>
 
@@ -269,7 +272,7 @@
   <div id="diagnostics-modal" class="overlay">
     <div class="modal-box-center" style="max-width: 460px; text-align: left;">
       <button class="close-btn" onclick="closeDiagnosticsModal()">&times;</button>
-      <h2 style="text-align: center; margin-bottom: 16px;">Cloud Sync Engine</h2>
+      <h2 style="text-align: center; margin-bottom: 16px;" data-i18n="Cloud Sync">Cloud Sync Engine</h2>
       <div style="font-size: 15px; line-height: 1.6; color: var(--text); background: var(--bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
         <p><b>Endpoint:</b><br><code style="font-size: 12px; color: var(--secondary); word-break: break-all;">asia-southeast1 (Singapore)</code></p>
         <p style="margin-top: 12px;"><b>Status:</b> <span id="diag-status">Connecting...</span></p>
@@ -277,8 +280,8 @@
         <p><b>Local Memory Workers:</b> <span id="diag-workers" style="font-weight:bold;">0</span></p>
       </div>
       <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">
-        <button class="btn btn-primary" onclick="forceSyncProcess()">🔄 Force Full Cloud Sync</button>
-        <button class="btn btn-outline" onclick="closeDiagnosticsModal()">Close Console</button>
+        <button class="btn btn-primary" onclick="forceSyncProcess()" data-i18n="Force Sync">🔄 Force Full Cloud Sync</button>
+        <button class="btn btn-outline" onclick="closeDiagnosticsModal()" data-i18n="Close">Close Console</button>
       </div>
     </div>
   </div>
@@ -320,12 +323,12 @@
     <!-- App Control Navigation Bar -->
     <div class="app-control-bar">
       <div class="site-selector-wrap">
-        <span class="site-label">SITE:</span>
+        <span class="site-label" data-i18n="SITE:">SITE:</span>
         <select id="site-select" onchange="handleSiteChange()"></select>
-        <button id="btn-delete-site" class="btn-icon" style="display:none; background: rgba(239,68,68,0.2); color: #FCA5A5;" title="Delete Current Site" onclick="deleteCurrentSite()">🗑️</button>
       </div>
       <div class="status-group">
-        <button class="btn-icon" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
+        <button class="btn-icon" onclick="toggleLanguage()" id="lang-toggle-btn" title="Language" style="font-weight:900; background:rgba(255,215,0,0.2); color:#FFD700; border:1px solid rgba(255,215,0,0.5);">A/अ Hindi</button>
+        <button class="btn-icon" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
         <div class="user-profile-badge" id="profile-display">👤 User</div>
         <div id="online-indicator" class="online-indicator" onclick="openDiagnosticsModal()" title="View Cloud Sync Status">
           <span class="status-dot" id="status-dot"></span>
@@ -337,22 +340,22 @@
   </header>
 
   <div class="container">
-    <!-- Live Financial & Headcount Dashboard -->
+    <!-- Live Dashboard -->
     <div class="dashboard-grid">
-      <div class="stat-card"><span class="stat-label">👷 Total Workers</span><span class="stat-value" id="stat-total-workers">0</span></div>
-      <div class="stat-card success"><span class="stat-label" id="lbl-present-today">✅ Today Present</span><span class="stat-value" id="stat-present-today">0 / 0</span></div>
-      <div class="stat-card warning"><span class="stat-label">⏱️ Total Overtime</span><span class="stat-value" id="stat-total-ot">0 hrs</span></div>
-      <div class="stat-card accent"><span class="stat-label">💰 Net Payable</span><span class="stat-value" id="stat-total-balance">₹0</span></div>
+      <div class="stat-card"><span class="stat-label" data-i18n="Workers">👷 Total Workers</span><span class="stat-value" id="stat-total-workers">0</span></div>
+      <div class="stat-card success"><span class="stat-label" id="lbl-present-today" data-i18n="Today Present">✅ Today Present</span><span class="stat-value" id="stat-present-today">0 / 0</span></div>
+      <div class="stat-card warning"><span class="stat-label" data-i18n="Total Overtime">⏱️ Total Overtime</span><span class="stat-value" id="stat-total-ot">0 hrs</span></div>
+      <div class="stat-card accent"><span class="stat-label" data-i18n="Net Payable">💰 Net Payable</span><span class="stat-value" id="stat-total-balance">₹0</span></div>
     </div>
 
     <!-- Main Navigation Tabs -->
     <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('daily-view')">📅 Daily</button>
-      <button class="tab-btn" onclick="switchTab('dpr-view')">📝 DPR</button>
-      <button class="tab-btn" onclick="switchTab('machinery-view')">🚜 Machinery</button>
-      <button class="tab-btn" onclick="switchTab('monthly-view')">📊 Monthly</button>
-      <button class="tab-btn" onclick="switchTab('worker-view')">👷 Roster</button>
-      <button class="tab-btn" onclick="switchTab('slips-view')">🧾 Wage Slips</button>
+      <button class="tab-btn active" onclick="switchTab('daily-view')" data-i18n="Daily">📅 Daily</button>
+      <button class="tab-btn" onclick="switchTab('dpr-view')" data-i18n="DPR">📝 DPR & Weather</button>
+      <button class="tab-btn" onclick="switchTab('notes-view')" data-i18n="Notes">📓 Notes</button>
+      <button class="tab-btn" onclick="switchTab('monthly-view')" data-i18n="Monthly">📊 Monthly</button>
+      <button class="tab-btn" onclick="switchTab('worker-view')" data-i18n="Workers">👷 Workers</button>
+      <button class="tab-btn" onclick="switchTab('slips-view')" data-i18n="Wage Slips">🧾 Wage Slips</button>
     </div>
 
     <!-- Action Toolbar -->
@@ -370,13 +373,14 @@
 
       <div class="toolbar-group">
         <div id="edit-controls" style="display:none; gap:14px; width: 100%; flex-wrap: wrap;">
-          <button class="btn btn-outline" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;">➕ Add Worker</button>
-          <button class="btn btn-outline" onclick="forceSyncProcess()" style="flex:1;">🔄 Sync Cloud</button>
-          <button class="btn btn-outline" onclick="exportDatabase()" style="flex:1;">💾 Backup File</button>
+          <button class="btn btn-outline" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;" data-i18n="Add Worker">➕ Add Worker</button>
+          <button class="btn btn-outline" onclick="forceSyncProcess()" style="flex:1;" data-i18n="Sync Cloud">🔄 Sync Cloud</button>
+          <button class="btn btn-outline" onclick="exportDatabase()" style="flex:1;" data-i18n="Backup File">💾 Backup File</button>
         </div>
         <div class="toolbar-group-row">
-          <button class="btn btn-success" style="flex:1;" onclick="exportToCSV()">📥 Export CSV</button>
-          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print Page</button>
+          <button class="btn btn-danger" style="flex:1;" onclick="generateOfficialPDF()" data-i18n="Official PDF Report">📑 Official PDF Report</button>
+          <button class="btn btn-success" style="flex:1;" onclick="exportToCSV()" data-i18n="Export CSV">📥 Export CSV</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="window.print()" data-i18n="Print Page">🖨️ Print Page</button>
         </div>
       </div>
     </div>
@@ -384,52 +388,51 @@
     <!-- VIEW 1: Daily Attendance -->
     <div id="daily-view" class="tab-content active">
       <div class="dpr-section" style="padding: 16px; margin-bottom: 20px;">
-        <span style="font-size:13px; font-weight:900; color:var(--text-muted); letter-spacing: 0.5px;">TODAY'S HEADCOUNT SUMMARY:</span>
+        <span style="font-size:13px; font-weight:900; color:var(--text-muted); letter-spacing: 0.5px;" data-i18n="HEADCOUNT">TODAY'S HEADCOUNT SUMMARY:</span>
         <div class="trade-pill-group" id="daily-headcount-pills">
           <span class="trade-pill">No attendance marked yet</span>
         </div>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
-        <h3 id="daily-view-title" style="color:var(--primary); font-size:20px;">Daily Attendance</h3>
+        <h3 id="daily-view-title" style="color:var(--primary); font-size:20px;" data-i18n="Daily Attendance">Daily Attendance</h3>
         <div id="daily-bulk-actions" style="display:none; gap:12px; width: 100%;">
-          <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(1)">✔️ Mark All Present</button>
-          <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(0)">✖️ Clear Today</button>
+          <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(1)" data-i18n="Mark All Present">✔️ Mark All Present</button>
+          <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(0)" data-i18n="Clear Today">✖️ Clear Today</button>
         </div>
       </div>
       <div class="worker-daily-list" id="daily-list-container"></div>
     </div>
 
-    <!-- VIEW 2: DPR & Notes -->
+    <!-- VIEW 2: DPR & Weather -->
     <div id="dpr-view" class="tab-content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px;">
-        <h3 id="dpr-view-title" style="color:var(--primary); font-size:20px;">Daily Progress Report</h3>
+        <h3 id="dpr-view-title" style="color:var(--primary); font-size:20px;" data-i18n="Daily Progress Report">Daily Progress Report</h3>
         <button class="btn btn-whatsapp btn-small" onclick="shareDPRWhatsApp()" style="width:auto; border-radius:20px;">📲 Share WhatsApp</button>
       </div>
       
       <div class="dpr-section">
         <div class="weather-row">
-          <label>Site Weather:</label>
+          <label data-i18n="Site Weather:">Site Weather:</label>
           <select id="dpr-weather-select" onchange="checkWeatherCondition()" onclick="requireAuthClick(this)" style="flex:1;">
             <option value="Sunny / Clear">☀️ Sunny / Clear</option>
             <option value="Cloudy">☁️ Cloudy</option>
-            <option value="Light Rain">🌦️ Light Rain</option>
-            <option value="Heavy Rain">🌧️ Heavy Rain</option>
+            <option value="Light Rain">🌦️ Light Rain (Work Continued)</option>
+            <option value="Heavy Rain">🌧️ Heavy Rain (Work Stopped)</option>
             <option value="Extreme Heat">🔥 Extreme Heat</option>
           </select>
         </div>
         
-        <!-- Hidden Rain Details -->
         <div id="rain-settings">
            <div style="flex:1;">
-             <label style="font-size:13px; font-weight:800; color:var(--text);">Rain Duration (Hrs)</label>
+             <label style="font-size:13px; font-weight:800; color:var(--text);" data-i18n="Rain Duration">Rain Duration (Hrs)</label>
              <input type="number" id="dpr-rain-hours" placeholder="e.g. 2.5" oninput="autoSaveDPR()" style="margin-top:6px;">
            </div>
            <div style="flex:1;">
-             <label style="font-size:13px; font-weight:800; color:var(--text);">Did Work Stop?</label>
+             <label style="font-size:13px; font-weight:800; color:var(--text);" data-i18n="Work Stopped?">Did Work Stop?</label>
              <select id="dpr-work-stopped" onchange="autoSaveDPR()" style="margin-top:6px;">
-               <option value="No">No</option>
-               <option value="Yes">Yes</option>
+               <option value="No" data-i18n="No">No</option>
+               <option value="Yes" data-i18n="Yes">Yes</option>
              </select>
            </div>
         </div>
@@ -437,38 +440,41 @@
 
       <div class="dpr-section">
         <h4>
-          <span>Work Details & Location</span>
-          <button class="btn-icon" onclick="startSpeechRecognition('dpr-work-text')" title="Voice to text" style="color:var(--primary);">🎙️ Dictate</button>
+          <span data-i18n="Work Details & Location">Work Details & Location</span>
+          <button class="btn-icon" onclick="startSpeechRecognition('dpr-work-text')" title="Voice to text" style="color:var(--primary);">🎙️</button>
         </h4>
         <textarea id="dpr-work-text" class="dpr-textarea" placeholder="E.g. Column casting at Platform 1, shuttering work near substation..." oninput="autoSaveDPR()" onclick="requireAuthClick(this)"></textarea>
         <div id="dpr-work-saved" class="save-status-indicator">✓ Saved to Cloud</div>
       </div>
       
       <div class="dpr-section">
-        <h4>Material Consumption <button class="btn btn-primary btn-small" onclick="addMaterialRow()">+ Add Material</button></h4>
+        <h4><span data-i18n="Material Consumption">Material Consumption</span> <button class="btn btn-primary btn-small" onclick="addMaterialRow()" data-i18n="Add Material">+ Add Material</button></h4>
         <div id="dpr-material-list"></div>
       </div>
     </div>
 
-    <!-- VIEW 3: Machinery (NEW) -->
-    <div id="machinery-view" class="tab-content">
-      <h3 id="machinery-view-title" style="color:var(--primary); font-size:20px; margin-bottom: 18px;">Machinery & Assets log</h3>
+    <!-- VIEW 3: Notes -->
+    <div id="notes-view" class="tab-content">
+      <h3 id="notes-view-title" style="color:var(--primary); font-size:20px; margin-bottom: 18px;" data-i18n="Daily Site Notes">Daily Site Notes</h3>
       <div class="dpr-section">
-        <h4>Daily Equipment Usage <button class="btn btn-primary btn-small" onclick="addMachineRow()">+ Add Machine</button></h4>
-        <div id="machinery-list"></div>
-        <div id="machinery-saved" class="save-status-indicator" style="margin-top:10px;">✓ Saved to Cloud</div>
+        <h4>
+          <span data-i18n="Notes & Observations">Notes & Observations</span>
+          <button class="btn-icon" onclick="startSpeechRecognition('daily-notes-text')" title="Voice to text" style="color:var(--primary);">🎙️</button>
+        </h4>
+        <textarea id="daily-notes-text" class="dpr-textarea" style="height: 250px;" placeholder="Type or dictate notes, deliveries, or issues here..." oninput="autoSaveNotes()" onclick="requireAuthClick(this)"></textarea>
+        <div id="notes-saved" class="save-status-indicator">✓ Auto-saved to cloud</div>
       </div>
     </div>
 
     <!-- VIEW 4: Monthly Register -->
     <div id="monthly-view" class="tab-content">
       <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
-        <button class="btn btn-primary btn-small" onclick="toggleExpandMonthly()">⛶ Fullscreen Register</button>
+        <button class="btn btn-primary btn-small" onclick="toggleExpandMonthly()" data-i18n="Fullscreen Register">⛶ Fullscreen Register</button>
       </div>
       <div class="table-container" id="monthly-table-container">
         <table id="monthly-table">
           <thead>
-            <tr><th rowspan="2" class="sticky-col">NAME</th><th rowspan="2">TRADE</th><th colspan="2">TOTAL</th><th rowspan="2">RATE</th><th rowspan="2">AMOUNT</th><th rowspan="2">ADVANCE</th><th rowspan="2">BALANCE</th></tr>
+            <tr><th rowspan="2" class="sticky-col" data-i18n="NAME">NAME</th><th rowspan="2" data-i18n="TRADE">TRADE</th><th colspan="2" data-i18n="TOTAL">TOTAL</th><th rowspan="2" data-i18n="RATE">RATE</th><th rowspan="2" data-i18n="AMOUNT">AMOUNT</th><th rowspan="2" data-i18n="ADVANCE">ADVANCE</th><th rowspan="2" data-i18n="BALANCE">BALANCE</th></tr>
             <tr id="sub-headers-row"></tr>
           </thead>
           <tbody id="monthly-table-body"></tbody>
@@ -485,19 +491,22 @@
 
     <!-- VIEW 6: Wage Statement -->
     <div id="slips-view" class="tab-content">
-      <h3 style="color:var(--primary); font-size:20px; margin-bottom: 18px;">Labour Wage Settlement Statement</h3>
+      <h3 style="color:var(--primary); font-size:20px; margin-bottom: 18px;" data-i18n="Labour Wage Settlement Statement">Labour Wage Settlement Statement</h3>
       <div class="dpr-section">
         <div class="form-group" style="display:flex; gap:12px; align-items:flex-end;">
           <div style="flex:1;">
-            <label>Select Worker:</label>
+            <label data-i18n="Select Worker:">Select Worker:</label>
             <select id="slip-worker-select" onchange="renderWageSlip()"></select>
           </div>
-          <button class="btn btn-primary" style="width:auto;" onclick="printAllSlips()">🖨️ Print ALL</button>
+          <button class="btn btn-primary" style="width:auto;" onclick="printAllSlips()" data-i18n="Print ALL">🖨️ Print ALL</button>
         </div>
         <div id="wage-slip-display"></div>
       </div>
     </div>
   </div>
+
+  <!-- Hidden PDF Generation Container -->
+  <div id="pdf-export-container" style="display:none; padding:40px; background:white; color:black; width:1100px;"></div>
 
   <!-- Add Worker Modal Form -->
   <div class="modal" id="worker-modal">
@@ -505,43 +514,98 @@
       <div class="modal-title" id="modal-worker-title">Worker Profile</div>
       <input type="hidden" id="edit-worker-id">
       
-      <div class="form-group"><label>Worker Full Name</label><input type="text" id="worker-name-input" placeholder="e.g. Ramesh Kumar"></div>
-      <div class="form-group"><label>Mobile / Phone Number</label><input type="tel" id="worker-phone-input" placeholder="e.g. 9876543210"></div>
+      <div class="form-group"><label data-i18n="Worker Full Name">Worker Full Name</label><input type="text" id="worker-name-input" placeholder="e.g. Ramesh Kumar"></div>
+      <div class="form-group"><label data-i18n="Phone Number">Phone Number</label><input type="tel" id="worker-phone-input" placeholder="e.g. 9876543210"></div>
 
       <div class="form-group">
-        <label>Designation / Trade</label>
-        <input type="text" id="worker-desig-input" placeholder="e.g. Mason, Helper, Supervisor..." list="trade-options">
-        <datalist id="trade-options">
-          <option value="Mason"></option><option value="Fitter"></option><option value="Helper"></option><option value="Welder"></option><option value="Bar Bender"></option><option value="Carpenter"></option><option value="Electrician"></option><option value="Site Supervisor"></option>
-        </datalist>
+        <label data-i18n="Designation / Trade">Designation / Trade</label>
+        <select id="worker-desig-input">
+          <option value="Mason">Mason (राजमिस्त्री)</option>
+          <option value="Fitter">Fitter (फ़िटर)</option>
+          <option value="Helper">Helper (मज़दूर)</option>
+          <option value="Welder">Welder (वेल्डर)</option>
+          <option value="Bar Bender">Bar Bender (सरिया मिस्त्री)</option>
+          <option value="Carpenter">Carpenter (शटरिंग)</option>
+          <option value="Electrician">Electrician (इलेक्ट्रीशियन)</option>
+          <option value="Site Supervisor">Supervisor (सुपरवाइज़र)</option>
+        </select>
       </div>
 
       <div style="display:flex; gap:12px;">
-        <div class="form-group" style="flex:1;"><label>Daily Rate (₹)</label><input type="number" id="worker-rate-input" placeholder="e.g. 650"></div>
-        <div class="form-group" style="flex:1;"><label>Opening Adv (₹)</label><input type="number" id="worker-adv-input" placeholder="0"></div>
+        <div class="form-group" style="flex:1;"><label data-i18n="Daily Rate (₹)">Daily Rate (₹)</label><input type="number" id="worker-rate-input" placeholder="e.g. 650"></div>
+        <div class="form-group" style="flex:1;"><label data-i18n="Opening Adv (₹)">Opening Adv (₹)</label><input type="number" id="worker-adv-input" placeholder="0"></div>
       </div>
 
       <div class="modal-actions">
-        <button class="btn btn-primary" onclick="saveWorker()">Save Worker</button>
-        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveWorker()" data-i18n="Save">Save Worker</button>
+        <button class="btn btn-outline" onclick="closeModal()" data-i18n="Cancel">Cancel</button>
       </div>
     </div>
   </div>
 
   <script>
     /* =========================================
-       1. FIREBASE CONFIGURATION & GLOBALS
+       1. I18N (HINDI TRANSLATION ENGINE)
+       ========================================= */
+    const translations = {
+      'hi': {
+        'Workers': 'मज़दूर (Workers)', 'Today Present': 'आज उपस्थित (Present)',
+        'Total Overtime': 'कुल ओवरटाइम (OT)', 'Net Payable': 'शुद्ध देय (Net Pay)',
+        'Total Registered': 'कुल पंजीकृत (Registered)', 'Total Advances': 'कुल अग्रिम (Advances)',
+        'Daily Attendance': 'दैनिक उपस्थिति (Attendance)', 'Mark All Present': '✔️ सभी उपस्थित (All P)',
+        'Clear Today': '✖️ आज साफ करें (Clear)', 'Overtime (Hrs)': 'ओवरटाइम (Hrs)',
+        'Day Advance (₹)': 'आज का अग्रिम (₹)', 'Daily Wage': 'दिहाड़ी (Wage)',
+        'Daily Progress Report': 'दैनिक प्रगति रिपोर्ट (DPR)', 'Site Weather:': 'साइट का मौसम (Weather):',
+        'Rain Duration': 'बारिश का समय (Hrs)', 'Work Stopped?': 'क्या काम रुका? (Stop)',
+        'No': 'नहीं (No)', 'Yes': 'हाँ (Yes)',
+        'Work Details & Location': 'कार्य का विवरण (Work Details)', 'Material Consumption': 'सामग्री का उपयोग (Materials)',
+        'Add Material': '+ सामग्री जोड़ें', 'Daily Site Notes': 'साइट नोट्स (Notes)',
+        'Notes & Observations': 'टिप्पणियाँ (Observations)', 'Fullscreen Register': '⛶ पूरी स्क्रीन (Fullscreen)',
+        'Add Worker': '➕ नया मज़दूर', 'Sync Cloud': '🔄 क्लाउड सिंक',
+        'Backup File': '💾 बैकअप फाइल', 'Export CSV': '📥 एक्सेल (CSV)',
+        'Print Page': '🖨️ प्रिंट (Print)', 'Official PDF Report': '📑 आधिकारिक PDF',
+        'Labour Wage Settlement Statement': 'मज़दूर वेतन पर्ची (Wage Slips)',
+        'Select Worker:': 'मज़दूर चुनें:', 'Print ALL': '🖨️ सभी प्रिंट करें (Print All)',
+        'Daily': '📅 दैनिक', 'DPR': '📝 डी.पी.आर', 'Notes': '📓 नोट्स',
+        'Monthly': '📊 मासिक', 'Wage Slips': '🧾 वेतन पर्ची', 'SITE:': 'साइट:',
+        'Worker Full Name': 'पूरा नाम (Name)', 'Phone Number': 'फ़ोन नंबर (Phone)',
+        'Designation / Trade': 'पद / काम (Trade)', 'Daily Rate (₹)': 'दैनिक दिहाड़ी (₹)',
+        'Opening Adv (₹)': 'शुरुआती अग्रिम (₹)', 'Save': 'सेव करें (Save)', 'Cancel': 'रद्द करें (Cancel)',
+        'HEADCOUNT': 'आज की उपस्थिति:', 'NAME': 'नाम', 'TRADE': 'पद', 'TOTAL': 'कुल',
+        'RATE': 'दिहाड़ी', 'AMOUNT': 'कुल राशि', 'ADVANCE': 'अग्रिम', 'BALANCE': 'बकाया'
+      }
+    };
+
+    let currentLang = localStorage.getItem('gi_lang') || 'en';
+
+    function toggleLanguage() {
+      currentLang = (currentLang === 'en') ? 'hi' : 'en';
+      localStorage.setItem('gi_lang', currentLang);
+      applyTranslations();
+      renderAll();
+    }
+
+    function t(key) {
+      if (currentLang === 'en') return key;
+      return translations['hi'][key] || key;
+    }
+
+    function applyTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      document.getElementById('lang-toggle-btn').textContent = currentLang === 'en' ? 'A/अ Hindi' : 'A/अ English';
+    }
+
+
+    /* =========================================
+       2. FIREBASE CONFIGURATION & GLOBALS
        ========================================= */
     const DB_BASE_URL = "https://g12343-default-rtdb.asia-southeast1.firebasedatabase.app";
     const firebaseConfig = {
-      apiKey: "AIzaSyAOeVZw4kgRrayPsZL4bJT11UlWaPFs7eo",
-      authDomain: "g12343.firebaseapp.com",
-      databaseURL: DB_BASE_URL,
-      projectId: "g12343",
-      storageBucket: "g12343.firebasestorage.app",
-      messagingSenderId: "577051260341",
-      appId: "1:577051260341:web:8759501706162aaa39d5fc",
-      measurementId: "G-3RD669LGV5"
+      apiKey: "AIzaSyAOeVZw4kgRrayPsZL4bJT11UlWaPFs7eo", authDomain: "g12343.firebaseapp.com",
+      databaseURL: DB_BASE_URL, projectId: "g12343", storageBucket: "g12343.firebasestorage.app",
+      messagingSenderId: "577051260341", appId: "1:577051260341:web:8759501706162aaa39d5fc", measurementId: "G-3RD669LGV5"
     };
 
     let database = null, sitesRef = null, currentSiteRef = null;
@@ -549,75 +613,37 @@
     let currentSite = localStorage.getItem('gi_last_site') || 'jaynagar';
     const ADMIN_PIN = '1820'; 
     
-    let appState = { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {}, machinery: {} };
+    let appState = { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {}, notes: {} };
     let isUnlocked = (localStorage.getItem('gi_unlocked') === 'true');
     let autoSaveTimer = null;
     let isCloudOnline = false;
 
     // Helpers
     function getStorageKey() { return "GI_DATA_" + currentSite.toUpperCase(); }
-    function showToast(m) { 
-        const t = document.getElementById('toast'); 
-        document.getElementById('toast-msg').textContent = m; 
-        t.style.bottom = '20px'; 
-        setTimeout(() => { t.style.bottom = '-80px'; }, 3000); 
-    }
-    
+    function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = m; t.style.bottom = '20px'; setTimeout(() => { t.style.bottom = '-80px'; }, 3000); }
     function vibrateBtn() { if(navigator.vibrate) navigator.vibrate(40); }
 
-    function toggleTheme() {
-        const body = document.body;
-        if(body.getAttribute('data-theme') === 'dark') { body.removeAttribute('data-theme'); localStorage.setItem('gi_theme', 'light'); } 
-        else { body.setAttribute('data-theme', 'dark'); localStorage.setItem('gi_theme', 'dark'); }
-    }
-
     /* =========================================
-       2. PROFILE & AUTHENTICATION
+       3. PROFILE & AUTHENTICATION
        ========================================= */
-    function checkProfile() {
-      const name = localStorage.getItem('gi_user_profile');
-      if (!name) { document.getElementById('profile-overlay').style.display = 'flex'; } 
-      else { document.getElementById('profile-display').innerHTML = `👤 ${name}`; }
-    }
-
-    function saveProfile() {
-      const name = document.getElementById('profile-name-input').value.trim();
-      if (name) { 
-        localStorage.setItem('gi_user_profile', name); 
-        document.getElementById('profile-overlay').style.display = 'none'; 
-        document.getElementById('profile-display').innerHTML = `👤 ${name}`; 
-        showToast("Device registered for " + name); 
-      } else { alert("Please enter your name."); }
-    }
+    function checkProfile() { const name = localStorage.getItem('gi_user_profile'); if (!name) { document.getElementById('profile-overlay').style.display = 'flex'; } else { document.getElementById('profile-display').innerHTML = `👤 ${name}`; } }
+    function saveProfile() { const name = document.getElementById('profile-name-input').value.trim(); if (name) { localStorage.setItem('gi_user_profile', name); document.getElementById('profile-overlay').style.display = 'none'; document.getElementById('profile-display').innerHTML = `👤 ${name}`; showToast("Device registered for " + name); } else { alert("Please enter your name."); } }
 
     function checkAuthStatus() { updateAuthUI(); }
-    
-    function toggleAuth() { 
-      if (isUnlocked) { 
-        isUnlocked = false; localStorage.removeItem('gi_unlocked'); 
-        updateAuthUI(); renderAll(); showToast("Portal Locked (View Only)"); 
-      } else { showLoginModal(); } 
-    }
-    
+    function toggleAuth() { if (isUnlocked) { isUnlocked = false; localStorage.removeItem('gi_unlocked'); updateAuthUI(); renderAll(); showToast("Portal Locked (View Only)"); } else { showLoginModal(); } }
     function showLoginModal() { document.getElementById('login-overlay').style.display = 'flex'; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('admin-pwd').value = ''; document.getElementById('admin-pwd').focus(); }
     function closeLoginModal() { document.getElementById('login-overlay').style.display = 'none'; }
-    
-    function checkPassword() { 
-      if (document.getElementById('admin-pwd').value === ADMIN_PIN) { 
-        isUnlocked = true; localStorage.setItem('gi_unlocked', 'true'); 
-        closeLoginModal(); updateAuthUI(); renderAll(); showToast("Edit Mode Unlocked"); 
-      } else { document.getElementById('pwd-error').style.display = 'block'; } 
-    }
+    function checkPassword() { if (document.getElementById('admin-pwd').value === ADMIN_PIN) { isUnlocked = true; localStorage.setItem('gi_unlocked', 'true'); closeLoginModal(); updateAuthUI(); renderAll(); showToast("Edit Mode Unlocked"); } else { document.getElementById('pwd-error').style.display = 'block'; } }
     
     function updateAuthUI() {
-      const btn = document.getElementById('auth-status-btn'), b1 = document.getElementById('daily-bulk-actions'), e1 = document.getElementById('edit-controls'), delBtn = document.getElementById('btn-delete-site');
+      const btn = document.getElementById('auth-status-btn'), b1 = document.getElementById('daily-bulk-actions'), e1 = document.getElementById('edit-controls');
       if (isUnlocked) { 
-        btn.innerHTML='🔓 Edit Mode'; btn.style.background='var(--success)'; btn.classList.remove("shake-error");
-        if(b1)b1.style.display='flex'; if(e1)e1.style.display='flex'; if(delBtn) delBtn.style.display='flex';
+        btn.innerHTML= t('Edit Mode'); btn.style.background='var(--success)'; btn.classList.remove("shake-error");
+        if(b1)b1.style.display='flex'; if(e1)e1.style.display='flex'; 
         document.getElementById('dpr-weather-select').removeAttribute('disabled');
       } else { 
-        btn.innerHTML='🔒 View Only'; btn.style.background='rgba(255,255,255,0.2)'; 
-        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(delBtn) delBtn.style.display='none';
+        btn.innerHTML= t('View Only'); btn.style.background='rgba(255,255,255,0.2)'; 
+        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; 
         document.getElementById('dpr-weather-select').setAttribute('disabled', 'true');
       }
     }
@@ -627,8 +653,7 @@
         if(el && el.blur) el.blur(); 
         const btn = document.getElementById('auth-status-btn');
         btn.classList.remove("shake-error"); void btn.offsetWidth; btn.classList.add("shake-error");
-        showToast("Portal locked! Enter PIN to edit.");
-        setTimeout(() => { showLoginModal(); }, 400);
+        showToast("Portal locked! Enter PIN to edit."); setTimeout(() => { showLoginModal(); }, 400);
       } 
     }
 
@@ -641,89 +666,54 @@
     function closeDiagnosticsModal() { document.getElementById('diagnostics-modal').style.display = 'none'; }
 
     /* =========================================
-       3. CORE INITIALIZATION & DUAL-ENGINE SYNC
+       4. CORE INITIALIZATION & DUAL-ENGINE SYNC
        ========================================= */
     function init() {
       if(localStorage.getItem('gi_theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+      applyTranslations();
       checkProfile(); checkAuthStatus(); generateMonthOptions(); populateDaySelector();
       
       try { const s = localStorage.getItem('gi_sites'); if(s) availableSites = JSON.parse(s); } catch(e){}
-      renderSiteSelector(); 
-      loadLocalState(); 
-      renderAll();
+      renderSiteSelector(); loadLocalState(); renderAll();
 
       initCloudConnection();
-
       window.addEventListener('online', () => { showToast("📶 Internet Restored. Reconnecting..."); initCloudConnection(); });
       window.addEventListener('offline', () => { setOnlineStatus(false); showToast("⚠️ No Internet. Working Offline."); });
     }
 
     function setOnlineStatus(online) {
-      isCloudOnline = online;
-      const dot = document.getElementById('status-dot');
-      const text = document.getElementById('status-text');
-      if (online) { dot.className = 'status-dot online'; text.textContent = 'Cloud Live'; } 
-      else { dot.className = 'status-dot offline'; text.textContent = 'Offline Mode'; }
+      isCloudOnline = online; const dot = document.getElementById('status-dot'); const text = document.getElementById('status-text');
+      if (online) { dot.className = 'status-dot online'; text.textContent = 'Cloud Live'; } else { dot.className = 'status-dot offline'; text.textContent = 'Offline Mode'; }
     }
 
     function initCloudConnection() {
       if (!navigator.onLine) { setOnlineStatus(false); return; }
-      
       try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         database = firebase.app().database(DB_BASE_URL);
         sitesRef = database.ref('global/sites');
 
-        database.ref('.info/connected').on('value', (snap) => {
-          if (snap.val() === true) { setOnlineStatus(true); } else { pingRestCloud(); }
-        });
-
+        database.ref('.info/connected').on('value', (snap) => { if (snap.val() === true) { setOnlineStatus(true); } else { pingRestCloud(); } });
         sitesRef.on('value', (snapshot) => {
           const sites = snapshot.val();
-          if (sites) { 
-            availableSites = Array.isArray(sites) ? sites : Object.values(sites); 
-            localStorage.setItem('gi_sites', JSON.stringify(availableSites)); 
-            renderSiteSelector();
-          } else { sitesRef.set(availableSites); }
+          if (sites) { availableSites = Array.isArray(sites) ? sites : Object.values(sites); localStorage.setItem('gi_sites', JSON.stringify(availableSites)); renderSiteSelector(); } else { sitesRef.set(availableSites); }
         });
-
         syncSiteDataFirebase();
-      } catch(e) { 
-        console.warn("WebSocket blocked. Activating HTTP REST engine...", e);
-        pingRestCloud();
-      }
+      } catch(e) { console.warn("WebSocket blocked. REST Fallback...", e); pingRestCloud(); }
     }
 
     async function pingRestCloud() {
       try {
         const res = await fetch(`${DB_BASE_URL}/global/sites.json`);
-        if (res.ok) {
-          setOnlineStatus(true);
-          const cloudSites = await res.json();
-          if(cloudSites) {
-            availableSites = Array.isArray(cloudSites) ? cloudSites : Object.values(cloudSites);
-            localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-            renderSiteSelector();
-          }
-          syncViaREST();
-        } else { setOnlineStatus(false); }
+        if (res.ok) { setOnlineStatus(true); const cloudSites = await res.json(); if(cloudSites) { availableSites = Array.isArray(cloudSites) ? cloudSites : Object.values(cloudSites); localStorage.setItem('gi_sites', JSON.stringify(availableSites)); renderSiteSelector(); } syncViaREST(); } else { setOnlineStatus(false); }
       } catch(err) { setOnlineStatus(false); }
     }
 
-    async function syncViaREST() {
-      try {
-        const res = await fetch(`${DB_BASE_URL}/sites/${currentSite}.json`);
-        if (res.ok) { handleIncomingCloudData(await res.json()); }
-      } catch(e) { console.warn("REST sync ping failed"); }
-    }
+    async function syncViaREST() { try { const res = await fetch(`${DB_BASE_URL}/sites/${currentSite}.json`); if (res.ok) { handleIncomingCloudData(await res.json()); } } catch(e) {} }
 
     function renderSiteSelector() {
-      const select = document.getElementById('site-select'); if(!select) return;
-      select.innerHTML = '';
-      availableSites.forEach(site => { 
-        const opt = document.createElement('option'); opt.value = site.id; opt.textContent = site.name; 
-        if (site.id === currentSite) opt.selected = true; select.appendChild(opt); 
-      });
+      const select = document.getElementById('site-select'); if(!select) return; select.innerHTML = '';
+      availableSites.forEach(site => { const opt = document.createElement('option'); opt.value = site.id; opt.textContent = site.name; if (site.id === currentSite) opt.selected = true; select.appendChild(opt); });
       const addOpt = document.createElement('option'); addOpt.value = 'add_new'; addOpt.textContent = '+ Add New Site...'; select.appendChild(addOpt);
     }
 
@@ -736,156 +726,73 @@
               const newId = siteName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
               availableSites.push({ id: newId, name: siteName.trim() });
               localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-              
-              if (database && isCloudOnline) sitesRef.set(availableSites);
-              else fetch(`${DB_BASE_URL}/global/sites.json`, { method: 'PUT', body: JSON.stringify(availableSites) });
-              
+              if (database && isCloudOnline) sitesRef.set(availableSites); else fetch(`${DB_BASE_URL}/global/sites.json`, { method: 'PUT', body: JSON.stringify(availableSites) });
               currentSite = newId; localStorage.setItem('gi_last_site', currentSite);
-              appState = { _initialized: true, lastUpdated: Date.now(), workers: [], attendance: {}, advances: {}, dpr: {}, machinery: {} };
+              appState = { _initialized: true, lastUpdated: Date.now(), workers: [], attendance: {}, advances: {}, dpr: {}, notes: {} };
               localStorage.setItem(getStorageKey(), JSON.stringify(appState));
               if (database) database.ref('sites/' + currentSite).set(appState);
-              
               saveState(); renderSiteSelector(); renderAll();
           } else { select.value = currentSite; }
-      } else { 
-        currentSite = select.value; localStorage.setItem('gi_last_site', currentSite); 
-        loadLocalState(); renderAll(); 
-        if (database) syncSiteDataFirebase(); else syncViaREST();
-      }
+      } else { currentSite = select.value; localStorage.setItem('gi_last_site', currentSite); loadLocalState(); renderAll(); if (database) syncSiteDataFirebase(); else syncViaREST(); }
     }
 
-    function deleteCurrentSite() {
-      if(!isUnlocked) return;
-      if(availableSites.length <= 1) { alert("You cannot delete the last remaining site. Add a new site first."); return; }
-      
-      const siteName = availableSites.find(s => s.id === currentSite)?.name || currentSite;
-      if(confirm(`⚠️ DANGER: Are you sure you want to permanently delete the site "${siteName}" and ALL its data?`)) {
-        
-        availableSites = availableSites.filter(s => s.id !== currentSite);
-        localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-        if (database && isCloudOnline) {
-          sitesRef.set(availableSites);
-          database.ref('sites/' + currentSite).remove();
-        }
-        localStorage.removeItem(getStorageKey());
-        
-        currentSite = availableSites[0].id;
-        localStorage.setItem('gi_last_site', currentSite);
-        
-        renderSiteSelector();
-        loadLocalState();
-        renderAll();
-        if (database) syncSiteDataFirebase();
-        showToast("Site Deleted");
-      }
-    }
-
-    /* DATA SANITIZATION & TIMESTAMP MERGE */
     function sanitizeData(data) { return JSON.parse(JSON.stringify(data)); }
-    
     function fixFirebaseArrays(data) {
-      if(!data || typeof data !== 'object') return { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {}, machinery: {} };
-      
+      if(!data || typeof data !== 'object') return { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {}, notes: {} };
       let cleanWorkers = [];
       if (Array.isArray(data.workers)) cleanWorkers = data.workers.filter(w => w !== null);
       else if (typeof data.workers === 'object') cleanWorkers = Object.values(data.workers).filter(w => w !== null);
-      
       cleanWorkers.forEach(w => { w.name = w.name || "Unknown"; w.desig = w.desig || "Helper"; w.rate = parseFloat(w.rate) || 0; });
-      cleanWorkers.sort((a, b) => a.name.localeCompare(b.name));
-      data.workers = cleanWorkers;
-
-      if(!data.attendance) data.attendance = {}; if(!data.advances) data.advances = {}; 
-      if(!data.dpr) data.dpr = {}; if(!data.machinery) data.machinery = {};
+      cleanWorkers.sort((a, b) => a.name.localeCompare(b.name)); data.workers = cleanWorkers;
+      if(!data.attendance) data.attendance = {}; if(!data.advances) data.advances = {}; if(!data.dpr) data.dpr = {}; if(!data.notes) data.notes = {};
       if(!data.lastUpdated) data.lastUpdated = 0;
       return data;
     }
 
     function loadLocalState() {
       const saved = localStorage.getItem(getStorageKey());
-      if (saved) { try { appState = fixFirebaseArrays(JSON.parse(saved)); } catch (e) { appState = fixFirebaseArrays(null); } } 
-      else { appState = fixFirebaseArrays(null); }
+      if (saved) { try { appState = fixFirebaseArrays(JSON.parse(saved)); } catch (e) { appState = fixFirebaseArrays(null); } } else { appState = fixFirebaseArrays(null); }
     }
 
     function handleIncomingCloudData(cloudData) {
       const localData = fixFirebaseArrays(JSON.parse(localStorage.getItem(getStorageKey())));
       if (cloudData) {
         const cTime = cloudData.lastUpdated || 0; const lTime = localData.lastUpdated || 0;
-        if (cTime >= lTime) {
-          appState = fixFirebaseArrays(cloudData);
-          localStorage.setItem(getStorageKey(), JSON.stringify(appState));
-        } else { pushToCloud(localData); } 
+        if (cTime >= lTime) { appState = fixFirebaseArrays(cloudData); localStorage.setItem(getStorageKey(), JSON.stringify(appState)); } else { pushToCloud(localData); } 
       } else if (localData.workers.length > 0) { pushToCloud(localData); } 
-      
       const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
       if (activeTag !== 'input' && activeTag !== 'textarea') renderAll(); else updateDashboard();
     }
 
-    function syncSiteDataFirebase() {
-      if (!database) return; if (currentSiteRef) currentSiteRef.off();
-      currentSiteRef = database.ref('sites/' + currentSite);
-      currentSiteRef.on('value', (snapshot) => { handleIncomingCloudData(snapshot.val()); });
-    }
-
-    function pushToCloud(dataToPush) {
-      const clean = sanitizeData(dataToPush);
-      if (database && isCloudOnline && currentSiteRef) {
-        currentSiteRef.set(clean).catch(() => pushViaREST(clean));
-      } else { pushViaREST(clean); }
-    }
-
-    async function pushViaREST(cleanData) {
-      if(!navigator.onLine) return; 
-      try {
-        await fetch(`${DB_BASE_URL}/sites/${currentSite}.json`, { method: 'PUT', body: JSON.stringify(cleanData) });
-        setOnlineStatus(true);
-      } catch(e) { console.warn("Offline: Data stored safely in local memory."); }
-    }
+    function syncSiteDataFirebase() { if (!database) return; if (currentSiteRef) currentSiteRef.off(); currentSiteRef = database.ref('sites/' + currentSite); currentSiteRef.on('value', (snapshot) => { handleIncomingCloudData(snapshot.val()); }); }
+    function pushToCloud(dataToPush) { const clean = sanitizeData(dataToPush); if (database && isCloudOnline && currentSiteRef) { currentSiteRef.set(clean).catch(() => pushViaREST(clean)); } else { pushViaREST(clean); } }
+    async function pushViaREST(cleanData) { if(!navigator.onLine) return; try { await fetch(`${DB_BASE_URL}/sites/${currentSite}.json`, { method: 'PUT', body: JSON.stringify(cleanData) }); setOnlineStatus(true); } catch(e) {} }
 
     function saveState() { 
-      appState = fixFirebaseArrays(appState); 
-      appState._initialized = true; 
-      appState.lastUpdated = Date.now();
-      
-      try { 
-        localStorage.setItem(getStorageKey(), JSON.stringify(appState)); 
-        localStorage.setItem("GI_RECOVERY_BACKUP", JSON.stringify(appState));
-      } catch(e){}
+      appState = fixFirebaseArrays(appState); appState._initialized = true; appState.lastUpdated = Date.now();
+      try { localStorage.setItem(getStorageKey(), JSON.stringify(appState)); localStorage.setItem("GI_RECOVERY_BACKUP", JSON.stringify(appState)); } catch(e){}
       updateDashboard(); pushToCloud(appState);
     }
 
-    async function forceSyncProcess() {
-      showToast("Syncing with Cloud...");
-      saveState();
-      await pingRestCloud();
-      showToast("Cloud Sync Verified");
-    }
+    async function forceSyncProcess() { showToast("Syncing with Cloud..."); saveState(); await pingRestCloud(); showToast("Cloud Sync Verified"); }
 
     /* =========================================
-       4. UI HELPERS & NAVIGATION
+       5. UI HELPERS & NAVIGATION
        ========================================= */
     function generateMonthOptions() { 
       const select = document.getElementById("month-select"); select.innerHTML = ""; 
       const m = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; 
       const cY = new Date().getFullYear(), cM = new Date().getMonth() + 1; 
-      for (let y = 2025; y <= 2030; y++) { 
-        for (let i = 1; i <= 12; i++) { 
-          const opt = document.createElement("option"); opt.value = `${i}-${y}`; opt.textContent = `${m[i-1]} ${y}`; 
-          if (y === cY && i === cM) opt.selected = true; select.appendChild(opt); 
-        } 
-      } 
+      for (let y = 2025; y <= 2030; y++) { for (let i = 1; i <= 12; i++) { const opt = document.createElement("option"); opt.value = `${i}-${y}`; opt.textContent = `${m[i-1]} ${y}`; if (y === cY && i === cM) opt.selected = true; select.appendChild(opt); } } 
     }
     
     function populateDaySelector() { 
-      const select = document.getElementById("day-select"); select.innerHTML = ""; 
-      const t = new Date().getDate(); 
-      for (let i = 1; i <= 31; i++) { 
-        const opt = document.createElement("option"); opt.value = i; opt.textContent = `Day ${i}`; 
-        if (i === Math.min(t, 31)) opt.selected = true; select.appendChild(opt); 
-      } 
+      const select = document.getElementById("day-select"); select.innerHTML = ""; const t = new Date().getDate(); 
+      for (let i = 1; i <= 31; i++) { const opt = document.createElement("option"); opt.value = i; opt.textContent = `Day ${i}`; if (i === Math.min(t, 31)) opt.selected = true; select.appendChild(opt); } 
     }
 
     function getSelectedDateKey() { return `${document.getElementById("day-select").value}-${document.getElementById("month-select").value}`; }
-    function handleDayChange() { renderDailyView(); renderDPRView(); renderMachineryView(); }
+    function handleDayChange() { renderDailyView(); renderDPRView(); renderNotesView(); }
     function changeMonth() { renderAll(); }
     function handleSearch() { renderDailyView(); renderWorkerManagement(); }
     
@@ -893,65 +800,55 @@
       document.querySelectorAll(".tab-content, .tab-btn").forEach(e => e.classList.remove("active")); 
       document.getElementById(tId).classList.add("active"); event.currentTarget.classList.add("active");
       const dP = document.getElementById("daily-date-picker-wrap");
-      if (tId === "daily-view" || tId === "dpr-view" || tId === "machinery-view") { 
-        dP.style.display = "block"; 
-        if(tId==="daily-view") renderDailyView(); 
-        if(tId==="dpr-view") renderDPRView(); 
-        if(tId==="machinery-view") renderMachineryView();
+      if (tId === "daily-view" || tId === "dpr-view" || tId === "notes-view") { 
+        dP.style.display = "block"; if(tId==="daily-view") renderDailyView(); if(tId==="dpr-view") renderDPRView(); if(tId==="notes-view") renderNotesView();
       } else { 
-        dP.style.display = "none"; 
-        if(tId==="monthly-view") renderMonthlyTable(); 
-        if(tId==="worker-view") renderWorkerManagement(); 
-        if(tId==="slips-view") populateSlipWorkerSelect(); 
+        dP.style.display = "none"; if(tId==="monthly-view") renderMonthlyTable(); if(tId==="worker-view") renderWorkerManagement(); if(tId==="slips-view") populateSlipWorkerSelect(); 
       }
     }
     
-    function renderAll() { renderDailyView(); renderDPRView(); renderMachineryView(); renderMonthlyTable(); renderWorkerManagement(); populateSlipWorkerSelect(); updateDashboard(); }
+    function renderAll() { renderDailyView(); renderDPRView(); renderNotesView(); renderMonthlyTable(); renderWorkerManagement(); populateSlipWorkerSelect(); updateDashboard(); }
 
     /* =========================================
-       5. VOICE RECOGNITION (DICTATION)
+       6. VOICE RECOGNITION (DICTATION)
        ========================================= */
     function startSpeechRecognition(elementId) {
       if (!isUnlocked) { requireAuthClick(); return; }
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Voice typing is supported in Google Chrome, Safari, and Edge."); return; }
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-IN'; recognition.interimResults = false; 
+      recognition.lang = (currentLang === 'hi') ? 'hi-IN' : 'en-IN'; 
+      recognition.interimResults = false; 
       showToast("🎙️ Listening... Speak now.");
       
       recognition.onresult = (event) => {
-        const t = event.results[0][0].transcript; 
-        const input = document.getElementById(elementId);
+        const t = event.results[0][0].transcript; const input = document.getElementById(elementId);
         input.value = input.value ? input.value + " " + t : t;
         if(elementId === 'dpr-work-text') autoSaveDPR();
+        if(elementId === 'daily-notes-text') autoSaveNotes();
         showToast("Voice recorded successfully.");
       };
-      recognition.onerror = () => { showToast("Speech capture error or timeout."); }; 
-      recognition.start();
+      recognition.onerror = () => { showToast("Speech capture error or timeout."); }; recognition.start();
     }
 
     /* =========================================
-       6. DPR, WEATHER, & WHATSAPP
+       7. DPR, WEATHER, & WHATSAPP
        ========================================= */
     function checkWeatherCondition() {
-      const w = document.getElementById("dpr-weather-select").value;
-      const rainBox = document.getElementById("rain-settings");
-      if(w.includes('Rain')) { rainBox.style.display = "flex"; } 
-      else { rainBox.style.display = "none"; document.getElementById("dpr-rain-hours").value=""; document.getElementById("dpr-work-stopped").value="No"; }
+      const w = document.getElementById("dpr-weather-select").value; const rainBox = document.getElementById("rain-settings");
+      if(w.includes('Rain')) { rainBox.style.display = "flex"; } else { rainBox.style.display = "none"; document.getElementById("dpr-rain-hours").value=""; document.getElementById("dpr-work-stopped").value="No"; }
       autoSaveDPR();
     }
 
     function renderDPRView() {
-      const dk = getSelectedDateKey(); 
-      document.getElementById("dpr-view-title").textContent = `DPR Report: ${dk.replace(/-/g, '/')}`;
+      const dk = getSelectedDateKey(); document.getElementById("dpr-view-title").textContent = `${t('Daily Progress Report')}: ${dk.replace(/-/g, '/')}`;
       const dData = appState.dpr[dk] || { work: "", weather: "Sunny / Clear", rainHrs: "", workStop: "No", materials: [] };
-      
       const ta = document.getElementById("dpr-work-text"); ta.value = dData.work || "";
       const ws = document.getElementById("dpr-weather-select"); ws.value = dData.weather || "Sunny / Clear";
       const rh = document.getElementById("dpr-rain-hours"); rh.value = dData.rainHrs || "";
       const wsTop = document.getElementById("dpr-work-stopped"); wsTop.value = dData.workStop || "No";
       
-      checkWeatherCondition(); // Show/hide rain block
+      checkWeatherCondition(); 
 
       if (!isUnlocked) { ta.setAttribute("readonly", true); ws.setAttribute("disabled", true); rh.setAttribute("readonly", true); wsTop.setAttribute("disabled", true); } 
       else { ta.removeAttribute("readonly"); ws.removeAttribute("disabled"); rh.removeAttribute("readonly"); wsTop.removeAttribute("disabled"); }
@@ -964,15 +861,7 @@
     function addMaterialRowToDOM(item="", qty="", unit="Bag") {
       const c = document.getElementById("dpr-material-list"), d = document.createElement("div"); d.className = "material-row";
       const r = isUnlocked ? "" : "readonly onclick='requireAuthClick(this)'", ds = isUnlocked ? "" : "disabled";
-      d.innerHTML = `
-        <input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()">
-        <input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()">
-        <select class="material-unit" ${ds} onchange="autoSaveDPR()">
-          <option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option>
-          <option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Roll" ${unit==='Roll'?'selected':''}>Roll</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option>
-        </select>
-        <button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>
-      `;
+      d.innerHTML = `<input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()"><input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()"><select class="material-unit" ${ds} onchange="autoSaveDPR()"><option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option><option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Roll" ${unit==='Roll'?'selected':''}>Roll</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option></select><button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>`;
       c.appendChild(d);
     }
 
@@ -983,17 +872,8 @@
       if(!isUnlocked) return; clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         const dk = getSelectedDateKey(), mats = [];
-        document.querySelectorAll("#dpr-material-list .material-row").forEach(r => { 
-          const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; 
-          if (i.trim() !== "" || q !== "") mats.push({ item: i, qty: q, unit: u }); 
-        });
-        appState.dpr[dk] = { 
-          work: document.getElementById("dpr-work-text").value, 
-          weather: document.getElementById("dpr-weather-select").value, 
-          rainHrs: document.getElementById("dpr-rain-hours").value,
-          workStop: document.getElementById("dpr-work-stopped").value,
-          materials: mats 
-        }; 
+        document.querySelectorAll("#dpr-material-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") mats.push({ item: i, qty: q, unit: u }); });
+        appState.dpr[dk] = { work: document.getElementById("dpr-work-text").value, weather: document.getElementById("dpr-weather-select").value, rainHrs: document.getElementById("dpr-rain-hours").value, workStop: document.getElementById("dpr-work-stopped").value, materials: mats }; 
         saveState();
         const ind = document.getElementById("dpr-work-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
       }, 500);
@@ -1013,18 +893,14 @@
         });
       }
 
-      let text = `*🚧 GLOBAL INDUSTRIES - DAILY SITE REPORT*\n`;
-      text += `*Site:* ${site}\n*Date:* ${dk.replace(/-/g, '/')}\n*Weather:* ${dData.weather}\n`;
-      if(dData.weather && dData.weather.includes('Rain')) {
-         text += `  - Rain Duration: ${dData.rainHrs || '0'} hrs\n  - Work Stopped: ${dData.workStop}\n`;
-      }
+      let text = `*🚧 GLOBAL INDUSTRIES - DAILY SITE REPORT*\n*Site:* ${site}\n*Date:* ${dk.replace(/-/g, '/')}\n*Weather:* ${dData.weather}\n`;
+      if(dData.weather && dData.weather.includes('Rain')) { text += `  - Rain Duration: ${dData.rainHrs || '0'} hrs\n  - Work Stopped: ${dData.workStop}\n`; }
       text += `*Labour Present:* ${pCount} workers\n`;
       
       const trades = Object.keys(tradeCounts);
       if(trades.length > 0) { text += `_Breakup: ` + trades.map(t => `${t}: ${tradeCounts[t]}`).join(", ") + `_\n\n`; } else { text += `\n`; }
 
-      text += `*🛠️ WORK ALLOCATION:*\n${dData.work || "None"}\n\n`;
-      text += `*🧱 MATERIALS CONSUMED:*\n`;
+      text += `*🛠️ WORK ALLOCATION:*\n${dData.work || "None"}\n\n*🧱 MATERIALS CONSUMED:*\n`;
       if(!dData.materials || dData.materials.length === 0) text += `- None\n`;
       else dData.materials.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty} ${m.unit}\n`; });
       text += `\n_Submitted via Global Industries Portal_`;
@@ -1032,51 +908,18 @@
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
     }
 
-    /* =========================================
-       7. MACHINERY & ASSETS TAB
-       ========================================= */
-    function renderMachineryView() {
-      const dk = getSelectedDateKey(); 
-      document.getElementById("machinery-view-title").textContent = `Machinery & Assets: ${dk.replace(/-/g, '/')}`;
-      const mData = appState.machinery[dk] || [];
-      
-      const mc = document.getElementById("machinery-list"); mc.innerHTML = "";
-      if (mData.length === 0) addMachineRowToDOM("", "", "", "Active"); 
-      else mData.forEach(m => addMachineRowToDOM(m.item, m.hours, m.fuel, m.status));
+    /* NOTES TAB */
+    function renderNotesView() {
+      const dk = getSelectedDateKey(); document.getElementById("notes-view-title").textContent = `${t('Notes')}: ${dk.replace(/-/g, '/')}`;
+      const ta = document.getElementById("daily-notes-text"); ta.value = appState.notes[dk] || "";
+      if (!isUnlocked) ta.setAttribute("readonly", true); else ta.removeAttribute("readonly");
     }
 
-    function addMachineRowToDOM(item="", hours="", fuel="", status="Active") {
-      const c = document.getElementById("machinery-list"), d = document.createElement("div"); d.className = "material-row";
-      const r = isUnlocked ? "" : "readonly onclick='requireAuthClick(this)'", ds = isUnlocked ? "" : "disabled";
-      d.innerHTML = `
-        <input type="text" class="material-item" placeholder="Machine (e.g. JCB, Mixer)" value="${item}" ${r} oninput="autoSaveMachinery()">
-        <input type="number" class="material-qty" placeholder="Hrs" value="${hours}" ${r} oninput="autoSaveMachinery()">
-        <input type="number" class="material-qty" placeholder="Fuel (L)" value="${fuel}" ${r} oninput="autoSaveMachinery()">
-        <select class="material-unit" ${ds} onchange="autoSaveMachinery()">
-          <option value="Active" ${status==='Active'?'selected':''}>✅ Active</option>
-          <option value="Broken" ${status==='Broken'?'selected':''}>❌ Broken</option>
-          <option value="Idle" ${status==='Idle'?'selected':''}>⏸️ Idle</option>
-        </select>
-        <button class="btn-remove-row" onclick="removeMachineRow(this)" ${ds}>✖</button>
-      `;
-      c.appendChild(d);
-    }
-
-    function addMachineRow() { if(!isUnlocked) { requireAuthClick(); return; } addMachineRowToDOM(); }
-    function removeMachineRow(btn) { if(!isUnlocked) { requireAuthClick(); return; } btn.parentElement.remove(); autoSaveMachinery(); }
-
-    function autoSaveMachinery() {
+    function autoSaveNotes() {
       if(!isUnlocked) return; clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
-        const dk = getSelectedDateKey(), macs = [];
-        document.querySelectorAll("#machinery-list .material-row").forEach(r => { 
-          const i = r.querySelector(".material-item").value, h = r.querySelectorAll(".material-qty")[0].value, f = r.querySelectorAll(".material-qty")[1].value, s = r.querySelector(".material-unit").value; 
-          if (i.trim() !== "" || h !== "") macs.push({ item: i, hours: h, fuel: f, status: s }); 
-        });
-        if(!appState.machinery) appState.machinery = {};
-        appState.machinery[dk] = macs; 
-        saveState();
-        const ind = document.getElementById("machinery-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
+        appState.notes[getSelectedDateKey()] = document.getElementById("daily-notes-text").value; saveState();
+        const ind = document.getElementById("notes-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
       }, 500);
     }
 
@@ -1096,15 +939,13 @@
     function renderDailyView() {
       const sDay = parseInt(document.getElementById("day-select").value);
       const sQuery = document.getElementById("worker-search").value.toLowerCase();
-      const c = document.getElementById("daily-list-container"); 
-      c.innerHTML = "";
-      document.getElementById("daily-view-title").textContent = `Attendance: Day ${sDay}`;
+      const c = document.getElementById("daily-list-container"); c.innerHTML = "";
+      document.getElementById("daily-view-title").textContent = `${t('Daily Attendance')}: Day ${sDay}`;
       
-      let tradeCounts = {};
-      let totalP = 0;
+      let tradeCounts = {}; let totalP = 0;
 
       if(!appState.workers || appState.workers.length === 0) { 
-        c.innerHTML = `<div class="empty-state">No workers registered for this site yet. Click '+ Add Worker' above.</div>`; 
+        c.innerHTML = `<div class="empty-state">No workers registered for this site yet.</div>`; 
         document.getElementById("daily-headcount-pills").innerHTML = `<span class="trade-pill">0 workers registered</span>`;
         return; 
       }
@@ -1125,19 +966,11 @@
         const badgeHtml = getSkillBadge(w.desig);
         const avatar = `<div class="avatar" style="background:${getAvatarColor(w.name)}">${getInitials(w.name)}</div>`;
 
-        const div = document.createElement("div"); 
-        div.className = "worker-card";
+        const div = document.createElement("div"); div.className = "worker-card";
         div.innerHTML = `
           <div class="worker-card-header">
-            <div class="worker-name-group">
-              ${avatar}
-              <div>
-                <div class="worker-name">${w.name}</div>
-                <div class="worker-desig">${badgeHtml} ${w.desig}</div>
-                ${phoneHtml}
-              </div>
-            </div>
-            <div class="worker-rate">₹${w.rate}/day</div>
+            <div class="worker-name-group">${avatar}<div><div class="worker-name">${w.name}</div><div class="worker-desig">${badgeHtml} ${w.desig}</div>${phoneHtml}</div></div>
+            <div class="worker-rate">₹${w.rate}</div>
           </div>
           <div class="duty-selector">
             <div class="duty-opt ${a.duty===1?'selected-p':''}" onclick="${c1}">P (1)</div>
@@ -1145,66 +978,30 @@
             <div class="duty-opt ${a.duty===0?'selected-a':''}" onclick="${c3}">A (0)</div>
           </div>
           <div class="input-row">
-            <div class="input-box">
-              <span>Overtime (Hrs)</span>
-              <input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT('${w.id}', ${sDay}, this.value)">
-            </div>
-            <div class="input-box">
-              <span>Day Advance (₹)</span>
-              <input type="number" min="0" step="50" placeholder="0" value="${a.adv||''}" ${r} onchange="setDailyAdv('${w.id}', ${sDay}, this.value)">
-            </div>
+            <div class="input-box"><span>${t('Overtime (Hrs)')}</span><input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT('${w.id}', ${sDay}, this.value)"></div>
+            <div class="input-box"><span>${t('Day Advance (₹)')}</span><input type="number" min="0" step="50" placeholder="0" value="${a.adv||''}" ${r} onchange="setDailyAdv('${w.id}', ${sDay}, this.value)"></div>
           </div>
         `;
         c.appendChild(div);
       });
 
-      // Update Headcount Pills
       const pillContainer = document.getElementById("daily-headcount-pills");
       const trades = Object.keys(tradeCounts);
-      if(trades.length === 0) {
-        pillContainer.innerHTML = `<span class="trade-pill">0 Present Today</span>`;
-      } else {
-        pillContainer.innerHTML = `<span class="trade-pill" style="border-color:var(--success); color:var(--success);"><b>Total: ${totalP}</b></span>` +
-          trades.map(t => `<span class="trade-pill">${t}: <b>${tradeCounts[t]}</b></span>`).join("");
-      }
+      if(trades.length === 0) { pillContainer.innerHTML = `<span class="trade-pill">0 Present Today</span>`; } 
+      else { pillContainer.innerHTML = `<span class="trade-pill" style="border-color:var(--success); color:var(--success);"><b>Total: ${totalP}</b></span>` + trades.map(t => `<span class="trade-pill">${t}: <b>${tradeCounts[t]}</b></span>`).join(""); }
 
       if(!hasResults) c.innerHTML = `<div class="empty-state">No workers match your search.</div>`;
     }
 
-    function setDailyDuty(wId, d, v) { 
-      vibrateBtn();
-      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
-      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
-      appState.attendance[wId][d].duty=v; 
-      saveState(); 
-      renderDailyView(); 
-    }
-    
-    function setDailyOT(wId, d, v) { 
-      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
-      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
-      appState.attendance[wId][d].ot=parseFloat(v)||0; 
-      saveState(); 
-    }
-    
-    function setDailyAdv(wId, d, v) { 
-      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
-      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
-      appState.attendance[wId][d].adv=parseFloat(v)||0; 
-      saveState(); 
-    }
+    function setDailyDuty(wId, d, v) { vibrateBtn(); if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].duty=v; saveState(); renderDailyView(); }
+    function setDailyOT(wId, d, v) { if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].ot=parseFloat(v)||0; saveState(); }
+    function setDailyAdv(wId, d, v) { if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].adv=parseFloat(v)||0; saveState(); }
 
     function bulkMarkDaily(v) { 
       if(!isUnlocked) { requireAuthClick(); return; }
       const sDay = parseInt(document.getElementById("day-select").value); 
-      appState.workers.forEach(w => { 
-        if(!appState.attendance[w.id]) appState.attendance[w.id]={}; 
-        if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; 
-        appState.attendance[w.id][sDay].duty=v; 
-      }); 
-      saveState(); 
-      renderDailyView(); 
-      showToast("Updated daily attendance"); 
+      appState.workers.forEach(w => { if(!appState.attendance[w.id]) appState.attendance[w.id]={}; if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; appState.attendance[w.id][sDay].duty=v; }); 
+      saveState(); renderDailyView(); showToast("Updated daily attendance"); 
     }
 
     /* =========================================
@@ -1214,12 +1011,12 @@
     
     function renderMonthlyTable() {
       const h1 = document.querySelector("#monthly-table thead tr:first-child"), h2 = document.getElementById("sub-headers-row"), tb = document.getElementById("monthly-table-body"), tf = document.getElementById("monthly-table-total");
-      h1.innerHTML = `<th rowspan="2" class="sticky-col">NAME</th><th rowspan="2">TRADE</th>`; 
+      h1.innerHTML = `<th rowspan="2" class="sticky-col" data-i18n="NAME">${t('NAME')}</th><th rowspan="2" data-i18n="TRADE">${t('TRADE')}</th>`; 
       h2.innerHTML = "";
       for (let d=1; d<=31; d++) { 
         const th=document.createElement("th"); th.colSpan=2; th.textContent=d; h1.appendChild(th); h2.innerHTML+=`<th class="tier2">D</th><th class="tier2">OT</th>`; 
       }
-      h1.innerHTML += `<th colspan="2" class="summary-th">TOTAL</th><th rowspan="2" class="summary-th">RATE</th><th rowspan="2" class="summary-th">AMOUNT</th><th rowspan="2" class="summary-th">ADVANCE</th><th rowspan="2" class="summary-th">BALANCE</th>`; 
+      h1.innerHTML += `<th colspan="2" class="summary-th" data-i18n="TOTAL">${t('TOTAL')}</th><th rowspan="2" class="summary-th" data-i18n="RATE">${t('RATE')}</th><th rowspan="2" class="summary-th" data-i18n="AMOUNT">${t('AMOUNT')}</th><th rowspan="2" class="summary-th" data-i18n="ADVANCE">${t('ADVANCE')}</th><th rowspan="2" class="summary-th" data-i18n="BALANCE">${t('BALANCE')}</th>`; 
       h2.innerHTML += `<th class="tier2">DUTY</th><th class="tier2">OT</th>`;
       tb.innerHTML = "";
 
@@ -1253,14 +1050,13 @@
     }
 
     /* =========================================
-       10. WORKER MANAGEMENT (OFFICIAL UI)
+       10. WORKER MANAGEMENT
        ========================================= */
     function handleAddWorkerClick() { if (isUnlocked) openAddWorkerModal(); else requireAuthClick(); }
     
     function renderWorkerManagement() {
       const sQuery = document.getElementById("worker-search").value.toLowerCase();
-      const c = document.getElementById("worker-mgmt-body"); 
-      c.innerHTML = "";
+      const c = document.getElementById("worker-mgmt-body"); c.innerHTML = "";
       if(!appState.workers || appState.workers.length===0) { c.innerHTML=`<div class="empty-state">No workers registered yet.</div>`; return; }
       
       let hasResults = false;
@@ -1274,8 +1070,7 @@
         const act = isUnlocked ? `<div style="display:flex; gap:10px;"><button class="btn btn-outline" style="flex:1; border: 1px solid var(--border);" onclick="openEditWorkerModal('${w.id}')">✏️ Edit</button><button class="btn btn-danger" style="flex:1;" onclick="deleteWorker('${w.id}')">🗑️ Delete</button></div>` : '';
         const avatar = `<div class="avatar" style="background:${getAvatarColor(w.name)}; width: 44px; height: 44px; font-size: 16px;">${getInitials(w.name)}</div>`;
 
-        const d = document.createElement("div"); 
-        d.className = "worker-card";
+        const d = document.createElement("div"); d.className = "worker-card";
         d.innerHTML = `
           <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
             ${avatar}
@@ -1285,8 +1080,8 @@
             </div>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
-            <span style="color: var(--text-muted);">Daily Wage: <b style="color: var(--text);">₹${w.rate}</b></span>
-            <span style="color: var(--text-muted);">Total Advances: <b style="color: var(--danger);">₹${tA}</b></span>
+            <span style="color: var(--text-muted);">${t('Daily Wage')}: <b style="color: var(--text);">₹${w.rate}</b></span>
+            <span style="color: var(--text-muted);">${t('Total Advances')}: <b style="color: var(--danger);">₹${tA}</b></span>
           </div>
           ${act}
         `; 
@@ -1297,50 +1092,23 @@
     }
 
     function openAddWorkerModal() { 
-      document.getElementById("modal-worker-title").textContent="Register Worker"; 
-      document.getElementById("edit-worker-id").value=""; 
-      document.getElementById("worker-name-input").value=""; 
-      document.getElementById("worker-phone-input").value=""; 
-      document.getElementById("worker-rate-input").value=""; 
-      document.getElementById("worker-adv-input").value=""; 
-      document.getElementById("worker-modal").classList.add("active"); 
+      document.getElementById("modal-worker-title").textContent=t("Add Worker"); 
+      document.getElementById("edit-worker-id").value=""; document.getElementById("worker-name-input").value=""; document.getElementById("worker-phone-input").value=""; document.getElementById("worker-rate-input").value=""; document.getElementById("worker-adv-input").value=""; document.getElementById("worker-modal").classList.add("active"); 
     }
     
     function openEditWorkerModal(id) { 
       const w=appState.workers.find(i => String(i.id) === String(id)); if(!w)return; 
       document.getElementById("modal-worker-title").textContent="Edit Worker Profile"; 
-      document.getElementById("edit-worker-id").value=w.id; 
-      document.getElementById("worker-name-input").value=w.name; 
-      document.getElementById("worker-phone-input").value=w.phone || ""; 
-      document.getElementById("worker-desig-input").value=w.desig; 
-      document.getElementById("worker-rate-input").value=w.rate; 
-      document.getElementById("worker-adv-input").value=appState.advances[w.id]||0; 
-      document.getElementById("worker-modal").classList.add("active"); 
+      document.getElementById("edit-worker-id").value=w.id; document.getElementById("worker-name-input").value=w.name; document.getElementById("worker-phone-input").value=w.phone || ""; document.getElementById("worker-desig-input").value=w.desig; document.getElementById("worker-rate-input").value=w.rate; document.getElementById("worker-adv-input").value=appState.advances[w.id]||0; document.getElementById("worker-modal").classList.add("active"); 
     }
     
     function closeModal() { document.getElementById("worker-modal").classList.remove("active"); }
     
     function saveWorker() {
-      const id=document.getElementById("edit-worker-id").value, 
-            n=document.getElementById("worker-name-input").value.trim(), 
-            p=document.getElementById("worker-phone-input").value.trim(), 
-            d=document.getElementById("worker-desig-input").value, 
-            r=parseFloat(document.getElementById("worker-rate-input").value)||0, 
-            a=parseFloat(document.getElementById("worker-adv-input").value)||0;
-      
+      const id=document.getElementById("edit-worker-id").value, n=document.getElementById("worker-name-input").value.trim(), p=document.getElementById("worker-phone-input").value.trim(), d=document.getElementById("worker-desig-input").value, r=parseFloat(document.getElementById("worker-rate-input").value)||0, a=parseFloat(document.getElementById("worker-adv-input").value)||0;
       if (!n) { alert("Please enter worker full name"); return; }
-      if (id) { 
-        const w=appState.workers.find(i => String(i.id) === String(id)); 
-        if(w){ w.name=n; w.phone=p; w.desig=d; w.rate=r; appState.advances[w.id]=a; } 
-      } else { 
-        const nId=Date.now(); 
-        appState.workers.push({ id:nId, name:n, phone:p, desig:d, rate:r }); 
-        appState.advances[nId]=a; 
-      }
-      saveState(); 
-      closeModal(); 
-      renderAll(); 
-      showToast("Worker profile saved");
+      if (id) { const w=appState.workers.find(i => String(i.id) === String(id)); if(w){ w.name=n; w.phone=p; w.desig=d; w.rate=r; appState.advances[w.id]=a; } } else { const nId=Date.now(); appState.workers.push({ id:nId, name:n, phone:p, desig:d, rate:r }); appState.advances[nId]=a; }
+      saveState(); closeModal(); renderAll(); showToast("Worker profile saved");
     }
     
     function deleteWorker(id) { 
@@ -1348,14 +1116,12 @@
         if(appState.workers) appState.workers = appState.workers.filter(w => String(w.id) !== String(id)); 
         if(appState.attendance) delete appState.attendance[id]; 
         if(appState.advances) delete appState.advances[id]; 
-        saveState(); 
-        renderAll(); 
-        showToast("Worker removed permanently"); 
+        saveState(); renderAll(); showToast("Worker removed permanently"); 
       } 
     }
 
     /* =========================================
-       11. WAGE STATEMENT SLIPS (PRINT ALL)
+       11. WAGE STATEMENT SLIPS
        ========================================= */
     function populateSlipWorkerSelect() {
       const select = document.getElementById("slip-worker-select"); if(!select) return;
@@ -1365,27 +1131,16 @@
     }
 
     function renderWageSlip() {
-      const select = document.getElementById("slip-worker-select"); 
-      const display = document.getElementById("wage-slip-display");
-      if(!select || !select.value) { 
-        display.innerHTML = '<div class="empty-state">Select a worker above to generate their statement, or click Print ALL.</div>'; 
-        return; 
-      }
-      const wId = select.value; 
-      const w = appState.workers.find(i => String(i.id) === String(wId)); 
-      if(!w) return;
+      const select = document.getElementById("slip-worker-select"); const display = document.getElementById("wage-slip-display");
+      if(!select || !select.value) { display.innerHTML = `<div class="empty-state">Select a worker above to generate their statement.</div>`; return; }
+      const wId = select.value; const w = appState.workers.find(i => String(i.id) === String(wId)); if(!w) return;
 
       const monthLabel = document.getElementById("month-select").selectedOptions[0].text;
       const siteLabel = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
 
       let tDuty = 0, tOT = 0, tDailyAdv = 0;
-      for (let d = 1; d <= 31; d++) { 
-        const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
-        tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); 
-      }
-      const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); 
-      const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; 
-      const netPayable = grossAmt - totalAdv;
+      for (let d = 1; d <= 31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); }
+      const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; const netPayable = grossAmt - totalAdv;
 
       display.innerHTML = `
         <div class="slip-box" id="slip-print-area">
@@ -1418,47 +1173,22 @@
       let allSlipsHTML = '';
       appState.workers.forEach(w => {
         let tDuty = 0, tOT = 0, tDailyAdv = 0;
-        for (let d = 1; d <= 31; d++) { 
-          const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
-          tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); 
-        }
-        const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); 
-        const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; 
-        const netPayable = grossAmt - totalAdv;
+        for (let d = 1; d <= 31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); }
+        const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; const netPayable = grossAmt - totalAdv;
 
-        allSlipsHTML += `
-          <div class="slip-box">
-            <div style="text-align:center; margin-bottom:12px; border-bottom:2px solid #1E3A8A; padding-bottom:8px;">
-              <h3 style="color:#1E3A8A;">GLOBAL INDUSTRIES</h3><p style="font-size:11px; color:#64748B;">Labour Settlement Slip | ${monthLabel}</p>
-            </div>
-            <div class="slip-row"><span>Site:</span><b>${siteLabel}</b></div>
-            <div class="slip-row"><span>Worker Name:</span><b>${w.name}</b></div>
-            <div class="slip-row"><span>Trade / Contact:</span><span>${w.desig} | ${w.phone || 'N/A'}</span></div>
-            <div class="slip-row"><span>Daily Wage Rate:</span><span>₹${w.rate}/day</span></div>
-            <div class="slip-row"><span>Days Present:</span><span>${tDuty.toFixed(1)} days</span></div>
-            <div class="slip-row"><span>Overtime:</span><span>${tOT.toFixed(1)} hrs</span></div>
-            <div class="slip-row"><span>Gross Earned:</span><b>₹${grossAmt.toFixed(0)}</b></div>
-            <div class="slip-row" style="color:#DC2626;"><span>Advances Deducted:</span><b>- ₹${totalAdv.toFixed(0)}</b></div>
-            <div class="slip-total"><span>NET BALANCE PAYABLE:</span><span>₹${netPayable.toFixed(0)}</span></div>
-          </div>
-        `;
+        allSlipsHTML += `<div class="slip-box"><div style="text-align:center; margin-bottom:12px; border-bottom:2px solid #1E3A8A; padding-bottom:8px;"><h3 style="color:#1E3A8A;">GLOBAL INDUSTRIES</h3><p style="font-size:11px; color:#64748B;">Labour Settlement Slip | ${monthLabel}</p></div><div class="slip-row"><span>Site:</span><b>${siteLabel}</b></div><div class="slip-row"><span>Worker Name:</span><b>${w.name}</b></div><div class="slip-row"><span>Trade / Contact:</span><span>${w.desig} | ${w.phone || 'N/A'}</span></div><div class="slip-row"><span>Daily Wage Rate:</span><span>₹${w.rate}/day</span></div><div class="slip-row"><span>Days Present:</span><span>${tDuty.toFixed(1)} days</span></div><div class="slip-row"><span>Overtime:</span><span>${tOT.toFixed(1)} hrs</span></div><div class="slip-row"><span>Gross Earned:</span><b>₹${grossAmt.toFixed(0)}</b></div><div class="slip-row" style="color:#DC2626;"><span>Advances Deducted:</span><b>- ₹${totalAdv.toFixed(0)}</b></div><div class="slip-total"><span>NET BALANCE PAYABLE:</span><span>₹${netPayable.toFixed(0)}</span></div></div>`;
       });
       display.innerHTML = allSlipsHTML + `<button class="btn btn-primary" onclick="window.print()" style="margin-top:20px;">🖨️ Print Document</button>`;
     }
 
     function shareSlipWhatsApp(name, desig, month, duty, ot, rate, gross, adv, net) {
-      let msg = `*🧾 GLOBAL INDUSTRIES - WAGE STATEMENT*\n`;
-      msg += `*Worker:* ${name} (${desig})\n*Period:* ${month}\n\n`;
-      msg += `- Days Worked: ${duty} days\n- Overtime: ${ot} hrs\n- Daily Wage: ₹${rate}/day\n`;
-      msg += `- Gross Wages: ₹${gross}\n- Advance Deducted: ₹${adv}\n`;
-      msg += `*💰 NET BALANCE PAYABLE: ₹${net}*\n\n_Generated via Global Industries Portal_`;
+      let msg = `*🧾 GLOBAL INDUSTRIES - WAGE STATEMENT*\n*Worker:* ${name} (${desig})\n*Period:* ${month}\n\n- Days Worked: ${duty} days\n- Overtime: ${ot} hrs\n- Daily Wage: ₹${rate}/day\n- Gross Wages: ₹${gross}\n- Advance Deducted: ₹${adv}\n*💰 NET BALANCE PAYABLE: ₹${net}*\n\n_Generated via Global Industries Portal_`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 
     /* DASHBOARD CALCULATIONS */
     function updateDashboard() {
-      const wC = appState.workers ? appState.workers.length : 0; 
-      document.getElementById("stat-total-workers").textContent = wC;
+      const wC = appState.workers ? appState.workers.length : 0; document.getElementById("stat-total-workers").textContent = wC;
       const sD = parseInt(document.getElementById("day-select").value) || 1; 
       let pT=0, tO=0, tN=0;
       
@@ -1473,50 +1203,83 @@
         }); 
       }
 
-      document.getElementById("lbl-present-today").textContent = `Day ${sD} Present`; 
+      document.getElementById("lbl-present-today").textContent = t('Today Present'); 
       document.getElementById("stat-present-today").textContent = `${pT} / ${wC}`; 
       document.getElementById("stat-total-ot").textContent = `${tO.toFixed(1)} hrs`; 
       document.getElementById("stat-total-balance").textContent = `₹${tN.toLocaleString("en-IN", {maximumFractionDigits:0})}`;
     }
 
+    /* OFFICIAL PDF REPORT GENERATION */
+    function generateOfficialPDF() {
+        if(!appState.workers || appState.workers.length === 0) { alert("No workers to generate report."); return; }
+        showToast("Generating Official PDF...");
+
+        const monthLabel = document.getElementById("month-select").selectedOptions[0].text;
+        const siteLabel = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
+
+        const pdfDiv = document.createElement("div");
+        pdfDiv.style.padding = "20px"; pdfDiv.style.fontFamily = "Arial, sans-serif"; pdfDiv.style.color = "#000"; pdfDiv.style.width = "1100px"; 
+
+        let tableHTML = `<table style="width:100%; border-collapse:collapse; margin-top:20px; font-size:11px;"><thead><tr style="background-color:#102A43; color:white;"><th style="border:1px solid #000; padding:8px;">S.No</th><th style="border:1px solid #000; padding:8px;">Worker Name</th><th style="border:1px solid #000; padding:8px;">Trade</th><th style="border:1px solid #000; padding:8px;">Duty Days</th><th style="border:1px solid #000; padding:8px;">OT (Hrs)</th><th style="border:1px solid #000; padding:8px;">Rate (₹)</th><th style="border:1px solid #000; padding:8px;">Gross (₹)</th><th style="border:1px solid #000; padding:8px;">Advance (₹)</th><th style="border:1px solid #000; padding:8px;">Net Balance (₹)</th></tr></thead><tbody>`;
+
+        let gDuty=0, gOT=0, gAmt=0, gAdv=0, gBal=0;
+        appState.workers.forEach((w, i) => {
+          let tDuty=0, tOT=0, tDailyAdv=0;
+          for (let d=1; d<=31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty+=(r.duty||0); tOT+=(r.ot||0); tDailyAdv+=(r.adv||0); }
+          const rt=w.rate||0, amt=(tDuty*rt)+(tOT*(rt/8)), tAd=(appState.advances[w.id]||0)+tDailyAdv, bl=amt-tAd;
+          gDuty+=tDuty; gOT+=tOT; gAmt+=amt; gAdv+=tAd; gBal+=bl;
+
+          tableHTML += `<tr><td style="border:1px solid #000; padding:6px; text-align:center;">${i+1}</td><td style="border:1px solid #000; padding:6px;">${w.name}</td><td style="border:1px solid #000; padding:6px;">${w.desig}</td><td style="border:1px solid #000; padding:6px; text-align:center;">${tDuty.toFixed(1)}</td><td style="border:1px solid #000; padding:6px; text-align:center;">${tOT.toFixed(1)}</td><td style="border:1px solid #000; padding:6px; text-align:right;">${rt}</td><td style="border:1px solid #000; padding:6px; text-align:right;">${amt.toFixed(0)}</td><td style="border:1px solid #000; padding:6px; text-align:right;">${tAd.toFixed(0)}</td><td style="border:1px solid #000; padding:6px; text-align:right; font-weight:bold;">${bl.toFixed(0)}</td></tr>`;
+        });
+
+        tableHTML += `<tr style="background-color:#E2E8F0; font-weight:bold; font-size:12px;"><td colspan="3" style="border:1px solid #000; padding:8px; text-align:center;">GRAND TOTAL</td><td style="border:1px solid #000; padding:8px; text-align:center;">${gDuty.toFixed(1)}</td><td style="border:1px solid #000; padding:8px; text-align:center;">${gOT.toFixed(1)}</td><td style="border:1px solid #000; padding:8px;"></td><td style="border:1px solid #000; padding:8px; text-align:right;">₹${gAmt.toFixed(0)}</td><td style="border:1px solid #000; padding:8px; text-align:right;">₹${gAdv.toFixed(0)}</td><td style="border:1px solid #000; padding:8px; text-align:right;">₹${gBal.toFixed(0)}</td></tr></tbody></table>`;
+
+        pdfDiv.innerHTML = `
+          <div style="text-align:center; margin-bottom:20px; border-bottom:3px solid #8B5A2B; padding-bottom:10px;">
+            <h1 style="color:#4CAF50; margin:0; font-size:32px; font-family: 'Brush Script MT', cursive;">Global Industries</h1>
+            <p style="margin:6px 0 0 0; font-size:13px; font-weight:bold;">Regd. Office : Thokrichak, P.O. Garahra, Via Barauni, Dist. Begusarai, Bihar- 851 126.</p>
+          </div>
+          <div style="text-align:center; margin-bottom:15px;">
+            <h2 style="margin:0; font-size:18px; color:#102A43; text-transform:uppercase;">LABOUR PAYMENT & ATTENDANCE REGISTER</h2>
+            <h3 style="margin:6px 0 0 0; font-size:14px; color:#64748B;">Site: ${siteLabel} | Month: ${monthLabel}</h3>
+          </div>
+          ${tableHTML}
+          <div style="display:flex; justify-content:space-between; margin-top:60px; padding:0 30px;">
+            <div style="text-align:center;"><div style="border-bottom:1px solid #000; width:160px; margin-bottom:5px;"></div><b>Prepared By</b></div>
+            <div style="text-align:center;"><div style="border-bottom:1px solid #000; width:160px; margin-bottom:5px;"></div><b>Site Engineer / Supervisor</b></div>
+            <div style="text-align:center;"><div style="border-bottom:1px solid #000; width:160px; margin-bottom:5px;"></div><b>Authorised Signatory</b></div>
+          </div>
+        `;
+
+        document.getElementById('pdf-export-container').innerHTML = '';
+        document.getElementById('pdf-export-container').appendChild(pdfDiv);
+        document.getElementById('pdf-export-container').style.display = 'block';
+
+        const opt = {
+          margin:       0.4,
+          filename:     `GI_MusterRoll_${siteLabel.replace(/\s+/g,'_')}_${monthLabel}.pdf`,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true },
+          jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+        };
+
+        html2pdf().set(opt).from(pdfDiv).save().then(() => {
+          document.getElementById('pdf-export-container').style.display = 'none';
+          showToast("PDF Downloaded successfully!");
+        });
+    }
+
     /* BACKUP & CSV EXPORT */
-    function exportDatabase() { 
-      if(!isUnlocked) { requireAuthClick(); return;} 
-      const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); 
-      const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `GI_DB_Backup_${currentSite}.json`; a.click(); showToast("Backup saved to device"); 
-    }
-    
-    function importData(e) { 
-      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); 
-      r.onload = function(ev) { 
-        try { 
-          const i = JSON.parse(ev.target.result); 
-          if (i.appData && i.appData.workers) { 
-            appState = fixFirebaseArrays(i.appData); 
-            saveState(); renderAll(); showToast("Database restored"); 
-          } else alert("Invalid backup file."); 
-        } catch (err) { alert("Error reading backup file."); } 
-        e.target.value = ''; 
-      }; r.readAsText(f); 
-    }
+    function exportDatabase() { if(!isUnlocked) return; const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `GI_DB_Backup_${currentSite}.json`; a.click(); showToast("Backup saved to device"); }
+    function triggerRestore() { if(!isUnlocked) return; if(confirm("Overwrite all cloud data for this site?")) document.getElementById("restore-file-input").click(); }
+    function importData(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { try { const i = JSON.parse(ev.target.result); if (i.appData && i.appData.workers) { appState = fixFirebaseArrays(i.appData); saveState(); renderAll(); showToast("Database restored"); } else alert("Invalid backup file."); } catch (err) { alert("Error reading backup file."); } e.target.value = ''; }; r.readAsText(f); }
 
     function exportToCSV() {
       const mL=document.getElementById("month-select").selectedOptions[0].text, sL=document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text.toUpperCase();
       let csv = `GLOBAL INDUSTRIES - ${sL}\nLABOUR ATTENDANCE REGISTER - ${mL}\n\n`;
       let h1=["NAME", "PHONE", "TRADE"]; for(let d=1;d<=31;d++) h1.push(d,""); h1.push("TOTAL","","RATE","AMOUNT","ADVANCE","BALANCE"); csv += h1.join(",") + "\n";
       let h2=["","",""]; for(let d=1;d<=31;d++) h2.push("DUTY","OT"); h2.push("DUTY","OT","","","",""); csv += h2.join(",") + "\n";
-      
-      if(appState.workers) { 
-        appState.workers.forEach(w => { 
-          let row=[`"${w.name}"`, `"${w.phone||''}"`, `"${w.desig}"`], tD=0, tO=0, tA=0; 
-          for (let d=1; d<=31; d++) { 
-            const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
-            tD+=(r.duty||0); tO+=(r.ot||0); tA+=(r.adv||0); row.push(r.duty||0, r.ot||0); 
-          } 
-          const r=w.rate||0, amt=(tD*r)+(tO*(r/8)), fA=(appState.advances[w.id]||0)+tA, bal=amt-fA; 
-          row.push(tD, tO, r, amt.toFixed(0), fA.toFixed(0), bal.toFixed(0)); csv += row.join(",") + "\n"; 
-        }); 
-      }
+      if(appState.workers) { appState.workers.forEach(w => { let row=[`"${w.name}"`, `"${w.phone||''}"`, `"${w.desig}"`], tD=0, tO=0, tA=0; for (let d=1; d<=31; d++) { const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tD+=(r.duty||0); tO+=(r.ot||0); tA+=(r.adv||0); row.push(r.duty||0, r.ot||0); } const r=w.rate||0, amt=(tD*r)+(tO*(r/8)), fA=(appState.advances[w.id]||0)+tA, bal=amt-fA; row.push(tD, tO, r, amt.toFixed(0), fA.toFixed(0), bal.toFixed(0)); csv += row.join(",") + "\n"; }); }
       const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8;"})); a.download=`GI_Attendance_${sL.replace(/\s+/g,'_')}.csv`; a.click(); 
     }
 
