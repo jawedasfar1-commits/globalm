@@ -11,169 +11,158 @@
 
   <style>
     /* =========================================
-       THEMES & CORE VARIABLES
+       THEMES, VARIABLES & ANIMATIONS
        ========================================= */
     :root {
-      --primary: #102A43; 
-      --primary-light: #1F4E78; 
-      --secondary: #2D68C4;
-      --accent: #FFD700; 
-      --bg: #F4F7FB; 
-      --card-bg: #FFFFFF;
-      --text: #0F172A; 
-      --text-muted: #64748B; 
-      --border: #E2E8F0;
-      --success: #10B981; 
-      --warning: #F59E0B; 
-      --danger: #EF4444;
+      --primary: #102A43; --primary-light: #1F4E78; --secondary: #2D68C4;
+      --accent: #FFD700; --bg: #F0F4F8; --card-bg: #FFFFFF;
+      --text: #0F172A; --text-muted: #64748B; --border: #CBD5E1;
+      --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
       --staff-color: #8B5CF6;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-      --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 16px rgba(0,0,0,0.08);
       --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.15);
-      --radius: 12px; 
-      --radius-lg: 20px;
+      --radius: 12px; --radius-lg: 20px;
     }
 
     [data-theme="dark"] {
       --primary: #94A3B8; --primary-light: #334155; --secondary: #3B82F6;
-      --accent: #F59E0B; --bg: #0F172A; --card-bg: #1E293B;
-      --text: #F8FAFC; --text-muted: #94A3B8; --border: #334155;
+      --bg: #0F172A; --card-bg: #1E293B; --text: #F8FAFC; --text-muted: #94A3B8; --border: #334155;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3); --shadow-md: 0 8px 16px rgba(0,0,0,0.4);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: 0.3s; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: background-color 0.3s ease; }
+
+    @keyframes popIn { 0% { transform: scale(0.95) translateY(10px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    .animate-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .animate-fade { animation: fadeIn 0.3s ease forwards; }
 
     /* =========================================
-       MODALS & OVERLAYS
+       MODALS, OVERLAYS & CONTEXT MENU
        ========================================= */
-    .overlay { 
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-      background: rgba(15, 23, 42, 0.8); z-index: 9999; 
-      display: none; align-items: center; justify-content: center; 
-      padding: 20px; backdrop-filter: blur(8px); 
-    }
-    
-    .modal-box-center { 
-      background: var(--card-bg); padding: 32px 24px; 
-      border-radius: var(--radius-lg); width: 100%; max-width: 420px; 
-      text-align: center; box-shadow: var(--shadow-lg); position: relative; 
-    }
-    
-    .close-btn { 
-      position: absolute; top: 16px; right: 20px; background: none; 
-      border: none; font-size: 28px; color: var(--text-muted); 
-      cursor: pointer; transition: 0.2s; line-height: 1;
-    }
-    .close-btn:hover { color: var(--danger); }
-    
-    .modal-box-center h2 { color: var(--primary); margin-bottom: 10px; font-size: 24px; font-weight: 900;}
-    .modal-box-center p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; font-weight: 500;}
-    
-    .pin-input { 
-      width: 100%; padding: 18px; font-size: 28px; text-align: center; 
-      letter-spacing: 16px; border: 2px solid var(--border); 
-      border-radius: var(--radius); margin-bottom: 20px; 
-      background: var(--bg); color: var(--primary); outline: none; 
-      font-weight: 900; transition: 0.3s; 
-    }
-    .pin-input:focus { border-color: var(--secondary); }
+    .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.8); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
+    .modal-box { background: var(--card-bg); padding: 32px 24px; border-radius: var(--radius-lg); width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); position: relative; }
+    .close-btn { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 28px; color: var(--text-muted); cursor: pointer; transition: 0.2s; line-height: 1; }
+    .close-btn:hover { color: var(--danger); transform: rotate(90deg); }
+    .modal-box h2 { color: var(--primary); margin-bottom: 10px; font-size: 22px; font-weight: 900;}
+    .modal-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; font-weight: 500;}
+    .pin-input { width: 100%; padding: 18px; font-size: 28px; text-align: center; letter-spacing: 16px; border: 2px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; background: var(--bg); color: var(--primary); outline: none; font-weight: 900; transition: 0.3s; }
+    .pin-input:focus { border-color: var(--secondary); box-shadow: 0 0 0 4px rgba(45,104,196,0.15); }
+
+    /* Right-Click Context Menu */
+    .context-menu { position: fixed; background: var(--card-bg); border: 1px solid var(--border); box-shadow: var(--shadow-md); border-radius: 8px; z-index: 10000; display: none; overflow: hidden; min-width: 150px; animation: fadeIn 0.15s ease; }
+    .context-menu ul { list-style: none; margin: 0; padding: 0; }
+    .context-menu li { padding: 12px 16px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+    .context-menu li:hover { background: var(--bg); color: var(--secondary); }
+    .context-menu li.danger:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
     /* =========================================
        HEADER
        ========================================= */
-    header { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; }
+    header { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
     .letterhead-container { padding: 16px 24px; border-bottom: 4px solid #8B5A2B; display: flex; flex-direction: column; gap: 8px; }
-    .letterhead-top { display: flex; align-items: center; justify-content: flex-start; gap: 16px; }
+    .letterhead-top { display: flex; align-items: center; gap: 16px; }
     .logo-container { width: 55px; height: 55px; flex-shrink: 0; }
-    .title-container { display: flex; align-items: baseline; gap: 8px; }
-    .title-global { font-family: "Brush Script MT", "Comic Sans MS", cursive; color: #4CAF50; font-size: 42px; line-height: 1; text-shadow: 1px 1px 0px rgba(0,0,0,0.05); }
-    .title-industries { font-family: "Times New Roman", Times, serif; color: #6da35e; font-size: 22px; font-weight: 600;}
-    .regd-office { font-size: 13px; color: var(--text); line-height: 1.4; opacity: 0.8; font-weight: 600; }
+    .title-global { font-family: "Brush Script MT", cursive; color: #4CAF50; font-size: 42px; line-height: 1; text-shadow: 1px 1px 0px rgba(0,0,0,0.05); }
+    .title-industries { font-family: "Times New Roman", serif; color: #6da35e; font-size: 22px; font-weight: 600;}
+    .regd-office { font-size: 13px; color: var(--text); opacity: 0.8; font-weight: 600; }
 
     /* =========================================
-       APP CONTROL BAR
+       APP CONTROL BAR & SUBGROUPS
        ========================================= */
-    .app-control-bar { 
-      background: linear-gradient(135deg, #0B1B2B 0%, #152E4D 100%); 
-      padding: 12px 24px; display: flex; justify-content: space-between; 
-      align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--accent);
-    }
+    .app-control-bar { background: linear-gradient(135deg, #0B1B2B 0%, #152E4D 100%); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: relative; border-bottom: 1px solid rgba(255,255,255,0.1);}
     [data-theme="dark"] .app-control-bar { background: linear-gradient(135deg, #020617 0%, #0F172A 100%); }
     
     .site-selector-wrap { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px; }
-    .site-label { color: #FFD700; font-weight: 800; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; }
-    
-    #site-select { 
-      background: #FFFFFF; border: none; padding: 10px 36px 10px 16px; 
-      border-radius: 20px; font-size: 14px; font-weight: 800; 
-      color: #102A43; width: 100%; max-width: 280px; cursor: pointer; outline: none; 
-    }
+    .site-label { color: #FFD700; font-weight: 800; font-size: 14px; letter-spacing: 0.5px;}
+    #site-select { background: #FFFFFF; border: none; padding: 10px 36px 10px 16px; border-radius: 20px; font-size: 14px; font-weight: 800; color: #102A43; width: 100%; max-width: 280px; cursor: pointer; outline: none; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23102A43%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 14px top 50%; background-size: 12px auto; }
     
     .status-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     
-    .user-profile-badge { 
-      background: rgba(255,255,255,0.15); color: #FFF; font-size: 14px; 
-      font-weight: 700; padding: 6px 16px; border-radius: 20px; 
-      display: flex; align-items: center; gap: 8px; cursor: pointer; 
-      border: 1px solid rgba(255,255,255,0.1); 
-    }
+    /* Expandable Audit Log / Presence */
+    .profile-wrap { position: relative; }
+    .user-profile-badge { background: rgba(255,255,255,0.15); color: #FFF; font-size: 14px; font-weight: 700; padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+    .user-profile-badge:hover { background: rgba(255,255,255,0.25); transform: scale(1.02); }
     
-    .btn-icon { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 34px; height: 34px; color: white; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;}
+    .audit-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 340px; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--border); display: none; flex-direction: column; overflow: hidden; z-index: 200; animation: slideDown 0.2s ease-out; }
+    .audit-header { background: var(--bg); padding: 12px 16px; font-size: 13px; font-weight: 800; color: var(--primary); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;}
+    .audit-section { padding: 12px; border-bottom: 1px solid var(--border); max-height: 150px; overflow-y: auto;}
+    .audit-section-title { font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px;}
+    .online-user-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.1); color: var(--success); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; margin: 0 4px 4px 0;}
+    .audit-log-area { max-height: 250px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--card-bg);}
+    .audit-item { font-size: 13px; color: var(--text); padding: 10px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--secondary);}
+    .audit-item span { font-size: 11px; color: var(--text-muted); font-weight: 600; display: block; margin-top: 4px;}
     
-    #auth-status-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 8px 16px; color: white; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .btn-icon { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 36px; height: 36px; color: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+    .btn-icon:hover { background: rgba(255,255,255,0.4); transform: scale(1.05); }
     
-    .online-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; background: rgba(0,0,0,0.3); padding: 6px 12px; border-radius: 20px; color: #FFF; }
-    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #F59E0B; }
-    .status-dot.online { background: #10B981; box-shadow: 0 0 10px #10B981; }
-    .status-dot.offline { background: #EF4444; box-shadow: 0 0 10px #EF4444;}
+    #auth-status-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 8px 16px; color: white; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; }
+    
+    /* Subgroup Bar */
+    .subgroup-bar { background: var(--primary); padding: 10px 24px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; border-bottom: 3px solid var(--accent); }
+    .subgroup-bar::-webkit-scrollbar { display: none; }
+    .subgroup-pill { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+    .subgroup-pill:hover { background: rgba(255,255,255,0.2); color: white;}
+    .subgroup-pill.active { background: var(--accent); color: var(--primary); border-color: var(--accent); box-shadow: 0 2px 8px rgba(255,215,0,0.3); }
+    .subgroup-pill-add { background: transparent; border: 1px dashed rgba(255,255,255,0.5); color: white; }
 
     /* =========================================
-       DASHBOARD & CARDS
+       DASHBOARD & TABS
        ========================================= */
     .container { width: 100%; padding: 20px; flex: 1; max-width: 1600px; margin: 0 auto; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border-left: 6px solid var(--secondary); display: flex; flex-direction: column; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border-left: 6px solid var(--secondary); display: flex; flex-direction: column; transition: 0.3s;}
+    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
     .stat-card.accent { border-left-color: var(--accent); }
     .stat-card.success { border-left-color: var(--success); }
     .stat-card.warning { border-left-color: var(--warning); }
-    .stat-label { font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px;}
-    .stat-value { font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: -0.5px;}
+    .stat-label { font-size: 12px; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px;}
+    .stat-value { font-size: 26px; font-weight: 900; color: var(--primary); }
 
-    /* =========================================
-       NAVIGATION TABS & TOOLBAR
-       ========================================= */
     .nav-tabs { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 3px solid var(--border); padding-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
     .nav-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { background: var(--card-bg); border: 2px solid transparent; padding: 12px 20px; font-size: 15px; font-weight: 800; color: var(--text-muted); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: var(--shadow-sm);}
-    .tab-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); box-shadow: 0 8px 16px rgba(45, 104, 196, 0.3);}
+    .tab-btn { background: var(--card-bg); border: 2px solid transparent; padding: 12px 20px; font-size: 15px; font-weight: 800; color: var(--text-muted); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: 0.3s; box-shadow: var(--shadow-sm);}
+    .tab-btn:hover { border-color: var(--border); color: var(--primary); }
+    .tab-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); box-shadow: 0 6px 12px rgba(45, 104, 196, 0.3); transform: translateY(-2px);}
 
+    /* =========================================
+       TOOLBAR & INPUTS
+       ========================================= */
     .toolbar { background: var(--card-bg); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; border: 1px solid var(--border);}
     .toolbar-group { display: flex; flex-direction: column; gap: 14px; width: 100%; }
     .toolbar-group-row { display: flex; gap: 14px; width: 100%; flex-wrap: wrap; }
     
-    select, input, textarea { padding: 14px 16px; font-size: 15px; border-radius: var(--radius); border: 2px solid var(--border); outline: none; width: 100%; background: var(--bg); color: var(--text); font-weight: 600;}
-    input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: var(--card-bg); }
+    select, input, textarea { padding: 14px 16px; font-size: 15px; border-radius: var(--radius); border: 2px solid var(--border); outline: none; width: 100%; background: var(--bg); color: var(--text); transition: 0.3s; font-weight: 600;}
+    input:focus, select:focus, textarea:focus { border-color: var(--secondary); background: var(--card-bg); box-shadow: 0 0 0 4px rgba(45,104,196,0.1); }
     
     .search-bar { position: relative; width: 100%; }
     .search-bar input { padding-left: 44px; background-color: var(--card-bg); border: 1px solid var(--border); }
-    .search-icon { position: absolute; left: 16px; top: 18px; font-size: 18px; color: var(--text-muted); }
+    .search-icon { position: absolute; left: 16px; top: 16px; font-size: 18px; color: var(--text-muted); }
 
-    .btn { cursor: pointer; font-weight: 800; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; font-size: 15px; border-radius: var(--radius); width: 100%; box-shadow: var(--shadow-sm);}
+    .btn { cursor: pointer; font-weight: 800; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; font-size: 15px; border-radius: var(--radius); width: 100%; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--shadow-sm);}
+    .btn:active { transform: scale(0.96); box-shadow: none;}
     .btn-primary { background: var(--secondary); color: white; }
+    .btn-primary:hover { background: var(--primary-light); box-shadow: 0 6px 12px rgba(45,104,196,0.25); }
     .btn-success { background: var(--success); color: white; }
     .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); box-shadow: none;}
+    .btn-outline:hover { background: var(--bg); }
     .btn-danger { background: var(--danger); color: white; }
-    .btn-whatsapp { background: #25D366; color: white; }
     .btn-small { padding: 10px 16px; font-size: 13px; width: auto; }
 
     /* =========================================
-       VIEWS & CONTENT
+       WORKER CARDS (SMOOTH UI)
        ========================================= */
     .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     
     .worker-daily-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; }
-    .worker-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; position: relative; overflow:hidden;}
+    .worker-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; transition: 0.3s; position: relative; overflow:hidden; animation: slideDown 0.3s ease-out;}
+    .worker-card:hover { border-color: var(--secondary); box-shadow: var(--shadow-md); }
     
     .worker-card.staff-card { border-left: 6px solid var(--staff-color); background: linear-gradient(to right, rgba(139, 92, 246, 0.05), transparent); }
     
@@ -192,11 +181,12 @@
     .worker-rate { font-size: 15px; font-weight: 900; color: var(--secondary); text-align: right; background: var(--bg); padding: 8px 12px; border-radius: 8px;}
 
     .duty-selector { display: flex; gap: 10px; margin-bottom: 4px;}
-    .duty-opt { flex: 1; text-align: center; padding: 14px 6px; font-size: 15px; font-weight: 800; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); cursor: pointer; color: var(--text);}
+    .duty-opt { flex: 1; text-align: center; padding: 14px 6px; font-size: 15px; font-weight: 800; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text);}
+    .duty-opt:active { transform: scale(0.92); }
     .duty-opt.selected-p { background: #DCFCE7; color: #166534; border-color: #86EFAC; box-shadow: 0 4px 10px rgba(22, 101, 52, 0.15);}
     .duty-opt.selected-h { background: #FEF9C3; color: #854D0E; border-color: #FDE047; box-shadow: 0 4px 10px rgba(133, 77, 14, 0.15);}
     .duty-opt.selected-a { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; box-shadow: 0 4px 10px rgba(153, 27, 27, 0.15);}
-    .duty-opt.locked { opacity: 0.5; cursor: not-allowed; border-style: dashed; }
+    .duty-opt.locked { opacity: 0.5; cursor: not-allowed; border-style: dashed; filter: grayscale(50%); }
 
     .input-row { display: flex; gap: 12px; }
     .input-box { flex: 1; display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 2px solid var(--border); padding: 8px 14px; border-radius: 10px; }
@@ -204,30 +194,31 @@
     .input-box input { width: 75px; padding: 10px; text-align: center; font-weight: 900; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; font-size: 15px; color: var(--text); }
     .input-box input:disabled { background: transparent; border: none; padding:0; color: var(--text-muted);}
 
-    /* DPR SECTIONS */
-    .dpr-section { background: var(--card-bg); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px; }
+    /* =========================================
+       DPR SECTIONS & MATERIALS
+       ========================================= */
+    .dpr-section { background: var(--card-bg); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px; transition: 0.3s; animation: slideDown 0.3s ease-out;}
     .dpr-section h4 { color: var(--primary); margin-bottom: 16px; font-size: 17px; display: flex; justify-content: space-between; align-items: center; font-weight: 900; border-bottom: 2px solid var(--border); padding-bottom: 10px;}
     .dpr-textarea { height: 120px; resize: none; margin-bottom: 10px; }
     
     .weather-row { display: flex; gap: 16px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; background: var(--bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border);}
     .weather-row label { font-size: 14px; font-weight: 800; color: var(--primary); white-space: nowrap; }
-    #rain-settings { display: none; gap: 16px; margin-top: 16px; padding: 16px; background: rgba(59, 130, 246, 0.08); border-radius: var(--radius); border: 1px solid #BFDBFE; }
+    #rain-settings { display: none; gap: 16px; margin-top: 16px; padding: 16px; background: rgba(59, 130, 246, 0.08); border-radius: var(--radius); border: 1px solid #BFDBFE; animation: slideDown 0.3s ease-out;}
 
-    .material-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border);}
+    .material-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); animation: popIn 0.2s ease-out;}
     .material-item { flex: 2; border: none; background: var(--card-bg);}
     .material-qty { flex: 1; text-align: center; border: none; background: var(--card-bg);}
     .material-unit { flex: 1; border: none; background: var(--card-bg);}
-    .btn-remove-row { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 14px; font-weight: bold; cursor: pointer;}
-    
-    .save-status-indicator { font-size: 12px; font-weight: 800; color: var(--success); opacity: 0; display: flex; align-items: center; gap:4px; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 20px;}
-    .save-status-indicator.visible { opacity: 1; transition: 0.3s; }
+    .btn-remove-row { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 14px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+    .btn-remove-row:hover { background: var(--danger); color: white; }
+
+    .save-status-indicator { font-size: 12px; font-weight: 800; color: var(--success); opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; gap:4px; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 20px;}
+    .save-status-indicator.visible { opacity: 1; }
     .empty-state { text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: var(--radius-lg); color: var(--text-muted); border: 2px dashed var(--border); font-weight: 700; font-size: 16px;}
 
-    .trade-pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .trade-pill { font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); color: var(--text); }
-    .trade-pill b { color: var(--secondary); font-weight: 900;}
-
-    /* MONTHLY TABLE */
+    /* =========================================
+       MONTHLY REGISTER TABLE
+       ========================================= */
     .table-container { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow-x: auto; border: 1px solid var(--border); }
     .table-container.expanded { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: var(--bg); border-radius: 0; padding: 16px; padding-top: 80px; }
     .close-expand-btn { display: none; position: fixed; top: 16px; right: 16px; z-index: 100000; background: var(--danger); color: white; border: none; padding: 14px 24px; border-radius: 10px; font-weight: 800; box-shadow: var(--shadow); cursor: pointer; }
@@ -245,28 +236,24 @@
     .tbl-input[readonly] { background: transparent; border-color: transparent; cursor: pointer; color: var(--text-muted); }
     .total-row td { background: var(--primary-light) !important; color: white !important; font-weight: 900; border-top: 4px solid var(--primary); font-size: 15px;}
 
-    /* WAGE SLIP */
-    .slip-box { background: white; color: #0F172A; padding: 30px; border-radius: 16px; border: 2px solid #E2E8F0; text-align: left; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); page-break-inside: avoid;}
-    .slip-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #CBD5E1; font-size: 15px; font-weight: 600;}
-    .slip-total { display: flex; justify-content: space-between; padding: 16px 0; font-size: 20px; font-weight: 900; color: #1E3A8A; border-top: 3px solid #1E3A8A; margin-top: 12px; }
-
-    /* TOASTS */
+    /* =========================================
+       TOASTS & ALERTS
+       ========================================= */
     #toast { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 16px 32px; border-radius: 30px; font-weight: 800; font-size: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 99999; display: flex; align-items: center; gap: 10px;}
     
     /* RADIO TOGGLE */
     .radio-toggle { display: flex; background: var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px;}
-    .radio-toggle label { flex: 1; text-align: center; padding: 12px; font-weight: 800; font-size: 14px; color: var(--text-muted); cursor: pointer; margin:0;}
+    .radio-toggle label { flex: 1; text-align: center; padding: 12px; font-weight: 800; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: 0.3s; margin:0;}
     .radio-toggle input { display: none; }
     .radio-toggle input:checked + label { background: var(--primary); color: white; }
 
     @media print {
       body { background: white; color: black; }
-      header, .app-control-bar, .nav-tabs, .toolbar, .btn, .dashboard-grid, .dpr-section .form-group { display: none !important; }
+      header, .app-control-bar, .nav-tabs, .toolbar, .btn, .dashboard-grid, .dpr-section .form-group, .audit-dropdown, .subgroup-bar { display: none !important; }
       .tab-content { display: block !important; margin: 0; padding: 0;}
       .table-container { box-shadow: none; border: none; overflow: visible; }
       table { width: 100%; }
       th, td { border: 1px solid #000; padding: 6px; font-size: 11px; }
-      .slip-box { border: 1px solid #000; box-shadow: none; margin: 0 0 30px 0; }
     }
   </style>
 </head>
@@ -274,9 +261,17 @@
 
   <div id="toast"><span>ℹ️</span> <span id="toast-msg">System Ready</span></div>
 
+  <!-- Custom Right-Click Context Menu for Subgroups -->
+  <div id="context-menu" class="context-menu">
+    <ul>
+      <li onclick="renameActiveSubgroup()">✏️ Rename Subgroup</li>
+      <li class="danger" onclick="deleteActiveSubgroup()">🗑️ Delete Subgroup</li>
+    </ul>
+  </div>
+
   <!-- Profile Setup -->
   <div id="profile-overlay" class="overlay">
-    <div class="modal-box-center">
+    <div class="modal-box-center animate-pop">
       <h2>Welcome to Portal</h2>
       <p>Enter your full name to log your activities:</p>
       <input type="text" id="profile-name-input" class="pin-input" placeholder="Your Name" style="letter-spacing: normal;">
@@ -286,19 +281,41 @@
 
   <!-- Role Authentication -->
   <div id="login-overlay" class="overlay">
-    <div class="modal-box-center">
+    <div class="modal-box-center animate-pop">
       <button class="close-btn" onclick="closeLoginModal()">&times;</button>
       <h2>Portal Security</h2>
-      <p>Enter PIN (Admin or Site Incharge):</p>
+      <p>Enter PIN (Admin: 9431 | Incharge: 1820)</p>
       <input type="password" id="admin-pwd" class="pin-input" placeholder="****" inputmode="numeric" maxlength="4">
       <button class="btn btn-primary" onclick="checkPassword()">Unlock Access</button>
       <p id="pwd-error" style="color:var(--danger); font-size: 14px; margin-top: 16px; display: none; font-weight:800;">Incorrect PIN. Access Denied.</p>
     </div>
   </div>
 
-  <input type="file" id="restore-file-input" style="display: none;" accept=".json" onchange="importData(event)">
+  <!-- Site Manager (Admin Only) -->
+  <div id="site-manager-modal" class="overlay">
+    <div class="modal-box-center animate-pop" style="max-width: 500px; text-align: left;">
+      <button class="close-btn" onclick="closeSiteManager()">&times;</button>
+      <h2 style="margin-bottom: 20px;">⚙️ Manage Sites & Subgroups</h2>
+      
+      <div style="background: var(--bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 16px;">
+        <label style="font-weight: 800; font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 8px;">ADD NEW SITE / STATION</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="new-site-name" placeholder="E.g. Barauni Junction">
+          <button class="btn btn-success btn-small" onclick="addNewSite()" style="width: auto;">Add</button>
+        </div>
+      </div>
 
-  <!-- Official Header -->
+      <div style="background: var(--bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border);">
+        <label style="font-weight: 800; font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 8px;">CURRENT SITE: <span id="mgr-current-site" style="color:var(--primary);"></span></label>
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <input type="text" id="rename-site-input" placeholder="Rename this site...">
+          <button class="btn btn-outline btn-small" onclick="renameCurrentSite()" style="width: auto;">Rename</button>
+        </div>
+        <button class="btn btn-danger" onclick="deleteCurrentSite()">🗑️ Delete Entire Site & All Data</button>
+      </div>
+    </div>
+  </div>
+
   <header>
     <div class="letterhead-container">
       <div class="letterhead-top">
@@ -330,26 +347,42 @@
       </div>
     </div>
 
-    <!-- App Control Navigation Bar -->
+    <!-- App Control Bar -->
     <div class="app-control-bar">
       <div class="site-selector-wrap">
         <span class="site-label">SITE:</span>
         <select id="site-select" onchange="handleSiteChange()"></select>
+        <button id="btn-manage-sites" class="btn-icon" style="display:none; background:rgba(255,255,255,0.2);" title="Manage Sites" onclick="openSiteManager()">⚙️</button>
       </div>
+      
       <div class="status-group">
-        <button class="btn-icon" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
-        <div class="user-profile-badge" id="profile-display">👤 User</div>
-        <div id="online-indicator" class="online-indicator" title="Cloud Sync Status">
-          <span class="status-dot" id="status-dot"></span>
-          <span id="status-text">Cloud Sync</span>
+        <button class="btn-icon" onclick="toggleTheme()" title="Dark Mode">🌙</button>
+        
+        <div class="profile-wrap">
+          <div class="user-profile-badge" id="profile-display" onclick="toggleAuditLog()">👤 User</div>
+          <div class="audit-dropdown" id="audit-dropdown">
+            <div class="audit-header"><span>🌐 Live Audit Log</span> <button onclick="toggleAuditLog()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-weight:bold;">✖</button></div>
+            <div class="audit-section">
+              <div class="audit-section-title">🟢 Active Users Online</div>
+              <div id="online-users-list"></div>
+            </div>
+            <div class="audit-log-area" id="audit-log-list">
+               <div style="text-align:center; color:var(--text-muted); font-size:12px; padding: 20px;">Loading activity...</div>
+            </div>
+          </div>
         </div>
+        
         <button id="auth-status-btn" onclick="toggleAuth()">🔒 View Only</button>
       </div>
+    </div>
+    
+    <!-- SUBGROUP BAR -->
+    <div class="subgroup-bar" id="subgroup-bar-container">
+       <!-- Populated via JS. Right click to rename/delete -->
     </div>
   </header>
 
   <div class="container">
-    <!-- Live Financial & Headcount Dashboard -->
     <div class="dashboard-grid">
       <div class="stat-card"><span class="stat-label">👷 Total Workers</span><span class="stat-value" id="stat-total-workers">0</span></div>
       <div class="stat-card success"><span class="stat-label" id="lbl-present-today">✅ Today Present</span><span class="stat-value" id="stat-present-today">0 / 0</span></div>
@@ -357,16 +390,13 @@
       <div class="stat-card accent"><span class="stat-label">💰 Net Payable</span><span class="stat-value" id="stat-total-balance">₹0</span></div>
     </div>
 
-    <!-- Main Navigation Tabs -->
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('daily-view')">📅 Daily Attendance</button>
       <button class="tab-btn" onclick="switchTab('dpr-view')">📝 DPR Report</button>
       <button class="tab-btn" onclick="switchTab('monthly-view')">📊 Monthly Register</button>
       <button class="tab-btn" onclick="switchTab('worker-view')">👷 Worker Roster</button>
-      <button class="tab-btn" onclick="switchTab('slips-view')">🧾 Wage Statement</button>
     </div>
 
-    <!-- Action Toolbar -->
     <div class="toolbar">
       <div class="toolbar-group">
         <div style="display:flex; gap:14px;">
@@ -381,28 +411,18 @@
 
       <div class="toolbar-group">
         <div id="edit-controls" style="display:none; gap:14px; width: 100%; flex-wrap: wrap;">
-          <button class="btn btn-outline" id="btn-add-worker" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;">➕ Add Staff / Worker</button>
-          <button class="btn btn-outline" onclick="exportDatabase()" style="flex:1;">💾 Backup File</button>
-          <button class="btn btn-danger" id="btn-delete-site" onclick="deleteCurrentSite()" style="flex:1;">🗑️ Delete Site</button>
+          <button class="btn btn-outline" id="btn-add-worker" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;">➕ Add Staff/Worker</button>
         </div>
         <div class="toolbar-group-row">
           <button class="btn btn-success" style="flex:1;" onclick="exportToCSV()">📥 Export CSV</button>
-          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print Page</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print Document</button>
         </div>
       </div>
     </div>
 
-    <!-- VIEW 1: Daily Attendance -->
+    <!-- VIEW 1: Daily -->
     <div id="daily-view" class="tab-content active">
-      <div class="dpr-section" style="padding: 16px; margin-bottom: 20px;">
-        <span style="font-size:13px; font-weight:900; color:var(--text-muted); letter-spacing: 0.5px;">TODAY'S HEADCOUNT SUMMARY:</span>
-        <div class="trade-pill-group" id="daily-headcount-pills">
-          <span class="trade-pill">No attendance marked yet</span>
-        </div>
-      </div>
-
       <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
-        <h3 id="daily-view-title" style="color:var(--primary); font-size:20px;">Daily Attendance</h3>
         <div id="daily-bulk-actions" style="display:none; gap:12px; width: 100%;">
           <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(1)">✔️ Mark All Present</button>
           <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(0)">✖️ Clear Today</button>
@@ -420,10 +440,6 @@
 
     <!-- VIEW 2: DPR -->
     <div id="dpr-view" class="tab-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px;">
-        <h3 id="dpr-view-title" style="color:var(--primary); font-size:20px;">Daily Progress Report</h3>
-        <button class="btn btn-whatsapp btn-small" onclick="shareDPRWhatsApp()" style="width:auto; border-radius:20px;">📲 Share WhatsApp</button>
-      </div>
       
       <div class="dpr-section">
         <div class="weather-row">
@@ -431,8 +447,8 @@
           <select id="dpr-weather-select" onchange="checkWeatherCondition()" onclick="requireAuthClick(this, 'incharge')" style="flex:1;">
             <option value="Sunny / Clear">☀️ Sunny / Clear</option>
             <option value="Cloudy">☁️ Cloudy</option>
-            <option value="Light Rain">🌦️ Light Rain (Work Continued)</option>
-            <option value="Heavy Rain">🌧️ Heavy Rain (Work Stopped)</option>
+            <option value="Light Rain">🌦️ Light Rain</option>
+            <option value="Heavy Rain">🌧️ Heavy Rain</option>
             <option value="Extreme Heat">🔥 Extreme Heat</option>
           </select>
         </div>
@@ -455,7 +471,6 @@
       <div class="dpr-section">
         <h4><span>Work Details & Location</span></h4>
         <textarea id="dpr-work-text" class="dpr-textarea" placeholder="Describe work done today..." oninput="autoSaveDPR()" onclick="requireAuthClick(this, 'incharge')"></textarea>
-        <div id="dpr-work-saved" class="save-status-indicator">✓ Saved to Cloud</div>
       </div>
       
       <div class="dpr-section">
@@ -491,26 +506,11 @@
     <div id="worker-view" class="tab-content">
       <div class="worker-daily-list" id="worker-mgmt-body"></div>
     </div>
-
-    <!-- VIEW 5: Wage Statement -->
-    <div id="slips-view" class="tab-content">
-      <h3 style="color:var(--primary); font-size:20px; margin-bottom: 18px;">Labour Wage Settlement Statement</h3>
-      <div class="dpr-section">
-        <div class="form-group" style="display:flex; gap:12px; align-items:flex-end;">
-          <div style="flex:1;">
-            <label>Select Worker:</label>
-            <select id="slip-worker-select" onchange="renderWageSlip()"></select>
-          </div>
-          <button class="btn btn-primary" style="width:auto;" onclick="printAllSlips()">🖨️ Print ALL</button>
-        </div>
-        <div id="wage-slip-display"></div>
-      </div>
-    </div>
   </div>
 
   <!-- Add/Edit Worker Modal -->
   <div class="modal" id="worker-modal">
-    <div class="modal-box-center" style="max-width: 500px; text-align: left;">
+    <div class="modal-box animate-slide" style="max-width: 500px; text-align: left;">
       <div class="modal-title" id="modal-worker-title" style="font-size: 22px; font-weight: 900; margin-bottom: 20px; color: var(--primary);">Worker Profile</div>
       <input type="hidden" id="edit-worker-id">
       
@@ -521,11 +521,11 @@
         <label for="cat-staff">👔 Staff / Key Person</label>
       </div>
 
-      <div class="form-group" style="margin-bottom: 16px;"><label style="font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-muted);">Full Name</label><input type="text" id="worker-name-input" placeholder="e.g. Ramesh Kumar"></div>
-      <div class="form-group" style="margin-bottom: 16px;"><label style="font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-muted);">Phone Number</label><input type="tel" id="worker-phone-input" placeholder="e.g. 9876543210"></div>
+      <div class="form-group" style="margin-bottom: 16px;"><label>Full Name</label><input type="text" id="worker-name-input" placeholder="e.g. Ramesh Kumar"></div>
+      <div class="form-group" style="margin-bottom: 16px;"><label>Phone Number</label><input type="tel" id="worker-phone-input" placeholder="e.g. 9876543210"></div>
 
       <div class="form-group" style="margin-bottom: 16px;">
-        <label style="font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-muted);">Designation / Role</label>
+        <label>Designation / Role</label>
         <select id="worker-desig-input">
           <option value="Mason">Mason (राजमिस्त्री)</option>
           <option value="Fitter">Fitter (फ़िटर)</option>
@@ -538,8 +538,8 @@
       </div>
 
       <div style="display:flex; gap:12px; margin-bottom: 16px;" id="worker-financials">
-        <div class="form-group" style="flex:1;"><label style="font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-muted);">Daily Rate (₹)</label><input type="number" id="worker-rate-input" placeholder="e.g. 650"></div>
-        <div class="form-group" style="flex:1;"><label style="font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-muted);">Opening Adv (₹)</label><input type="number" id="worker-adv-input" placeholder="0"></div>
+        <div class="form-group" style="flex:1;"><label>Daily Rate (₹)</label><input type="number" id="worker-rate-input" placeholder="e.g. 650"></div>
+        <div class="form-group" style="flex:1;"><label>Opening Adv (₹)</label><input type="number" id="worker-adv-input" placeholder="0"></div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
@@ -551,7 +551,7 @@
 
   <script>
     /* =========================================
-       1. FIREBASE CONFIGURATION & GLOBALS
+       1. FIREBASE CONFIGURATION
        ========================================= */
     const DB_BASE_URL = "https://g12343-default-rtdb.asia-southeast1.firebasedatabase.app";
     const firebaseConfig = {
@@ -574,87 +574,88 @@
     const INCHARGE_PIN = '1820';
     let userRole = localStorage.getItem('gi_role') || 'viewer'; 
     
-    let appState = { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {} };
+    // Core State (Including Subgroups)
+    let appState = { lastUpdated: 0, subgroups: { 'sub_default': 'Main Site' }, workers: [], attendance: {}, advances: {}, dpr: {} };
+    let currentSubgroup = 'sub_default';
     let autoSaveTimer = null;
     let isCloudOnline = false;
+    let auditLogData = [];
+    let onlineUsersData = {};
+    let myPresenceRef = null;
 
-    // Core Helpers
+    // Helpers
     function getStorageKey() { return "GI_DATA_" + currentSite.toUpperCase(); }
-    function showToast(m) { 
-        const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = m; 
-        t.style.bottom = '20px'; setTimeout(() => { t.style.bottom = '-80px'; }, 3000); 
-    }
+    function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = m; t.style.bottom = '20px'; setTimeout(() => { t.style.bottom = '-80px'; }, 3000); }
     function vibrateBtn() { if(navigator.vibrate) navigator.vibrate(30); }
-    function toggleTheme() {
-        const body = document.body;
-        if(body.getAttribute('data-theme') === 'dark') { body.removeAttribute('data-theme'); localStorage.setItem('gi_theme', 'light'); } 
-        else { body.setAttribute('data-theme', 'dark'); localStorage.setItem('gi_theme', 'dark'); }
-    }
+    function toggleTheme() { const body = document.body; if(body.getAttribute('data-theme') === 'dark') { body.removeAttribute('data-theme'); localStorage.setItem('gi_theme', 'light'); } else { body.setAttribute('data-theme', 'dark'); localStorage.setItem('gi_theme', 'dark'); } }
 
     /* =========================================
-       2. PROFILE LOGIC
+       2. PROFILE & AUDIT LOGGING
        ========================================= */
-    function checkProfile() {
-      const name = localStorage.getItem('gi_user_profile');
-      if (!name) { document.getElementById('profile-overlay').style.display = 'flex'; } 
-      else { document.getElementById('profile-display').innerHTML = `👤 ${name}`; }
+    function checkProfile() { const name = localStorage.getItem('gi_user_profile'); if (!name) { document.getElementById('profile-overlay').style.display = 'flex'; } else { document.getElementById('profile-display').innerHTML = `👤 ${name}`; setupPresence(); } }
+    function saveProfile() { const name = document.getElementById('profile-name-input').value.trim(); if (name) { localStorage.setItem('gi_user_profile', name); document.getElementById('profile-overlay').style.display = 'none'; document.getElementById('profile-display').innerHTML = `👤 ${name}`; showToast("Device registered for " + name); logActivity("Logged in to portal"); setupPresence(); } else { alert("Please enter your name."); } }      function toggleAuditLog() { const d = document.getElementById('audit-dropdown'); if(d.style.display === 'flex') d.style.display = 'none'; else { d.style.display = 'flex'; renderAuditLog(); } }      function logActivity(actionDesc) {       if(!database) return;       const user = localStorage.getItem('gi_user_profile') \vert{}\vert{} 'Unknown';       const timeStr = new Date().toLocaleString();       const log = { user: user, action: actionDesc, time: timeStr, timestamp: Date.now() };       try { database.ref(`sites/${currentSite}/activity`).push(log); } catch(e){}
     }
 
-    function saveProfile() {
-      const name = document.getElementById('profile-name-input').value.trim();
-      if (name) { 
-        localStorage.setItem('gi_user_profile', name); 
-        document.getElementById('profile-overlay').style.display = 'none'; 
-        document.getElementById('profile-display').innerHTML = `👤 ${name}`; 
-        showToast("Device registered for " + name); 
-      } else { alert("Please enter your name."); }
+    function renderAuditLog() {
+      const list = document.getElementById('audit-log-list');
+      const uList = document.getElementById('online-users-list');
+      
+      // Render Online Users
+      const users = Object.values(onlineUsersData);
+      if(users.length === 0) uList.innerHTML = `<span style="font-size:12px; color:var(--text-muted);">No one else is online.</span>`;
+      else uList.innerHTML = users.map(u => `<span class="online-user-pill">🟢 ${u.name}</span>`).join("");
+
+      // Render Logs
+      if(!auditLogData || auditLogData.length === 0) { list.innerHTML = `<div style="padding: 20px; text-align:center; color:var(--text-muted); font-size:12px;">No recent activity found.</div>`; return; }
+      const sorted = auditLogData.sort((a,b) => b.timestamp - a.timestamp).slice(0, 15);
+      list.innerHTML = sorted.map(l => `<div class="audit-item"><strong style="color:var(--primary); font-size:13px;">${l.user}</strong><div>${l.action}</div><span>${l.time}</span></div>`).join("");
+    }
+
+    function setupPresence() {
+      if(!database) return;
+      const user = localStorage.getItem('gi_user_profile');
+      if(!user) return;
+      const myId = user.replace(/[^a-zA-Z0-9]/g, '_') + '_' + Math.floor(Math.random()*1000);
+      myPresenceRef = database.ref(`sites/${currentSite}/presence/${myId}`);
+      
+      database.ref('.info/connected').on('value', snap => {
+        if(snap.val()) {
+          myPresenceRef.onDisconnect().remove();
+          myPresenceRef.set({ name: user, timestamp: Date.now() });
+        }
+      });
     }
 
     /* =========================================
        3. ROLE-BASED AUTHENTICATION
        ========================================= */
     function checkAuthStatus() { updateAuthUI(); }
-    
-    function toggleAuth() { 
-      if (userRole !== 'viewer') { 
-        userRole = 'viewer'; localStorage.setItem('gi_role', 'viewer'); 
-        updateAuthUI(); renderAll(); showToast("Portal Locked (View Only)"); 
-      } else { showLoginModal(); } 
-    }
-    
+    function toggleAuth() { if (userRole !== 'viewer') { userRole = 'viewer'; localStorage.setItem('gi_role', 'viewer'); updateAuthUI(); renderAll(); showToast("Portal Locked (View Only)"); } else { showLoginModal(); } }
     function showLoginModal() { document.getElementById('login-overlay').style.display = 'flex'; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('admin-pwd').value = ''; document.getElementById('admin-pwd').focus(); }
     function closeLoginModal() { document.getElementById('login-overlay').style.display = 'none'; }
     
     function checkPassword() { 
       const pin = document.getElementById('admin-pwd').value;
-      if (pin === ADMIN_PIN) { 
-        userRole = 'admin'; localStorage.setItem('gi_role', 'admin'); 
-        closeLoginModal(); updateAuthUI(); renderAll(); showToast("Admin Mode Unlocked"); 
-      } else if (pin === INCHARGE_PIN) {
-        userRole = 'incharge'; localStorage.setItem('gi_role', 'incharge'); 
-        closeLoginModal(); updateAuthUI(); renderAll(); showToast("Incharge Mode Unlocked"); 
-      } else { 
-        document.getElementById('pwd-error').style.display = 'block'; 
-      } 
+      if (pin === ADMIN_PIN) { userRole = 'admin'; localStorage.setItem('gi_role', 'admin'); closeLoginModal(); updateAuthUI(); renderAll(); showToast("Admin Mode Unlocked"); logActivity("Unlocked Admin Mode"); } 
+      else if (pin === INCHARGE_PIN) { userRole = 'incharge'; localStorage.setItem('gi_role', 'incharge'); closeLoginModal(); updateAuthUI(); renderAll(); showToast("Incharge Mode Unlocked"); logActivity("Unlocked Incharge Mode"); } 
+      else { document.getElementById('pwd-error').style.display = 'block'; } 
     }
     
     function updateAuthUI() {
-      const btn = document.getElementById('auth-status-btn');
-      const b1 = document.getElementById('daily-bulk-actions');
-      const e1 = document.getElementById('edit-controls');
-      const delBtn = document.getElementById('btn-delete-site');
+      const btn = document.getElementById('auth-status-btn'), b1 = document.getElementById('daily-bulk-actions'), e1 = document.getElementById('edit-controls'), mgrBtn = document.getElementById('btn-manage-sites');
+      const addSubBtn = document.getElementById('btn-add-subgroup');
 
       if (userRole === 'admin') { 
         btn.innerHTML='👑 Admin Mode'; btn.style.background='var(--primary)'; btn.classList.remove("shake");
-        if(b1)b1.style.display='flex'; if(e1)e1.style.display='flex'; if(delBtn)delBtn.style.display='block';
+        if(b1)b1.style.display='flex'; if(e1)e1.style.display='flex'; if(mgrBtn) mgrBtn.style.display='flex'; if(addSubBtn) addSubBtn.style.display='inline-block';
         document.getElementById('dpr-weather-select').removeAttribute('disabled');
       } else if (userRole === 'incharge') {
         btn.innerHTML='🛡️ Incharge Mode'; btn.style.background='var(--success)'; btn.classList.remove("shake");
-        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(delBtn)delBtn.style.display='none';
+        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(mgrBtn) mgrBtn.style.display='none'; if(addSubBtn) addSubBtn.style.display='none';
         document.getElementById('dpr-weather-select').removeAttribute('disabled');
       } else { 
         btn.innerHTML='🔒 View Only'; btn.style.background='rgba(255,255,255,0.2)'; 
-        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(delBtn)delBtn.style.display='none';
+        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(mgrBtn) mgrBtn.style.display='none'; if(addSubBtn) addSubBtn.style.display='none';
         document.getElementById('dpr-weather-select').setAttribute('disabled', 'true');
       }
     }
@@ -665,8 +666,7 @@
         const btn = document.getElementById('auth-status-btn');
         btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
         showToast(requiredRole === 'admin' ? "Admin Access Required!" : "Portal locked! Enter PIN.");
-        setTimeout(() => { showLoginModal(); }, 400);
-        return false;
+        setTimeout(() => { showLoginModal(); }, 400); return false;
       } 
       return true;
     }
@@ -683,79 +683,83 @@
 
       try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        database = firebase.app().database(); // Automatically uses DB URL from config
+        database = firebase.app().database();
         sitesRef = database.ref('global/sites');
-
-        database.ref('.info/connected').on('value', (snap) => {
-          const dot = document.getElementById('status-dot');
-          const text = document.getElementById('status-text');
-          isCloudOnline = (snap.val() === true);
-          if (isCloudOnline) { dot.className = 'status-dot online'; text.textContent = 'Cloud Live';} 
-          else { dot.className = 'status-dot offline'; text.textContent = 'Offline Mode';}
-        });
 
         sitesRef.on('value', (snapshot) => {
           const sites = snapshot.val();
-          if (sites) { 
-            availableSites = Array.isArray(sites) ? sites : Object.values(sites); 
-            localStorage.setItem('gi_sites', JSON.stringify(availableSites)); 
-            renderSiteSelector();
-          } else { sitesRef.set(availableSites); }
+          if (sites) { availableSites = Array.isArray(sites) ? sites : Object.values(sites); localStorage.setItem('gi_sites', JSON.stringify(availableSites)); renderSiteSelector(); } 
+          else { sitesRef.set(availableSites); }
         });
 
         syncSiteDataFirebase();
       } catch(e) { console.warn("Firebase Init Failed", e); }
+      
+      // Hide Context menu on click outside
+      document.addEventListener('click', () => { document.getElementById('context-menu').style.display = 'none'; });
+    }
+
+    function openSiteManager() {
+      if(userRole !== 'admin') { showToast("Admin Access Required"); return; }
+      document.getElementById("mgr-current-site").textContent = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
+      document.getElementById('site-manager-modal').style.display = 'flex';
+    }
+    function closeSiteManager() { document.getElementById('site-manager-modal').style.display = 'none'; }
+
+    function addNewSite() {
+      const siteName = document.getElementById("new-site-name").value;
+      if (siteName && siteName.trim() !== '') {
+          const newId = siteName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+          availableSites.push({ id: newId, name: siteName.trim() });
+          localStorage.setItem('gi_sites', JSON.stringify(availableSites));
+          if (database) sitesRef.set(availableSites); 
+          
+          currentSite = newId; localStorage.setItem('gi_last_site', currentSite);
+          appState = { _initialized: true, lastUpdated: Date.now(), subgroups: {'sub_default': 'Main Site'}, workers: [], attendance: {}, advances: {}, dpr: {} };
+          localStorage.setItem(getStorageKey(), JSON.stringify(appState));
+          if (database) database.ref('sites/' + currentSite).set(appState);
+          
+          saveState(); renderSiteSelector(); renderAll(); closeSiteManager();
+          logActivity(`Created new site: ${siteName}`); showToast("Site Added!");
+      }
+    }
+
+    function renameCurrentSite() {
+      const newName = document.getElementById("rename-site-input").value;
+      if(newName && newName.trim() !== '') {
+        const site = availableSites.find(s => s.id === currentSite);
+        if(site) { site.name = newName.trim(); localStorage.setItem('gi_sites', JSON.stringify(availableSites)); if (database) sitesRef.set(availableSites); renderSiteSelector(); document.getElementById("mgr-current-site").textContent = newName.trim(); document.getElementById("rename-site-input").value = ""; logActivity(`Renamed site to: ${newName}`); showToast("Site Renamed!"); }
+      }
+    }
+
+    function deleteCurrentSite() {
+      if(availableSites.length <= 1) { alert("You cannot delete the last remaining site."); return; }
+      const siteName = availableSites.find(s => s.id === currentSite)?.name || currentSite;
+      if(confirm(`⚠️ DANGER: Are you sure you want to permanently delete "${siteName}"?`)) {
+        availableSites = availableSites.filter(s => s.id !== currentSite); localStorage.setItem('gi_sites', JSON.stringify(availableSites));
+        if (database) { sitesRef.set(availableSites); database.ref('sites/' + currentSite).remove(); }
+        localStorage.removeItem(getStorageKey());
+        currentSite = availableSites[0].id; localStorage.setItem('gi_last_site', currentSite);
+        logActivity(`Deleted site: ${siteName}`); renderSiteSelector(); loadLocalState(); renderAll(); closeSiteManager(); if (database) syncSiteDataFirebase(); showToast("Site Deleted");
+      }
     }
 
     function renderSiteSelector() {
       const select = document.getElementById('site-select'); if(!select) return; select.innerHTML = '';
       availableSites.forEach(site => { const opt = document.createElement('option'); opt.value = site.id; opt.textContent = site.name; if (site.id === currentSite) opt.selected = true; select.appendChild(opt); });
-      const addOpt = document.createElement('option'); addOpt.value = 'add_new'; addOpt.textContent = '+ Add New Site...'; select.appendChild(addOpt);
     }
 
     function handleSiteChange() {
-      const select = document.getElementById('site-select');
-      if (select.value === 'add_new') {
-          if (userRole !== 'admin') { requireAuthClick(null, 'admin'); select.value = currentSite; return; }
-          const siteName = prompt("Enter new Site / Station Name:");
-          if (siteName && siteName.trim() !== '') {
-              const newId = siteName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
-              availableSites.push({ id: newId, name: siteName.trim() });
-              localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-              if (database && isCloudOnline) sitesRef.set(availableSites); 
-              
-              currentSite = newId; localStorage.setItem('gi_last_site', currentSite);
-              appState = { _initialized: true, lastUpdated: Date.now(), workers: [], attendance: {}, advances: {}, dpr: {} };
-              localStorage.setItem(getStorageKey(), JSON.stringify(appState));
-              if (database && isCloudOnline) database.ref('sites/' + currentSite).set(appState);
-              
-              saveState(); renderSiteSelector(); renderAll();
-          } else { select.value = currentSite; }
-      } else { currentSite = select.value; localStorage.setItem('gi_last_site', currentSite); loadLocalState(); renderAll(); if (database) syncSiteDataFirebase(); }
+      currentSite = document.getElementById('site-select').value; localStorage.setItem('gi_last_site', currentSite); 
+      if(myPresenceRef) { myPresenceRef.remove(); setupPresence(); }
+      loadLocalState(); renderAll(); if (database) syncSiteDataFirebase(); 
     }
 
-    function deleteCurrentSite() {
-      if(userRole !== 'admin') return;
-      if(availableSites.length <= 1) { alert("You cannot delete the last remaining site."); return; }
-      const siteName = availableSites.find(s => s.id === currentSite)?.name || currentSite;
-      if(confirm(`⚠️ DANGER: Are you sure you want to permanently delete "${siteName}"?`)) {
-        availableSites = availableSites.filter(s => s.id !== currentSite);
-        localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-        if (database && isCloudOnline) {
-          sitesRef.set(availableSites); database.ref('sites/' + currentSite).remove();
-        }
-        localStorage.removeItem(getStorageKey());
-        currentSite = availableSites[0].id; localStorage.setItem('gi_last_site', currentSite);
-        renderSiteSelector(); loadLocalState(); renderAll(); 
-        if (database) syncSiteDataFirebase(); showToast("Site Deleted");
-      }
-    }
-
-    /* DATA SANITIZATION & TIMESTAMP MERGE */
+    /* DATA SANITIZATION & SYNC */
     function deepCopy(obj) { try { return JSON.parse(JSON.stringify(obj || {})); } catch(e){ return {}; } }
     
     function fixFirebaseArrays(data) {
-      if(!data || typeof data !== 'object') return { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {} };
+      if(!data || typeof data !== 'object') return { lastUpdated: 0, subgroups: {'sub_default': 'Main Site'}, workers: [], attendance: {}, advances: {}, dpr: {} };
       let cleanWorkers = [];
       if (Array.isArray(data.workers)) cleanWorkers = data.workers.filter(w => w !== null);
       else if (typeof data.workers === 'object') cleanWorkers = Object.values(data.workers).filter(w => w !== null);
@@ -763,10 +767,12 @@
       cleanWorkers.forEach(w => { 
         w.name = w.name || "Unknown"; w.desig = w.desig || "Helper"; w.rate = parseFloat(w.rate) || 0; 
         w.category = w.category || 'labour'; 
+        w.subgroup = w.subgroup || 'sub_default'; // Tie to subgroup
       });
       cleanWorkers.sort((a, b) => a.name.localeCompare(b.name)); data.workers = cleanWorkers;
 
       if(!data.attendance) data.attendance = {}; if(!data.advances) data.advances = {}; if(!data.dpr) data.dpr = {};
+      if(!data.subgroups || Object.keys(data.subgroups).length === 0) data.subgroups = {'sub_default': 'Main Site'};
       if(!data.lastUpdated) data.lastUpdated = 0;
       return data;
     }
@@ -775,6 +781,7 @@
       const saved = localStorage.getItem(getStorageKey());
       if (saved) { try { appState = fixFirebaseArrays(JSON.parse(saved)); } catch (e) { appState = fixFirebaseArrays(null); } } 
       else { appState = fixFirebaseArrays(null); }
+      currentSubgroup = Object.keys(appState.subgroups)[0]; // Default to first subgroup
     }
 
     function syncSiteDataFirebase() {
@@ -790,32 +797,94 @@
           else { currentSiteRef.set(deepCopy(localData)).catch(()=>{}); } 
         } else if (localData.workers.length > 0) { currentSiteRef.set(deepCopy(localData)).catch(()=>{}); } 
         
+        // Render Subgroup Bar on Data Update
+        renderSubgroupBar();
         const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
         if (activeTag !== 'input' && activeTag !== 'textarea') renderAll(); else updateDashboard();
       });
+
+      try {
+        database.ref(`sites/${currentSite}/activity`).limitToLast(20).on('value', (snap) => {            const logs = snap.val(); if(logs) { auditLogData = Object.values(logs); if(document.getElementById('audit-dropdown').style.display === 'flex') renderAuditLog(); }         });         database.ref(`sites/${currentSite}/presence`).on('value', (snap) => {
+           const pres = snap.val(); if(pres) { onlineUsersData = pres; if(document.getElementById('audit-dropdown').style.display === 'flex') renderAuditLog(); } else { onlineUsersData = {}; }
+        });
+      } catch(e){}
     }
 
     function saveState() { 
       appState = fixFirebaseArrays(appState); appState._initialized = true; appState.lastUpdated = Date.now();
-      try { localStorage.setItem(getStorageKey(), JSON.stringify(appState)); localStorage.setItem("GI_RECOVERY_BACKUP", JSON.stringify(appState)); } catch(e){}
-      updateDashboard();
-      if (database && isCloudOnline && currentSiteRef) { currentSiteRef.set(deepCopy(appState)).catch(err => console.warn(err)); }
+      try { localStorage.setItem(getStorageKey(), JSON.stringify(appState)); } catch(e){}
+      renderSubgroupBar(); updateDashboard();
+      if (database && currentSiteRef) { currentSiteRef.set(deepCopy(appState)).catch(err => console.warn(err)); }
     }
 
     /* =========================================
-       5. UI NAVIGATION
+       5. SUBGROUP MANAGEMENT (RIGHT CLICK)
        ========================================= */
-    function generateMonthOptions() { 
-      const select = document.getElementById("month-select"); select.innerHTML = ""; 
-      const m = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; 
-      const cY = new Date().getFullYear(), cM = new Date().getMonth() + 1; 
-      for (let y = 2025; y <= 2030; y++) { for (let i = 1; i <= 12; i++) { const opt = document.createElement("option"); opt.value = `${i}-${y}`; opt.textContent = `${m[i-1]}${y}`; if (y === cY && i === cM) opt.selected = true; select.appendChild(opt); } } 
+    let contextSubgroupId = null;
+
+    function renderSubgroupBar() {
+      const bar = document.getElementById("subgroup-bar-container");
+      if(!bar) return;
+      bar.innerHTML = "";
+      
+      Object.keys(appState.subgroups).forEach(sId => {
+        const btn = document.createElement("button");
+        btn.className = "subgroup-pill " + (currentSubgroup === sId ? "active" : "");
+        btn.textContent = appState.subgroups[sId];
+        btn.onclick = () => { currentSubgroup = sId; renderSubgroupBar(); renderAll(); };
+        btn.oncontextmenu = (e) => showContextMenu(e, sId);
+        bar.appendChild(btn);
+      });
+
+      if(userRole === 'admin') {
+        const addBtn = document.createElement("button");
+        addBtn.className = "subgroup-pill subgroup-pill-add";
+        addBtn.id = "btn-add-subgroup";
+        addBtn.textContent = "+ Add Subgroup";
+        addBtn.onclick = () => addNewSubgroup();
+        bar.appendChild(addBtn);
+      }
     }
-    
-    function populateDaySelector() { 
-      const select = document.getElementById("day-select"); select.innerHTML = ""; const t = new Date().getDate(); 
-      for (let i = 1; i <= 31; i++) { const opt = document.createElement("option"); opt.value = i; opt.textContent = `Day ${i}`; if (i === Math.min(t, 31)) opt.selected = true; select.appendChild(opt); } 
+
+    function addNewSubgroup() {
+      const name = prompt("Enter new subgroup name (e.g. Platform 1, Admin Block):");
+      if(name && name.trim() !== '') {
+        const nId = 'sub_' + Date.now();
+        appState.subgroups[nId] = name.trim();
+        currentSubgroup = nId;
+        saveState(); renderAll(); logActivity(`Created Subgroup: ${name}`);
+      }
     }
+
+    function showContextMenu(e, sId) {
+      e.preventDefault();
+      if(userRole !== 'admin') { showToast("Admin access required to modify subgroups"); return; }
+      contextSubgroupId = sId;
+      const menu = document.getElementById('context-menu');
+      menu.style.display = 'block';
+      menu.style.left = e.pageX + 'px';
+      menu.style.top = e.pageY + 'px';
+    }
+
+    function renameActiveSubgroup() {
+      const newName = prompt("Rename subgroup:", appState.subgroups[contextSubgroupId]);
+      if(newName && newName.trim() !== '') {
+        appState.subgroups[contextSubgroupId] = newName.trim();
+        saveState(); renderAll(); logActivity(`Renamed Subgroup to: ${newName}`);
+      }
+    }
+
+    function deleteActiveSubgroup() {
+      if(Object.keys(appState.subgroups).length <= 1) { alert("Cannot delete the last subgroup."); return; }
+      const sName = appState.subgroups[contextSubgroupId];
+      if(confirm(`⚠️ Delete subgroup "${sName}"?\nWorkers inside will be moved to the Main Site.`)) {
+        // Move workers to first available subgroup
+        delete appState.subgroups[contextSubgroupId];
+        const fallback = Object.keys(appState.subgroups)[0];
+        appState.workers.forEach(w => { if(w.subgroup === contextSubgroupId) w.subgroup = fallback; });
+        
+        currentSubgroup = fallback;
+        saveState(); renderAll(); logActivity(`Deleted Subgroup: ${sName}`);       }     }      /* =========================================        6. UI NAVIGATION        ========================================= */     function generateMonthOptions() { const select = document.getElementById("month-select"); select.innerHTML = ""; const m = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; const cY = new Date().getFullYear(), cM = new Date().getMonth() + 1; for (let y = 2025; y <= 2030; y++) { for (let i = 1; i <= 12; i++) { const opt = document.createElement("option"); opt.value = `${i}-${y}`; opt.textContent = `${m[i-1]} ${y}`; if (y === cY && i === cM) opt.selected = true; select.appendChild(opt); } } }     function populateDaySelector() { const select = document.getElementById("day-select"); select.innerHTML = ""; const t = new Date().getDate(); for (let i = 1; i <= 31; i++) { const opt = document.createElement("option"); opt.value = i; opt.textContent = `Day ${i}`; if (i === Math.min(t, 31)) opt.selected = true; select.appendChild(opt); } }
 
     function getSelectedDateKey() { return `${document.getElementById("day-select").value}-${document.getElementById("month-select").value}`; }
     function handleDayChange() { renderDailyView(); renderDPRView(); }
@@ -832,10 +901,10 @@
         dP.style.display = "none"; if(tId==="monthly-view") renderMonthlyTable(); if(tId==="worker-view") renderWorkerManagement(); if(tId==="slips-view") populateSlipWorkerSelect(); 
       }
     }
-    function renderAll() { renderDailyView(); renderDPRView(); renderMonthlyTable(); renderWorkerManagement(); populateSlipWorkerSelect(); updateDashboard(); }
+    function renderAll() { renderSubgroupBar(); renderDailyView(); renderDPRView(); renderMonthlyTable(); renderWorkerManagement(); populateSlipWorkerSelect(); updateDashboard(); }
 
     /* =========================================
-       6. DPR & MATERIALS
+       7. DPR & MATERIALS
        ========================================= */
     function checkWeatherCondition() {
       const w = document.getElementById("dpr-weather-select").value; const rainBox = document.getElementById("rain-settings");
@@ -871,9 +940,7 @@
       const d = document.createElement("div"); d.className = "material-row";
       const r = (userRole === 'viewer') ? "readonly onclick='requireAuthClick(this)'" : "";
       const ds = (userRole === 'viewer') ? "disabled" : "";
-      d.innerHTML = `
-        <input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()"><input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()"><select class="material-unit" ${ds} onchange="autoSaveDPR()"><option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option><option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option></select><button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>
-      `;
+      d.innerHTML = `<input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()"><input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()"><select class="material-unit" ${ds} onchange="autoSaveDPR()"><option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option><option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option></select><button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>`;
       container.appendChild(d);
     }
 
@@ -884,16 +951,11 @@
       if(userRole === 'viewer') return; clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         const dk = getSelectedDateKey();
-        
-        const recMats = [];
-        document.querySelectorAll("#dpr-material-received-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") recMats.push({ item: i, qty: q, unit: u }); });
-
-        const conMats = [];
-        document.querySelectorAll("#dpr-material-consumed-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") conMats.push({ item: i, qty: q, unit: u }); });
+        const recMats = []; document.querySelectorAll("#dpr-material-received-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") recMats.push({ item: i, qty: q, unit: u }); });
+        const conMats = []; document.querySelectorAll("#dpr-material-consumed-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") conMats.push({ item: i, qty: q, unit: u }); });
 
         appState.dpr[dk] = { work: document.getElementById("dpr-work-text").value, weather: document.getElementById("dpr-weather-select").value, rainHrs: document.getElementById("dpr-rain-hours").value, workStop: document.getElementById("dpr-work-stopped").value, received: recMats, consumed: conMats }; 
-        saveState();
-        const ind = document.getElementById("dpr-work-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
+        saveState(); const ind = document.getElementById("dpr-work-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
       }, 500);
     }
 
@@ -913,16 +975,14 @@
       if(trades.length > 0) { text += `_Breakup: ` + trades.map(t => `${t}:${tradeCounts[t]}`).join(", ") + `_\n\n`; } else { text += `\n`; }
 
       text += `*🛠️ WORK ALLOCATION:*\n${dData.work || "None"}\n\n`;
-      text += `*📥 MATERIALS RECEIVED:*\n`;
-      if(!dData.received || dData.received.length === 0) text += `- None\n`; else dData.received.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
-      text += `\n*📤 MATERIALS CONSUMED:*\n`;
-      if(!dData.consumed || dData.consumed.length === 0) text += `- None\n`; else dData.consumed.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
+      text += `*📥 MATERIALS RECEIVED:*\n`; if(!dData.received || dData.received.length === 0) text += `- None\n`; else dData.received.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
+      text += `\n*📤 MATERIALS CONSUMED:*\n`; if(!dData.consumed || dData.consumed.length === 0) text += `- None\n`; else dData.consumed.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
 
-      text += `\n_Submitted via Global Industries_`; window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+      text += `\n_Submitted via Global Industries Portal_`; window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
     }
 
     /* =========================================
-       7. DAILY ATTENDANCE (STAFF VS LABOUR)
+       8. DAILY ATTENDANCE (ROLE RESTRICTED)
        ========================================= */
     function getInitials(name) { const n = name.trim().split(" "); return n.length > 1 ? (n[0][0]+n[1][0]).toUpperCase() : n[0][0].toUpperCase(); }
     function getAvatarColor(name) { const colors = ["#EF4444", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6", "#EC4899"]; let sum = 0; for(let i=0;i<name.length;i++) sum+=name.charCodeAt(i); return colors[sum % colors.length]; }
@@ -947,14 +1007,17 @@
       let tradeCounts = {}; let totalP = 0;
       let hasStaff = false, hasLabour = false;
 
-      if(!appState.workers || appState.workers.length === 0) { 
-        cLabour.innerHTML = `<div class="empty-state">No workers registered for this site yet. Admin must add workers first.</div>`; 
+      // Filter workers by current subgroup
+      const subWorkers = appState.workers.filter(w => w.subgroup === currentSubgroup);
+
+      if(!subWorkers || subWorkers.length === 0) { 
+        cLabour.innerHTML = `<div class="empty-state">No workers registered in this subgroup yet.</div>`; 
         document.getElementById("daily-headcount-pills").innerHTML = `<span class="trade-pill">0 workers registered</span>`;
         hLabour.style.display = 'none'; hStaff.style.display = 'none'; return; 
       }
 
       let hasResults = false;
-      appState.workers.forEach(w => {
+      subWorkers.forEach(w => {
         if (sQuery && !w.name.toLowerCase().includes(sQuery) && !w.desig.toLowerCase().includes(sQuery)) return;
         hasResults = true;
 
@@ -969,13 +1032,7 @@
         let r = "", c1 = "", c2 = "", c3 = ""; let dutyClasses = "";
         
         if (userRole === 'admin') {
-          r = ""; c1 = `setDailyDuty('${w.id}',${sDay}, 1)`; c2 = `setDailyDuty('${w.id}',${sDay}, 0.5)`; c3 = `setDailyDuty('${w.id}',${sDay}, 0)`;
-        } else if (userRole === 'incharge') {
-          if (isLockedForIncharge) {
-            r = "readonly onclick='showToast(\"Attendance submitted. Admin access needed to edit.\")'";
-            dutyClasses = "locked"; c1 = c2 = c3 = `showToast("Attendance submitted. Admin access needed to edit.")`;
-          } else {
-             r = ""; c1 = `setDailyDuty('${w.id}',${sDay}, 1)`; c2 = `setDailyDuty('${w.id}',${sDay}, 0.5)`; c3 = `setDailyDuty('${w.id}',${sDay}, 0)`;
+          r = ""; c1 = `setDailyDuty('${w.id}',${sDay}, 1, '${w.name}')`; c2 = `setDailyDuty('${w.id}', ${sDay}, 0.5, '${w.name}')`; c3 = `setDailyDuty('${w.id}',${sDay}, 0, '${w.name}')`;         } else if (userRole === 'incharge') {           if (isLockedForIncharge) {             r = "readonly onclick='showToast(\"Attendance locked. Contact Admin to edit.\")'";             dutyClasses = "locked"; c1 = c2 = c3 = `showToast("Attendance locked. Contact Admin to edit.")`;           } else {              r = ""; c1 = `setDailyDuty('${w.id}', ${sDay}, 1, '${w.name}')`; c2 = `setDailyDuty('${w.id}',${sDay}, 0.5, '${w.name}')`; c3 = `setDailyDuty('${w.id}', ${sDay}, 0, '${w.name}')`;
           }
         } else {
           r = "readonly onclick='requireAuthClick(this)'"; c1 = c2 = c3 = `requireAuthClick(this)`;
@@ -986,7 +1043,7 @@
         const avatar = `<div class="avatar" style="background:${getAvatarColor(w.name)}">${getInitials(w.name)}</div>`;
         
         const rateHtml = (userRole === 'admin' && !isStaff) ? `<div class="worker-rate">₹${w.rate}/day</div>` : ``;
-        const advHtml = (userRole === 'admin' && !isStaff) ? `<div class="input-box"><span>Adv (₹)</span><input type="number" min="0" step="50" placeholder="0" value="${a.adv\vert{}\vert{}''}" ${r} onchange="setDailyAdv('${w.id}',${sDay}, this.value)"></div>` : ``;
+        const advHtml = (userRole === 'admin' && !isStaff) ? `<div class="input-box"><span>Adv (₹)</span><input type="number" min="0" step="50" placeholder="0" value="${a.adv||''}" ${r} onchange="setDailyAdv('${w.id}', ${sDay}, this.value, '${w.name}')"></div>` : ``;
 
         const div = document.createElement("div"); div.className = "worker-card" + (isStaff ? " staff-card" : "");
         div.innerHTML = `
@@ -1000,7 +1057,7 @@
             <div class="duty-opt ${a.duty===0?'selected-a':''} ${dutyClasses}" onclick="${c3}">A (0)</div>
           </div>
           <div class="input-row">
-            <div class="input-box"><span>OT (Hrs)</span><input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT('${w.id}', ${sDay}, this.value)"></div>
+            <div class="input-box"><span>OT (Hrs)</span><input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT('${w.id}', ${sDay}, this.value, '${w.name}')"></div>
             ${advHtml}
           </div>
         `;
@@ -1018,19 +1075,45 @@
       if(!hasResults) cLabour.innerHTML = `<div class="empty-state">No match found.</div>`;
     }
 
-    function setDailyDuty(wId, d, v) { vibrateBtn(); if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].duty=v; if(userRole === 'incharge') appState.attendance[wId][d].locked = true; saveState(); renderDailyView(); }
-    function setDailyOT(wId, d, v) { if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].ot=parseFloat(v)||0; if(userRole === 'incharge') appState.attendance[wId][d].locked = true; saveState(); }
-    function setDailyAdv(wId, d, v) { if(userRole !== 'admin') return; if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].adv=parseFloat(v)||0; saveState(); }
+    function setDailyDuty(wId, d, v, wName) { 
+      vibrateBtn();
+      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
+      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
+      appState.attendance[wId][d].duty=v; 
+      if(userRole === 'incharge') appState.attendance[wId][d].locked = true; 
+      saveState(); renderDailyView(); 
+      let actionStr = v === 1 ? 'Present' : (v === 0.5 ? 'Half Day' : 'Absent');
+      logActivity(`Marked ${wName} as ${actionStr} on Day ${d}`);
+    }
+    function setDailyOT(wId, d, v, wName) { 
+      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
+      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
+      appState.attendance[wId][d].ot=parseFloat(v)||0; 
+      if(userRole === 'incharge') appState.attendance[wId][d].locked = true;
+      saveState(); logActivity(`Added ${v} Hrs OT for ${wName}`);
+    }
+    function setDailyAdv(wId, d, v, wName) { 
+      if(userRole !== 'admin') return;
+      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
+      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
+      appState.attendance[wId][d].adv=parseFloat(v)||0; 
+      saveState(); logActivity(`Gave ₹${v} advance to ${wName}`);
+    }
 
     function bulkMarkDaily(v) { 
-      if(userRole !== 'admin') { showToast("Admin access required for bulk actions"); return; }
+      if(userRole !== 'admin') { showToast("Admin access required"); return; }
       const sDay = parseInt(document.getElementById("day-select").value); 
-      appState.workers.forEach(w => { if(!appState.attendance[w.id]) appState.attendance[w.id]={}; if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; appState.attendance[w.id][sDay].duty=v; }); 
-      saveState(); renderDailyView(); showToast("Bulk attendance updated"); 
+      appState.workers.forEach(w => { 
+        if(w.subgroup !== currentSubgroup) return;
+        if(!appState.attendance[w.id]) appState.attendance[w.id]={}; 
+        if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; 
+        appState.attendance[w.id][sDay].duty=v; 
+      }); 
+      saveState(); renderDailyView(); showToast("Bulk attendance updated"); logActivity(`Bulk marked Day ${sDay} as ${v}`);
     }
 
     /* =========================================
-       8. MONTHLY REGISTER
+       9. MONTHLY REGISTER
        ========================================= */
     function toggleExpandMonthly() { document.getElementById("monthly-table-container").classList.toggle("expanded"); }
     
@@ -1041,11 +1124,12 @@
       h1.innerHTML += `<th colspan="2" class="summary-th">TOTAL</th><th rowspan="2" class="summary-th">RATE</th><th rowspan="2" class="summary-th">AMOUNT</th><th rowspan="2" class="summary-th">ADVANCE</th><th rowspan="2" class="summary-th">BALANCE</th>`; h2.innerHTML += `<th class="tier2">DUTY</th><th class="tier2">OT</th>`;
       tb.innerHTML = "";
 
-      if(!appState.workers || appState.workers.length === 0) { tb.innerHTML = `<tr><td colspan="70" class="empty-state">No records. Add workers first.</td></tr>`; tf.innerHTML = ""; return; }
+      const subWorkers = appState.workers.filter(w => w.subgroup === currentSubgroup);
+      if(!subWorkers || subWorkers.length === 0) { tb.innerHTML = `<tr><td colspan="70" class="empty-state">No records for this subgroup.</td></tr>`; tf.innerHTML = ""; return; }
 
       let gD=0, gO=0, gAm=0, gAd=0, gB=0; let dD=Array(32).fill(0), dO=Array(32).fill(0);
 
-      appState.workers.forEach(w => {
+      subWorkers.forEach(w => {
         let tD=0, tO=0, tDA=0, c=""; const isStaff = w.category === 'staff';
 
         for (let d=1; d<=31; d++) {
@@ -1054,7 +1138,7 @@
           if(!isStaff) { dD[d]+=(r.duty||0); dO[d]+=(r.ot||0); }
           
           let p1 = "", p2 = "";
-          if(userRole === 'admin') { p1 = `onchange="setDailyDuty('${w.id}', ${d}, parseFloat(this.value)||0); renderMonthlyTable()"`; p2 = `onchange="setDailyOT('${w.id}', ${d}, this.value); renderMonthlyTable()"`; } 
+          if(userRole === 'admin') { p1 = `onchange="setDailyDuty('${w.id}', ${d}, parseFloat(this.value)||0, '${w.name}'); renderMonthlyTable()"`; p2 = `onchange="setDailyOT('${w.id}', ${d}, this.value, '${w.name}'); renderMonthlyTable()"`; } 
           else { p1 = p2 = `readonly onclick="requireAuthClick(this, 'admin')"`; }
           c += `<td><input class="tbl-input" type="text" value="${r.duty||''}" ${p1}></td><td><input class="tbl-input" type="text" value="${r.ot||''}" ${p2}></td>`;
         }
@@ -1077,13 +1161,13 @@
     }
 
     /* =========================================
-       9. WORKER MANAGEMENT (ADMIN ONLY)
+       10. WORKER MANAGEMENT (ADMIN ONLY)
        ========================================= */
     function toggleWorkerCategory() {
       const cat = document.querySelector('input[name="worker-cat"]:checked').value;
-      const finDiv = document.getElementById("worker-financials"); const desigSel = document.getElementById("worker-desig-input");
-      if(cat === 'staff') { finDiv.style.display = 'none'; desigSel.innerHTML = `<option value="Site Manager">Site Manager</option><option value="Site Engineer">Site Engineer</option><option value="Supervisor">Supervisor</option><option value="Safety Officer">Safety Officer</option><option value="Key Person">Key Person</option>`; } 
-      else { finDiv.style.display = 'flex'; desigSel.innerHTML = `<option value="Mason">Mason</option><option value="Fitter">Fitter</option><option value="Helper">Helper</option><option value="Welder">Welder</option><option value="Bar Bender">Bar Bender</option><option value="Carpenter">Carpenter</option><option value="Electrician">Electrician</option>`; }
+      const finDiv = document.getElementById("worker-financials"); const desigSel = document.getElementById("worker-desig-input"); const dOptions = document.getElementById("trade-options");
+      if(cat === 'staff') { finDiv.style.display = 'none'; desigSel.placeholder = "e.g. Site Engineer, Supervisor..."; dOptions.innerHTML = `<option value="Site Manager"></option><option value="Site Engineer"></option><option value="Supervisor"></option><option value="Safety Officer"></option><option value="Key Person"></option>`; } 
+      else { finDiv.style.display = 'flex'; desigSel.placeholder = "e.g. Mason, Helper, Supervisor..."; dOptions.innerHTML = `<option value="Mason"></option><option value="Fitter"></option><option value="Helper"></option><option value="Welder"></option><option value="Bar Bender"></option><option value="Carpenter"></option><option value="Electrician"></option>`; }
     }
 
     function handleAddWorkerClick() { if (requireAuthClick(null, 'admin')) openAddWorkerModal(); }
@@ -1091,10 +1175,12 @@
     function renderWorkerManagement() {
       const sQuery = document.getElementById("worker-search").value.toLowerCase();
       const c = document.getElementById("worker-mgmt-body"); c.innerHTML = "";
-      if(!appState.workers || appState.workers.length===0) { c.innerHTML=`<div class="empty-state">No workers registered yet.</div>`; return; }
+      
+      const subWorkers = appState.workers.filter(w => w.subgroup === currentSubgroup);
+      if(!subWorkers || subWorkers.length===0) { c.innerHTML=`<div class="empty-state">No workers registered in this subgroup yet.</div>`; return; }
       
       let hasResults = false;
-      appState.workers.forEach(w => {
+      subWorkers.forEach(w => {
         if (sQuery && !w.name.toLowerCase().includes(sQuery) && !w.desig.toLowerCase().includes(sQuery)) return;
         hasResults = true; const isStaff = w.category === 'staff';
 
@@ -1123,30 +1209,35 @@
       const id=document.getElementById("edit-worker-id").value, n=document.getElementById("worker-name-input").value.trim(), p=document.getElementById("worker-phone-input").value.trim(), d=document.getElementById("worker-desig-input").value, r=parseFloat(document.getElementById("worker-rate-input").value)||0, a=parseFloat(document.getElementById("worker-adv-input").value)||0;
       const cat = document.querySelector('input[name="worker-cat"]:checked').value;
       if (!n) { alert("Please enter full name"); return; }
-      if (id) { const w=appState.workers.find(i => String(i.id) === String(id)); if(w){ w.name=n; w.phone=p; w.desig=d; w.category=cat; if(cat==='labour'){w.rate=r; appState.advances[w.id]=a;} else {w.rate=0; appState.advances[w.id]=0;} } } 
-      else { const nId=Date.now(); appState.workers.push({ id:nId, name:n, phone:p, desig:d, category:cat, rate: (cat==='labour'?r:0) }); if(cat==='labour') appState.advances[nId]=a; }
+      if (id) { 
+        const w=appState.workers.find(i => String(i.id) === String(id)); 
+        if(w){ w.name=n; w.phone=p; w.desig=d; w.category=cat; if(cat==='labour'){w.rate=r; appState.advances[w.id]=a;} else {w.rate=0; appState.advances[w.id]=0;} } 
+        logActivity(`Edited profile: ${n}`);
+      } else { 
+        const nId=Date.now(); 
+        appState.workers.push({ id:nId, name:n, phone:p, desig:d, category:cat, rate: (cat==='labour'?r:0), subgroup: currentSubgroup }); 
+        if(cat==='labour') appState.advances[nId]=a; logActivity(`Registered new ${cat}: ${n}`);
+      }
       saveState(); closeModal(); renderAll(); showToast("Profile saved");
     }
     
     function deleteWorker(id) { 
+      const wName = appState.workers.find(i => String(i.id) === String(id))?.name || 'Worker';
       if (confirm("Remove worker from site register? All attendance history will be lost.")) { 
         if(appState.workers) appState.workers = appState.workers.filter(w => String(w.id) !== String(id)); 
         if(appState.attendance) delete appState.attendance[id]; if(appState.advances) delete appState.advances[id]; 
-        saveState(); renderAll(); showToast("Removed permanently"); 
+        saveState(); renderAll(); showToast("Removed permanently"); logActivity(`Deleted profile: ${wName}`);
       } 
     }
 
     /* =========================================
-       10. WAGE STATEMENT SLIPS 
+       11. WAGE STATEMENT SLIPS 
        ========================================= */
     function populateSlipWorkerSelect() {
       const select = document.getElementById("slip-worker-select"); if(!select) return;
       select.innerHTML = '<option value="">-- Choose Labour --</option>';
-      appState.workers.forEach(w => { 
-        if(w.category !== 'staff') {
-          const opt = document.createElement("option"); opt.value = w.id; opt.textContent = `${w.name} (${w.desig})`; select.appendChild(opt); 
-        }
-      });
+      const subWorkers = appState.workers.filter(w => w.subgroup === currentSubgroup && w.category !== 'staff');
+      subWorkers.forEach(w => { const opt = document.createElement("option"); opt.value = w.id; opt.textContent = `${w.name} (${w.desig})`; select.appendChild(opt); });
       renderWageSlip();
     }
 
@@ -1188,14 +1279,14 @@
 
     function printAllSlips() {
       if(userRole !== 'admin') { showToast("Admin access required"); return; }
-      if(!appState.workers || appState.workers.length === 0) { alert("No workers to print."); return; }
+      const subWorkers = appState.workers.filter(w => w.subgroup === currentSubgroup && w.category !== 'staff');
+      if(!subWorkers || subWorkers.length === 0) { alert("No workers to print."); return; }
       const display = document.getElementById("wage-slip-display");
       const monthLabel = document.getElementById("month-select").selectedOptions[0].text;
       const siteLabel = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
       
       let allSlipsHTML = '';
-      appState.workers.forEach(w => {
-        if(w.category === 'staff') return; 
+      subWorkers.forEach(w => {
         let tDuty = 0, tOT = 0, tDailyAdv = 0;
         for (let d = 1; d <= 31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); }
         const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; const netPayable = grossAmt - totalAdv;
@@ -1231,22 +1322,21 @@
 
     /* DASHBOARD CALCULATIONS */
     function updateDashboard() {
-      const wC = appState.workers ? appState.workers.filter(w => w.category !== 'staff').length : 0; 
+      const subWorkers = appState.workers ? appState.workers.filter(w => w.subgroup === currentSubgroup) : [];
+      const wC = subWorkers.filter(w => w.category !== 'staff').length; 
       document.getElementById("stat-total-workers").textContent = wC;
       const sD = parseInt(document.getElementById("day-select").value) || 1; 
       let pT=0, tO=0, tN=0;
       
-      if(appState.workers) { 
-        appState.workers.forEach(w => { 
-          if(w.category === 'staff') return; 
-          let wD=0, wO=0, wA=0; 
-          if (appState.attendance[w.id]) { 
-            if (appState.attendance[w.id][sD] && appState.attendance[w.id][sD].duty>0) pT++; 
-            for (let d=1; d<=31; d++) { const r=appState.attendance[w.id][d]; if(r) { wD+=(r.duty||0); wO+=(r.ot||0); wA+=(r.adv||0); } } 
-          } 
-          tO+=wO; const r=w.rate||0; const amt=(wD*r)+(wO*(r/8)); const totA=(appState.advances[w.id]||0)+wA; tN+=(amt-totA); 
-        }); 
-      }
+      subWorkers.forEach(w => { 
+        if(w.category === 'staff') return; 
+        let wD=0, wO=0, wA=0; 
+        if (appState.attendance[w.id]) { 
+          if (appState.attendance[w.id][sD] && appState.attendance[w.id][sD].duty>0) pT++; 
+          for (let d=1; d<=31; d++) { const r=appState.attendance[w.id][d]; if(r) { wD+=(r.duty||0); wO+=(r.ot||0); wA+=(r.adv||0); } } 
+        } 
+        tO+=wO; const r=w.rate||0; const amt=(wD*r)+(wO*(r/8)); const totA=(appState.advances[w.id]||0)+wA; tN+=(amt-totA); 
+      }); 
 
       document.getElementById("lbl-present-today").textContent = `Day ${sD} Labour Present`; 
       document.getElementById("stat-present-today").textContent = `${pT} / ${wC}`; 
@@ -1254,7 +1344,6 @@
       document.getElementById("stat-total-balance").textContent = userRole === 'admin' ? `₹${tN.toLocaleString("en-IN", {maximumFractionDigits:0})}` : '***';
     }
 
-    /* BACKUP & CSV EXPORT */
     function exportDatabase() { 
       if(!requireAuthClick(null, 'admin')) return; 
       const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); 
@@ -1267,8 +1356,9 @@
       let h1=["NAME", "PHONE", "TRADE", "CATEGORY"]; for(let d=1;d<=31;d++) h1.push(d,""); h1.push("TOTAL","","RATE","AMOUNT","ADVANCE","BALANCE"); csv += h1.join(",") + "\n";
       let h2=["","","",""]; for(let d=1;d<=31;d++) h2.push("DUTY","OT"); h2.push("DUTY","OT","","","",""); csv += h2.join(",") + "\n";
       
-      if(appState.workers) { 
-        appState.workers.forEach(w => { 
+      const subWorkers = appState.workers.filter(w => w.subgroup === currentSubgroup);
+      if(subWorkers) { 
+        subWorkers.forEach(w => { 
           let row=[`"${w.name}"`, `"${w.phone||''}"`, `"${w.desig}"`, `"${w.category||'labour'}"`], tD=0, tO=0, tA=0; 
           for (let d=1; d<=31; d++) { 
             const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
