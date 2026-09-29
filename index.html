@@ -14,23 +14,30 @@
        THEMES & CORE VARIABLES
        ========================================= */
     :root {
-      --primary: #102A43; --primary-light: #1F4E78; --secondary: #2D68C4;
-      --accent: #FFD700; --bg: #F4F7FB; --card-bg: #FFFFFF;
-      --text: #0F172A; --text-muted: #64748B; --border: #E2E8F0;
-      --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
+      --primary: #102A43; 
+      --primary-light: #1F4E78; 
+      --secondary: #2D68C4;
+      --accent: #FFD700; 
+      --bg: #F4F7FB; 
+      --card-bg: #FFFFFF;
+      --text: #0F172A; 
+      --text-muted: #64748B; 
+      --border: #E2E8F0;
+      --success: #10B981; 
+      --warning: #F59E0B; 
+      --danger: #EF4444;
       --staff-color: #8B5CF6;
       --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
       --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
       --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.15);
-      --radius: 12px; --radius-lg: 20px;
+      --radius: 12px; 
+      --radius-lg: 20px;
     }
 
     [data-theme="dark"] {
       --primary: #94A3B8; --primary-light: #334155; --secondary: #3B82F6;
       --accent: #F59E0B; --bg: #0F172A; --card-bg: #1E293B;
       --text: #F8FAFC; --text-muted: #94A3B8; --border: #334155;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
-      --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.5);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -45,19 +52,23 @@
       display: none; align-items: center; justify-content: center; 
       padding: 20px; backdrop-filter: blur(8px); 
     }
+    
     .modal-box-center { 
       background: var(--card-bg); padding: 32px 24px; 
       border-radius: var(--radius-lg); width: 100%; max-width: 420px; 
       text-align: center; box-shadow: var(--shadow-lg); position: relative; 
     }
+    
     .close-btn { 
       position: absolute; top: 16px; right: 20px; background: none; 
       border: none; font-size: 28px; color: var(--text-muted); 
       cursor: pointer; transition: 0.2s; line-height: 1;
     }
     .close-btn:hover { color: var(--danger); }
+    
     .modal-box-center h2 { color: var(--primary); margin-bottom: 10px; font-size: 24px; font-weight: 900;}
     .modal-box-center p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; font-weight: 500;}
+    
     .pin-input { 
       width: 100%; padding: 18px; font-size: 28px; text-align: center; 
       letter-spacing: 16px; border: 2px solid var(--border); 
@@ -107,23 +118,11 @@
       border: 1px solid rgba(255,255,255,0.1); 
     }
     
-    .audit-dropdown { 
-      position: absolute; top: 100%; right: 24px; width: 320px; 
-      background: var(--card-bg); border-radius: 0 0 var(--radius) var(--radius); 
-      box-shadow: var(--shadow-lg); border: 1px solid var(--border); 
-      display: none; flex-direction: column; max-height: 400px; 
-      overflow: hidden; z-index: 200;
-    }
-    .audit-header { background: var(--bg); padding: 12px 16px; font-size: 13px; font-weight: 800; color: var(--primary); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;}
-    .audit-list { padding: 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px;}
-    .audit-item { font-size: 12px; color: var(--text); padding: 8px; background: var(--bg); border-radius: 6px; display: flex; flex-direction: column; gap: 4px;}
-    .audit-item span { font-size: 10px; color: var(--text-muted); font-weight: 600;}
-    
     .btn-icon { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 34px; height: 34px; color: white; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;}
     
     #auth-status-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 8px 16px; color: white; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; }
     
-    .online-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; background: rgba(0,0,0,0.3); padding: 6px 12px; border-radius: 20px; color: #FFF; cursor:pointer;}
+    .online-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; background: rgba(0,0,0,0.3); padding: 6px 12px; border-radius: 20px; color: #FFF; }
     .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #F59E0B; }
     .status-dot.online { background: #10B981; box-shadow: 0 0 10px #10B981; }
     .status-dot.offline { background: #EF4444; box-shadow: 0 0 10px #EF4444;}
@@ -137,7 +136,6 @@
     .stat-card.accent { border-left-color: var(--accent); }
     .stat-card.success { border-left-color: var(--success); }
     .stat-card.warning { border-left-color: var(--warning); }
-    .stat-card.danger { border-left-color: var(--danger); }
     .stat-label { font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px;}
     .stat-value { font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: -0.5px;}
 
@@ -175,9 +173,8 @@
     .tab-content.active { display: block; }
     
     .worker-daily-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; }
-    .worker-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; position: relative; overflow:hidden;}
+    .worker-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; position: relative; overflow:hidden;}
     
-    /* Key Person Styling */
     .worker-card.staff-card { border-left: 6px solid var(--staff-color); background: linear-gradient(to right, rgba(139, 92, 246, 0.05), transparent); }
     
     .worker-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -264,7 +261,7 @@
 
     @media print {
       body { background: white; color: black; }
-      header, .app-control-bar, .nav-tabs, .toolbar, .btn, .dashboard-grid, .dpr-section .form-group, .audit-dropdown { display: none !important; }
+      header, .app-control-bar, .nav-tabs, .toolbar, .btn, .dashboard-grid, .dpr-section .form-group { display: none !important; }
       .tab-content { display: block !important; margin: 0; padding: 0;}
       .table-container { box-shadow: none; border: none; overflow: visible; }
       table { width: 100%; }
@@ -299,31 +296,9 @@
     </div>
   </div>
 
-  <!-- Site/Subgroup Manager (Admin Only) -->
-  <div id="site-manager-modal" class="overlay">
-    <div class="modal-box-center" style="max-width: 500px; text-align: left;">
-      <button class="close-btn" onclick="closeSiteManager()">&times;</button>
-      <h2 style="margin-bottom: 20px;">⚙️ Manage Sites</h2>
-      
-      <div style="background: var(--bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 16px;">
-        <label style="font-weight: 800; font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 8px;">ADD NEW SITE / STATION</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="new-site-name" placeholder="E.g. Barauni Junction">
-          <button class="btn btn-success btn-small" onclick="addNewSite()" style="width: auto;">Add</button>
-        </div>
-      </div>
+  <input type="file" id="restore-file-input" style="display: none;" accept=".json" onchange="importData(event)">
 
-      <div style="background: var(--bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border);">
-        <label style="font-weight: 800; font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 8px;">CURRENT SITE: <span id="mgr-current-site" style="color:var(--primary);"></span></label>
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-          <input type="text" id="rename-site-input" placeholder="Rename this site...">
-          <button class="btn btn-outline btn-small" onclick="renameCurrentSite()" style="width: auto;">Rename</button>
-        </div>
-        <button class="btn btn-danger" onclick="deleteCurrentSite()">🗑️ Delete Entire Site & All Data</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- Official Header -->
   <header>
     <div class="letterhead-container">
       <div class="letterhead-top">
@@ -355,36 +330,26 @@
       </div>
     </div>
 
+    <!-- App Control Navigation Bar -->
     <div class="app-control-bar">
       <div class="site-selector-wrap">
         <span class="site-label">SITE:</span>
         <select id="site-select" onchange="handleSiteChange()"></select>
-        <button id="btn-manage-sites" class="btn-icon" style="display:none; background:rgba(255,255,255,0.2);" title="Manage Sites" onclick="openSiteManager()">⚙️</button>
       </div>
-      
       <div class="status-group">
-        <button class="btn-icon" onclick="toggleTheme()" title="Dark Mode">🌙</button>
-        
-        <div style="position:relative;">
-          <div class="user-profile-badge" id="profile-display" onclick="toggleAuditLog()">👤 User</div>
-          <div class="audit-dropdown" id="audit-dropdown">
-            <div class="audit-header"><span>🌐 Audit Log</span> <button onclick="toggleAuditLog()" style="background:none;border:none;cursor:pointer;">✖</button></div>
-            <div class="audit-list" id="audit-log-list">
-               <div style="padding: 20px; text-align:center; color:var(--text-muted); font-size:12px;">Loading activity...</div>
-            </div>
-          </div>
-        </div>
-        
-        <div id="online-indicator" class="online-indicator" title="View Cloud Sync Status">
+        <button class="btn-icon" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
+        <div class="user-profile-badge" id="profile-display">👤 User</div>
+        <div id="online-indicator" class="online-indicator" title="Cloud Sync Status">
           <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Cloud Sync</span>
         </div>
-        
         <button id="auth-status-btn" onclick="toggleAuth()">🔒 View Only</button>
       </div>
     </div>
   </header>
 
   <div class="container">
+    <!-- Live Financial & Headcount Dashboard -->
     <div class="dashboard-grid">
       <div class="stat-card"><span class="stat-label">👷 Total Workers</span><span class="stat-value" id="stat-total-workers">0</span></div>
       <div class="stat-card success"><span class="stat-label" id="lbl-present-today">✅ Today Present</span><span class="stat-value" id="stat-present-today">0 / 0</span></div>
@@ -392,13 +357,16 @@
       <div class="stat-card accent"><span class="stat-label">💰 Net Payable</span><span class="stat-value" id="stat-total-balance">₹0</span></div>
     </div>
 
+    <!-- Main Navigation Tabs -->
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('daily-view')">📅 Daily Attendance</button>
       <button class="tab-btn" onclick="switchTab('dpr-view')">📝 DPR Report</button>
       <button class="tab-btn" onclick="switchTab('monthly-view')">📊 Monthly Register</button>
       <button class="tab-btn" onclick="switchTab('worker-view')">👷 Worker Roster</button>
+      <button class="tab-btn" onclick="switchTab('slips-view')">🧾 Wage Statement</button>
     </div>
 
+    <!-- Action Toolbar -->
     <div class="toolbar">
       <div class="toolbar-group">
         <div style="display:flex; gap:14px;">
@@ -413,23 +381,28 @@
 
       <div class="toolbar-group">
         <div id="edit-controls" style="display:none; gap:14px; width: 100%; flex-wrap: wrap;">
-          <button class="btn btn-outline" id="btn-add-worker" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;">➕ Add Staff/Worker</button>
+          <button class="btn btn-outline" id="btn-add-worker" onclick="openAddWorkerModal()" style="border-color: var(--secondary); color: var(--secondary); flex:1;">➕ Add Staff / Worker</button>
+          <button class="btn btn-outline" onclick="exportDatabase()" style="flex:1;">💾 Backup File</button>
+          <button class="btn btn-danger" id="btn-delete-site" onclick="deleteCurrentSite()" style="flex:1;">🗑️ Delete Site</button>
         </div>
         <div class="toolbar-group-row">
           <button class="btn btn-success" style="flex:1;" onclick="exportToCSV()">📥 Export CSV</button>
-          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print Document</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">🖨️ Print Page</button>
         </div>
       </div>
     </div>
 
-    <!-- VIEW 1: Daily -->
+    <!-- VIEW 1: Daily Attendance -->
     <div id="daily-view" class="tab-content active">
       <div class="dpr-section" style="padding: 16px; margin-bottom: 20px;">
         <span style="font-size:13px; font-weight:900; color:var(--text-muted); letter-spacing: 0.5px;">TODAY'S HEADCOUNT SUMMARY:</span>
-        <div class="trade-pill-group" id="daily-headcount-pills"><span class="trade-pill">No attendance marked yet</span></div>
+        <div class="trade-pill-group" id="daily-headcount-pills">
+          <span class="trade-pill">No attendance marked yet</span>
+        </div>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
+        <h3 id="daily-view-title" style="color:var(--primary); font-size:20px;">Daily Attendance</h3>
         <div id="daily-bulk-actions" style="display:none; gap:12px; width: 100%;">
           <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(1)">✔️ Mark All Present</button>
           <button class="btn btn-outline btn-small" style="flex:1;" onclick="bulkMarkDaily(0)">✖️ Clear Today</button>
@@ -482,6 +455,7 @@
       <div class="dpr-section">
         <h4><span>Work Details & Location</span></h4>
         <textarea id="dpr-work-text" class="dpr-textarea" placeholder="Describe work done today..." oninput="autoSaveDPR()" onclick="requireAuthClick(this, 'incharge')"></textarea>
+        <div id="dpr-work-saved" class="save-status-indicator">✓ Saved to Cloud</div>
       </div>
       
       <div class="dpr-section">
@@ -516,6 +490,21 @@
     <!-- VIEW 4: Workers Roster -->
     <div id="worker-view" class="tab-content">
       <div class="worker-daily-list" id="worker-mgmt-body"></div>
+    </div>
+
+    <!-- VIEW 5: Wage Statement -->
+    <div id="slips-view" class="tab-content">
+      <h3 style="color:var(--primary); font-size:20px; margin-bottom: 18px;">Labour Wage Settlement Statement</h3>
+      <div class="dpr-section">
+        <div class="form-group" style="display:flex; gap:12px; align-items:flex-end;">
+          <div style="flex:1;">
+            <label>Select Worker:</label>
+            <select id="slip-worker-select" onchange="renderWageSlip()"></select>
+          </div>
+          <button class="btn btn-primary" style="width:auto;" onclick="printAllSlips()">🖨️ Print ALL</button>
+        </div>
+        <div id="wage-slip-display"></div>
+      </div>
     </div>
   </div>
 
@@ -562,7 +551,7 @@
 
   <script>
     /* =========================================
-       1. FIREBASE CONFIGURATION
+       1. FIREBASE CONFIGURATION & GLOBALS
        ========================================= */
     const DB_BASE_URL = "https://g12343-default-rtdb.asia-southeast1.firebasedatabase.app";
     const firebaseConfig = {
@@ -588,67 +577,84 @@
     let appState = { lastUpdated: 0, workers: [], attendance: {}, advances: {}, dpr: {} };
     let autoSaveTimer = null;
     let isCloudOnline = false;
-    let auditLogData = [];
 
+    // Core Helpers
     function getStorageKey() { return "GI_DATA_" + currentSite.toUpperCase(); }
-    function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = m; t.style.bottom = '20px'; setTimeout(() => { t.style.bottom = '-80px'; }, 3000); }
+    function showToast(m) { 
+        const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = m; 
+        t.style.bottom = '20px'; setTimeout(() => { t.style.bottom = '-80px'; }, 3000); 
+    }
     function vibrateBtn() { if(navigator.vibrate) navigator.vibrate(30); }
-    function toggleTheme() { const body = document.body; if(body.getAttribute('data-theme') === 'dark') { body.removeAttribute('data-theme'); localStorage.setItem('gi_theme', 'light'); } else { body.setAttribute('data-theme', 'dark'); localStorage.setItem('gi_theme', 'dark'); } }
-
-    /* =========================================
-       2. PROFILE & AUDIT LOGGING
-       ========================================= */
-    function checkProfile() { const name = localStorage.getItem('gi_user_profile'); if (!name) { document.getElementById('profile-overlay').style.display = 'flex'; } else { document.getElementById('profile-display').innerHTML = `👤 ${name}`; } }
-    function saveProfile() { const name = document.getElementById('profile-name-input').value.trim(); if (name) { localStorage.setItem('gi_user_profile', name); document.getElementById('profile-overlay').style.display = 'none'; document.getElementById('profile-display').innerHTML = `👤 ${name}`; showToast("Device registered for " + name); logActivity("Logged in to portal"); } else { alert("Please enter your name."); } }
-    function toggleAuditLog() { const d = document.getElementById('audit-dropdown'); if(d.style.display === 'flex') d.style.display = 'none'; else { d.style.display = 'flex'; renderAuditLog(); } }
-
-    function logActivity(actionDesc) {
-      if(!database || !isCloudOnline) return;
-      const user = localStorage.getItem('gi_user_profile') || 'Unknown';
-      const timeStr = new Date().toLocaleString();
-      const log = { user: user, action: actionDesc, time: timeStr, timestamp: Date.now() };
-      try { database.ref(`sites/${currentSite}/activity`).push(log); } catch(e){}
+    function toggleTheme() {
+        const body = document.body;
+        if(body.getAttribute('data-theme') === 'dark') { body.removeAttribute('data-theme'); localStorage.setItem('gi_theme', 'light'); } 
+        else { body.setAttribute('data-theme', 'dark'); localStorage.setItem('gi_theme', 'dark'); }
     }
 
-    function renderAuditLog() {
-      const list = document.getElementById('audit-log-list');
-      if(!auditLogData || auditLogData.length === 0) { list.innerHTML = `<div style="padding: 20px; text-align:center; color:var(--text-muted); font-size:12px;">No recent activity found.</div>`; return; }
-      const sorted = auditLogData.sort((a,b) => b.timestamp - a.timestamp).slice(0, 15);
-      list.innerHTML = sorted.map(l => `<div class="audit-item"><strong style="color:var(--primary); font-size:13px;">${l.user}</strong><div>${l.action}</div><span>${l.time}</span></div>`).join("");
+    /* =========================================
+       2. PROFILE LOGIC
+       ========================================= */
+    function checkProfile() {
+      const name = localStorage.getItem('gi_user_profile');
+      if (!name) { document.getElementById('profile-overlay').style.display = 'flex'; } 
+      else { document.getElementById('profile-display').innerHTML = `👤 ${name}`; }
+    }
+
+    function saveProfile() {
+      const name = document.getElementById('profile-name-input').value.trim();
+      if (name) { 
+        localStorage.setItem('gi_user_profile', name); 
+        document.getElementById('profile-overlay').style.display = 'none'; 
+        document.getElementById('profile-display').innerHTML = `👤 ${name}`; 
+        showToast("Device registered for " + name); 
+      } else { alert("Please enter your name."); }
     }
 
     /* =========================================
        3. ROLE-BASED AUTHENTICATION
        ========================================= */
     function checkAuthStatus() { updateAuthUI(); }
-    function toggleAuth() { if (userRole !== 'viewer') { userRole = 'viewer'; localStorage.setItem('gi_role', 'viewer'); updateAuthUI(); renderAll(); showToast("Portal Locked (View Only)"); } else { showLoginModal(); } }
+    
+    function toggleAuth() { 
+      if (userRole !== 'viewer') { 
+        userRole = 'viewer'; localStorage.setItem('gi_role', 'viewer'); 
+        updateAuthUI(); renderAll(); showToast("Portal Locked (View Only)"); 
+      } else { showLoginModal(); } 
+    }
+    
     function showLoginModal() { document.getElementById('login-overlay').style.display = 'flex'; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('admin-pwd').value = ''; document.getElementById('admin-pwd').focus(); }
     function closeLoginModal() { document.getElementById('login-overlay').style.display = 'none'; }
     
     function checkPassword() { 
       const pin = document.getElementById('admin-pwd').value;
-      if (pin === ADMIN_PIN) { userRole = 'admin'; localStorage.setItem('gi_role', 'admin'); closeLoginModal(); updateAuthUI(); renderAll(); showToast("Admin Mode Unlocked"); logActivity("Unlocked Admin Mode"); } 
-      else if (pin === INCHARGE_PIN) { userRole = 'incharge'; localStorage.setItem('gi_role', 'incharge'); closeLoginModal(); updateAuthUI(); renderAll(); showToast("Incharge Mode Unlocked"); logActivity("Unlocked Incharge Mode"); } 
-      else { document.getElementById('pwd-error').style.display = 'block'; } 
+      if (pin === ADMIN_PIN) { 
+        userRole = 'admin'; localStorage.setItem('gi_role', 'admin'); 
+        closeLoginModal(); updateAuthUI(); renderAll(); showToast("Admin Mode Unlocked"); 
+      } else if (pin === INCHARGE_PIN) {
+        userRole = 'incharge'; localStorage.setItem('gi_role', 'incharge'); 
+        closeLoginModal(); updateAuthUI(); renderAll(); showToast("Incharge Mode Unlocked"); 
+      } else { 
+        document.getElementById('pwd-error').style.display = 'block'; 
+      } 
     }
     
     function updateAuthUI() {
       const btn = document.getElementById('auth-status-btn');
       const b1 = document.getElementById('daily-bulk-actions');
       const e1 = document.getElementById('edit-controls');
-      const mgrBtn = document.getElementById('btn-manage-sites');
+      const delBtn = document.getElementById('btn-delete-site');
 
       if (userRole === 'admin') { 
-        btn.innerHTML='👑 Admin Mode'; btn.style.background='var(--primary)';
-        if(b1)b1.style.display='flex'; if(e1)e1.style.display='flex'; if(mgrBtn) mgrBtn.style.display='flex';
+        btn.innerHTML='👑 Admin Mode'; btn.style.background='var(--primary)'; btn.classList.remove("shake");
+        if(b1)b1.style.display='flex'; if(e1)e1.style.display='flex'; if(delBtn)delBtn.style.display='block';
         document.getElementById('dpr-weather-select').removeAttribute('disabled');
       } else if (userRole === 'incharge') {
-        btn.innerHTML='🛡️ Incharge Mode'; btn.style.background='var(--success)';
-        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(mgrBtn) mgrBtn.style.display='none';
+        btn.innerHTML='🛡️ Incharge Mode'; btn.style.background='var(--success)'; btn.classList.remove("shake");
+        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(delBtn)delBtn.style.display='none';
         document.getElementById('dpr-weather-select').removeAttribute('disabled');
       } else { 
         btn.innerHTML='🔒 View Only'; btn.style.background='rgba(255,255,255,0.2)'; 
-        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(mgrBtn) mgrBtn.style.display='none';
+        if(b1)b1.style.display='none'; if(e1)e1.style.display='none'; if(delBtn)delBtn.style.display='none';
         document.getElementById('dpr-weather-select').setAttribute('disabled', 'true');
       }
     }
@@ -656,8 +662,11 @@
     function requireAuthClick(el, requiredRole = 'incharge') { 
       if (userRole === 'viewer' || (requiredRole === 'admin' && userRole !== 'admin')) { 
         if(el && el.blur) el.blur(); 
+        const btn = document.getElementById('auth-status-btn');
+        btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
         showToast(requiredRole === 'admin' ? "Admin Access Required!" : "Portal locked! Enter PIN.");
-        setTimeout(() => { showLoginModal(); }, 400); return false;
+        setTimeout(() => { showLoginModal(); }, 400);
+        return false;
       } 
       return true;
     }
@@ -674,87 +683,75 @@
 
       try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        database = firebase.app().database(DB_BASE_URL);
+        database = firebase.app().database(); // Automatically uses DB URL from config
         sitesRef = database.ref('global/sites');
 
         database.ref('.info/connected').on('value', (snap) => {
           const dot = document.getElementById('status-dot');
+          const text = document.getElementById('status-text');
           isCloudOnline = (snap.val() === true);
-          if (isCloudOnline) { dot.className = 'status-dot online'; } else { dot.className = 'status-dot offline'; }
+          if (isCloudOnline) { dot.className = 'status-dot online'; text.textContent = 'Cloud Live';} 
+          else { dot.className = 'status-dot offline'; text.textContent = 'Offline Mode';}
         });
 
         sitesRef.on('value', (snapshot) => {
           const sites = snapshot.val();
-          if (sites) { availableSites = Array.isArray(sites) ? sites : Object.values(sites); localStorage.setItem('gi_sites', JSON.stringify(availableSites)); renderSiteSelector(); } 
-          else { sitesRef.set(availableSites); }
+          if (sites) { 
+            availableSites = Array.isArray(sites) ? sites : Object.values(sites); 
+            localStorage.setItem('gi_sites', JSON.stringify(availableSites)); 
+            renderSiteSelector();
+          } else { sitesRef.set(availableSites); }
         });
 
         syncSiteDataFirebase();
       } catch(e) { console.warn("Firebase Init Failed", e); }
     }
 
-    // Site Manager Modal
-    function openSiteManager() {
-      if(userRole !== 'admin') { showToast("Admin Access Required"); return; }
-      document.getElementById("mgr-current-site").textContent = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
-      document.getElementById('site-manager-modal').style.display = 'flex';
-    }
-    function closeSiteManager() { document.getElementById('site-manager-modal').style.display = 'none'; }
-
-    function addNewSite() {
-      const siteName = document.getElementById("new-site-name").value;
-      if (siteName && siteName.trim() !== '') {
-          const newId = siteName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
-          availableSites.push({ id: newId, name: siteName.trim() });
-          localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-          if (database && isCloudOnline) sitesRef.set(availableSites); 
-          
-          currentSite = newId; localStorage.setItem('gi_last_site', currentSite);
-          appState = { _initialized: true, lastUpdated: Date.now(), workers: [], attendance: {}, advances: {}, dpr: {} };
-          localStorage.setItem(getStorageKey(), JSON.stringify(appState));
-          if (database && isCloudOnline) database.ref('sites/' + currentSite).set(appState);
-          
-          saveState(); renderSiteSelector(); renderAll(); closeSiteManager();
-          logActivity(`Created new site: ${siteName}`); showToast("Site Added!");
-      }
+    function renderSiteSelector() {
+      const select = document.getElementById('site-select'); if(!select) return; select.innerHTML = '';
+      availableSites.forEach(site => { const opt = document.createElement('option'); opt.value = site.id; opt.textContent = site.name; if (site.id === currentSite) opt.selected = true; select.appendChild(opt); });
+      const addOpt = document.createElement('option'); addOpt.value = 'add_new'; addOpt.textContent = '+ Add New Site...'; select.appendChild(addOpt);
     }
 
-    function renameCurrentSite() {
-      const newName = document.getElementById("rename-site-input").value;
-      if(newName && newName.trim() !== '') {
-        const site = availableSites.find(s => s.id === currentSite);
-        if(site) {
-          site.name = newName.trim(); localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-          if (database && isCloudOnline) sitesRef.set(availableSites);
-          renderSiteSelector(); document.getElementById("mgr-current-site").textContent = newName.trim(); document.getElementById("rename-site-input").value = "";
-          logActivity(`Renamed site to: ${newName}`); showToast("Site Renamed!");
-        }
-      }
+    function handleSiteChange() {
+      const select = document.getElementById('site-select');
+      if (select.value === 'add_new') {
+          if (userRole !== 'admin') { requireAuthClick(null, 'admin'); select.value = currentSite; return; }
+          const siteName = prompt("Enter new Site / Station Name:");
+          if (siteName && siteName.trim() !== '') {
+              const newId = siteName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+              availableSites.push({ id: newId, name: siteName.trim() });
+              localStorage.setItem('gi_sites', JSON.stringify(availableSites));
+              if (database && isCloudOnline) sitesRef.set(availableSites); 
+              
+              currentSite = newId; localStorage.setItem('gi_last_site', currentSite);
+              appState = { _initialized: true, lastUpdated: Date.now(), workers: [], attendance: {}, advances: {}, dpr: {} };
+              localStorage.setItem(getStorageKey(), JSON.stringify(appState));
+              if (database && isCloudOnline) database.ref('sites/' + currentSite).set(appState);
+              
+              saveState(); renderSiteSelector(); renderAll();
+          } else { select.value = currentSite; }
+      } else { currentSite = select.value; localStorage.setItem('gi_last_site', currentSite); loadLocalState(); renderAll(); if (database) syncSiteDataFirebase(); }
     }
 
     function deleteCurrentSite() {
+      if(userRole !== 'admin') return;
       if(availableSites.length <= 1) { alert("You cannot delete the last remaining site."); return; }
       const siteName = availableSites.find(s => s.id === currentSite)?.name || currentSite;
       if(confirm(`⚠️ DANGER: Are you sure you want to permanently delete "${siteName}"?`)) {
-        availableSites = availableSites.filter(s => s.id !== currentSite); localStorage.setItem('gi_sites', JSON.stringify(availableSites));
-        if (database && isCloudOnline) { sitesRef.set(availableSites); database.ref('sites/' + currentSite).remove(); }
+        availableSites = availableSites.filter(s => s.id !== currentSite);
+        localStorage.setItem('gi_sites', JSON.stringify(availableSites));
+        if (database && isCloudOnline) {
+          sitesRef.set(availableSites); database.ref('sites/' + currentSite).remove();
+        }
         localStorage.removeItem(getStorageKey());
         currentSite = availableSites[0].id; localStorage.setItem('gi_last_site', currentSite);
-        
-        logActivity(`Deleted site: ${siteName}`);
-        renderSiteSelector(); loadLocalState(); renderAll(); closeSiteManager();
+        renderSiteSelector(); loadLocalState(); renderAll(); 
         if (database) syncSiteDataFirebase(); showToast("Site Deleted");
       }
     }
 
-    function renderSiteSelector() {
-      const select = document.getElementById('site-select'); if(!select) return; select.innerHTML = '';
-      availableSites.forEach(site => { const opt = document.createElement('option'); opt.value = site.id; opt.textContent = site.name; if (site.id === currentSite) opt.selected = true; select.appendChild(opt); });
-    }
-
-    function handleSiteChange() { currentSite = document.getElementById('site-select').value; localStorage.setItem('gi_last_site', currentSite); loadLocalState(); renderAll(); if (database) syncSiteDataFirebase(); }
-
-    /* DATA SANITIZATION */
+    /* DATA SANITIZATION & TIMESTAMP MERGE */
     function deepCopy(obj) { try { return JSON.parse(JSON.stringify(obj || {})); } catch(e){ return {}; } }
     
     function fixFirebaseArrays(data) {
@@ -763,7 +760,10 @@
       if (Array.isArray(data.workers)) cleanWorkers = data.workers.filter(w => w !== null);
       else if (typeof data.workers === 'object') cleanWorkers = Object.values(data.workers).filter(w => w !== null);
       
-      cleanWorkers.forEach(w => { w.name = w.name || "Unknown"; w.desig = w.desig || "Helper"; w.rate = parseFloat(w.rate) || 0; w.category = w.category || 'labour'; });
+      cleanWorkers.forEach(w => { 
+        w.name = w.name || "Unknown"; w.desig = w.desig || "Helper"; w.rate = parseFloat(w.rate) || 0; 
+        w.category = w.category || 'labour'; 
+      });
       cleanWorkers.sort((a, b) => a.name.localeCompare(b.name)); data.workers = cleanWorkers;
 
       if(!data.attendance) data.attendance = {}; if(!data.advances) data.advances = {}; if(!data.dpr) data.dpr = {};
@@ -793,13 +793,6 @@
         const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
         if (activeTag !== 'input' && activeTag !== 'textarea') renderAll(); else updateDashboard();
       });
-
-      try {
-        database.ref(`sites/${currentSite}/activity`).limitToLast(20).on('value', (snap) => {
-           const logs = snap.val();
-           if(logs) { auditLogData = Object.values(logs); if(document.getElementById('audit-dropdown').style.display === 'flex') renderAuditLog(); }
-        });
-      } catch(e){}
     }
 
     function saveState() { 
@@ -836,10 +829,10 @@
       if (tId === "daily-view" || tId === "dpr-view") { 
         dP.style.display = "block"; if(tId==="daily-view") renderDailyView(); if(tId==="dpr-view") renderDPRView(); 
       } else { 
-        dP.style.display = "none"; if(tId==="monthly-view") renderMonthlyTable(); if(tId==="worker-view") renderWorkerManagement(); 
+        dP.style.display = "none"; if(tId==="monthly-view") renderMonthlyTable(); if(tId==="worker-view") renderWorkerManagement(); if(tId==="slips-view") populateSlipWorkerSelect(); 
       }
     }
-    function renderAll() { renderDailyView(); renderDPRView(); renderMonthlyTable(); renderWorkerManagement(); updateDashboard(); }
+    function renderAll() { renderDailyView(); renderDPRView(); renderMonthlyTable(); renderWorkerManagement(); populateSlipWorkerSelect(); updateDashboard(); }
 
     /* =========================================
        6. DPR & MATERIALS
@@ -878,7 +871,9 @@
       const d = document.createElement("div"); d.className = "material-row";
       const r = (userRole === 'viewer') ? "readonly onclick='requireAuthClick(this)'" : "";
       const ds = (userRole === 'viewer') ? "disabled" : "";
-      d.innerHTML = `<input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()"><input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()"><select class="material-unit" ${ds} onchange="autoSaveDPR()"><option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option><option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option></select><button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>`;
+      d.innerHTML = `
+        <input type="text" class="material-item" placeholder="Material Name" value="${item}" ${r} oninput="autoSaveDPR()"><input type="number" class="material-qty" placeholder="Qty" value="${qty}" ${r} oninput="autoSaveDPR()"><select class="material-unit" ${ds} onchange="autoSaveDPR()"><option value="Bag" ${unit==='Bag'?'selected':''}>Bag</option><option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option><option value="Nos" ${unit==='Nos'?'selected':''}>Nos</option><option value="Tractor" ${unit==='Tractor'?'selected':''}>Tractor</option></select><button class="btn-remove-row" onclick="removeMaterialRow(this)" ${ds}>✖</button>
+      `;
       container.appendChild(d);
     }
 
@@ -889,11 +884,16 @@
       if(userRole === 'viewer') return; clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         const dk = getSelectedDateKey();
-        const recMats = []; document.querySelectorAll("#dpr-material-received-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") recMats.push({ item: i, qty: q, unit: u }); });
-        const conMats = []; document.querySelectorAll("#dpr-material-consumed-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") conMats.push({ item: i, qty: q, unit: u }); });
+        
+        const recMats = [];
+        document.querySelectorAll("#dpr-material-received-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") recMats.push({ item: i, qty: q, unit: u }); });
+
+        const conMats = [];
+        document.querySelectorAll("#dpr-material-consumed-list .material-row").forEach(r => { const i = r.querySelector(".material-item").value, q = r.querySelector(".material-qty").value, u = r.querySelector(".material-unit").value; if (i.trim() !== "" || q !== "") conMats.push({ item: i, qty: q, unit: u }); });
 
         appState.dpr[dk] = { work: document.getElementById("dpr-work-text").value, weather: document.getElementById("dpr-weather-select").value, rainHrs: document.getElementById("dpr-rain-hours").value, workStop: document.getElementById("dpr-work-stopped").value, received: recMats, consumed: conMats }; 
-        saveState(); const ind = document.getElementById("dpr-work-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
+        saveState();
+        const ind = document.getElementById("dpr-work-saved"); ind.classList.add("visible"); setTimeout(() => ind.classList.remove("visible"), 2000);
       }, 500);
     }
 
@@ -908,11 +908,15 @@
       let text = `*🚧 GLOBAL INDUSTRIES - DPR*\n*Site:* ${site}\n*Date:* ${dk.replace(/-/g, '/')}\n*Weather:*${dData.weather}\n`;
       if(dData.weather && dData.weather.includes('Rain')) { text += `  - Rain Hrs: ${dData.rainHrs \vert{}\vert{} '0'}\n  - Work Stopped:${dData.workStop}\n`; }
       text += `*Labour Present:* ${pCount} workers\n`;
-      const trades = Object.keys(tradeCounts); if(trades.length > 0) { text += `_Breakup: ` + trades.map(t => `${t}:${tradeCounts[t]}`).join(", ") + `_\n\n`; } else { text += `\n`; }
+      
+      const trades = Object.keys(tradeCounts);
+      if(trades.length > 0) { text += `_Breakup: ` + trades.map(t => `${t}:${tradeCounts[t]}`).join(", ") + `_\n\n`; } else { text += `\n`; }
 
       text += `*🛠️ WORK ALLOCATION:*\n${dData.work || "None"}\n\n`;
-      text += `*📥 MATERIALS RECEIVED:*\n`; if(!dData.received || dData.received.length === 0) text += `- None\n`; else dData.received.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
-      text += `\n*📤 MATERIALS CONSUMED:*\n`; if(!dData.consumed || dData.consumed.length === 0) text += `- None\n`; else dData.consumed.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
+      text += `*📥 MATERIALS RECEIVED:*\n`;
+      if(!dData.received || dData.received.length === 0) text += `- None\n`; else dData.received.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
+      text += `\n*📤 MATERIALS CONSUMED:*\n`;
+      if(!dData.consumed || dData.consumed.length === 0) text += `- None\n`; else dData.consumed.forEach(m => { if(m.item) text += `- ${m.item}: ${m.qty}${m.unit}\n`; });
 
       text += `\n_Submitted via Global Industries_`; window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
     }
@@ -965,13 +969,13 @@
         let r = "", c1 = "", c2 = "", c3 = ""; let dutyClasses = "";
         
         if (userRole === 'admin') {
-          r = ""; c1 = `setDailyDuty('${w.id}', ${sDay}, 1, '${w.name}')`; c2 = `setDailyDuty('${w.id}', ${sDay}, 0.5, '${w.name}')`; c3 = `setDailyDuty('${w.id}', ${sDay}, 0, '${w.name}')`;
+          r = ""; c1 = `setDailyDuty('${w.id}',${sDay}, 1)`; c2 = `setDailyDuty('${w.id}',${sDay}, 0.5)`; c3 = `setDailyDuty('${w.id}',${sDay}, 0)`;
         } else if (userRole === 'incharge') {
           if (isLockedForIncharge) {
             r = "readonly onclick='showToast(\"Attendance submitted. Admin access needed to edit.\")'";
             dutyClasses = "locked"; c1 = c2 = c3 = `showToast("Attendance submitted. Admin access needed to edit.")`;
           } else {
-             r = ""; c1 = `setDailyDuty('${w.id}', ${sDay}, 1, '${w.name}')`; c2 = `setDailyDuty('${w.id}', ${sDay}, 0.5, '${w.name}')`; c3 = `setDailyDuty('${w.id}', ${sDay}, 0, '${w.name}')`;
+             r = ""; c1 = `setDailyDuty('${w.id}',${sDay}, 1)`; c2 = `setDailyDuty('${w.id}',${sDay}, 0.5)`; c3 = `setDailyDuty('${w.id}',${sDay}, 0)`;
           }
         } else {
           r = "readonly onclick='requireAuthClick(this)'"; c1 = c2 = c3 = `requireAuthClick(this)`;
@@ -982,7 +986,7 @@
         const avatar = `<div class="avatar" style="background:${getAvatarColor(w.name)}">${getInitials(w.name)}</div>`;
         
         const rateHtml = (userRole === 'admin' && !isStaff) ? `<div class="worker-rate">₹${w.rate}/day</div>` : ``;
-        const advHtml = (userRole === 'admin' && !isStaff) ? `<div class="input-box"><span>Adv (₹)</span><input type="number" min="0" step="50" placeholder="0" value="${a.adv||''}" ${r} onchange="setDailyAdv('${w.id}', ${sDay}, this.value, '${w.name}')"></div>` : ``;
+        const advHtml = (userRole === 'admin' && !isStaff) ? `<div class="input-box"><span>Adv (₹)</span><input type="number" min="0" step="50" placeholder="0" value="${a.adv\vert{}\vert{}''}" ${r} onchange="setDailyAdv('${w.id}',${sDay}, this.value)"></div>` : ``;
 
         const div = document.createElement("div"); div.className = "worker-card" + (isStaff ? " staff-card" : "");
         div.innerHTML = `
@@ -996,7 +1000,7 @@
             <div class="duty-opt ${a.duty===0?'selected-a':''} ${dutyClasses}" onclick="${c3}">A (0)</div>
           </div>
           <div class="input-row">
-            <div class="input-box"><span>OT (Hrs)</span><input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT('${w.id}', ${sDay}, this.value, '${w.name}')"></div>
+            <div class="input-box"><span>OT (Hrs)</span><input type="number" min="0" step="0.5" value="${a.ot||0}" ${r} onchange="setDailyOT('${w.id}', ${sDay}, this.value)"></div>
             ${advHtml}
           </div>
         `;
@@ -1014,43 +1018,15 @@
       if(!hasResults) cLabour.innerHTML = `<div class="empty-state">No match found.</div>`;
     }
 
-    function setDailyDuty(wId, d, v, wName) { 
-      vibrateBtn();
-      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
-      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
-      appState.attendance[wId][d].duty=v; 
-      if(userRole === 'incharge') appState.attendance[wId][d].locked = true; 
-      saveState(); renderDailyView(); 
-      let actionStr = v === 1 ? 'Present' : (v === 0.5 ? 'Half Day' : 'Absent');
-      logActivity(`Marked ${wName} as ${actionStr} on Day ${d}`);
-    }
-    
-    function setDailyOT(wId, d, v, wName) { 
-      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
-      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
-      appState.attendance[wId][d].ot=parseFloat(v)||0; 
-      if(userRole === 'incharge') appState.attendance[wId][d].locked = true;
-      saveState(); logActivity(`Added ${v} Hrs OT for ${wName} on Day ${d}`);
-    }
-    
-    function setDailyAdv(wId, d, v, wName) { 
-      if(userRole !== 'admin') return;
-      if(!appState.attendance[wId]) appState.attendance[wId]={}; 
-      if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; 
-      appState.attendance[wId][d].adv=parseFloat(v)||0; 
-      saveState(); logActivity(`Gave ₹${v} advance to ${wName} on Day ${d}`);
-    }
+    function setDailyDuty(wId, d, v) { vibrateBtn(); if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].duty=v; if(userRole === 'incharge') appState.attendance[wId][d].locked = true; saveState(); renderDailyView(); }
+    function setDailyOT(wId, d, v) { if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].ot=parseFloat(v)||0; if(userRole === 'incharge') appState.attendance[wId][d].locked = true; saveState(); }
+    function setDailyAdv(wId, d, v) { if(userRole !== 'admin') return; if(!appState.attendance[wId]) appState.attendance[wId]={}; if(!appState.attendance[wId][d]) appState.attendance[wId][d]={duty:0,ot:0,adv:0}; appState.attendance[wId][d].adv=parseFloat(v)||0; saveState(); }
 
     function bulkMarkDaily(v) { 
       if(userRole !== 'admin') { showToast("Admin access required for bulk actions"); return; }
       const sDay = parseInt(document.getElementById("day-select").value); 
-      appState.workers.forEach(w => { 
-        if(!appState.attendance[w.id]) appState.attendance[w.id]={}; 
-        if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; 
-        appState.attendance[w.id][sDay].duty=v; 
-      }); 
+      appState.workers.forEach(w => { if(!appState.attendance[w.id]) appState.attendance[w.id]={}; if(!appState.attendance[w.id][sDay]) appState.attendance[w.id][sDay]={duty:0,ot:0,adv:0}; appState.attendance[w.id][sDay].duty=v; }); 
       saveState(); renderDailyView(); showToast("Bulk attendance updated"); 
-      logActivity(`Bulk marked Day ${sDay} as ${v}`);
     }
 
     /* =========================================
@@ -1078,7 +1054,7 @@
           if(!isStaff) { dD[d]+=(r.duty||0); dO[d]+=(r.ot||0); }
           
           let p1 = "", p2 = "";
-          if(userRole === 'admin') { p1 = `onchange="setDailyDuty('${w.id}', ${d}, parseFloat(this.value)||0, '${w.name}'); renderMonthlyTable()"`; p2 = `onchange="setDailyOT('${w.id}', ${d}, this.value, '${w.name}'); renderMonthlyTable()"`; } 
+          if(userRole === 'admin') { p1 = `onchange="setDailyDuty('${w.id}', ${d}, parseFloat(this.value)||0); renderMonthlyTable()"`; p2 = `onchange="setDailyOT('${w.id}', ${d}, this.value); renderMonthlyTable()"`; } 
           else { p1 = p2 = `readonly onclick="requireAuthClick(this, 'admin')"`; }
           c += `<td><input class="tbl-input" type="text" value="${r.duty||''}" ${p1}></td><td><input class="tbl-input" type="text" value="${r.ot||''}" ${p2}></td>`;
         }
@@ -1105,10 +1081,9 @@
        ========================================= */
     function toggleWorkerCategory() {
       const cat = document.querySelector('input[name="worker-cat"]:checked').value;
-      const finDiv = document.getElementById("worker-financials"); const desigSel = document.getElementById("worker-desig-input"); const dOptions = document.getElementById("trade-options");
-      
-      if(cat === 'staff') { finDiv.style.display = 'none'; desigSel.placeholder = "e.g. Site Engineer, Supervisor..."; dOptions.innerHTML = `<option value="Site Manager"></option><option value="Site Engineer"></option><option value="Supervisor"></option><option value="Safety Officer"></option><option value="Key Person"></option>`; } 
-      else { finDiv.style.display = 'flex'; desigSel.placeholder = "e.g. Mason, Helper, Supervisor..."; dOptions.innerHTML = `<option value="Mason"></option><option value="Fitter"></option><option value="Helper"></option><option value="Welder"></option><option value="Bar Bender"></option><option value="Carpenter"></option><option value="Electrician"></option>`; }
+      const finDiv = document.getElementById("worker-financials"); const desigSel = document.getElementById("worker-desig-input");
+      if(cat === 'staff') { finDiv.style.display = 'none'; desigSel.innerHTML = `<option value="Site Manager">Site Manager</option><option value="Site Engineer">Site Engineer</option><option value="Supervisor">Supervisor</option><option value="Safety Officer">Safety Officer</option><option value="Key Person">Key Person</option>`; } 
+      else { finDiv.style.display = 'flex'; desigSel.innerHTML = `<option value="Mason">Mason</option><option value="Fitter">Fitter</option><option value="Helper">Helper</option><option value="Welder">Welder</option><option value="Bar Bender">Bar Bender</option><option value="Carpenter">Carpenter</option><option value="Electrician">Electrician</option>`; }
     }
 
     function handleAddWorkerClick() { if (requireAuthClick(null, 'admin')) openAddWorkerModal(); }
@@ -1148,23 +1123,116 @@
       const id=document.getElementById("edit-worker-id").value, n=document.getElementById("worker-name-input").value.trim(), p=document.getElementById("worker-phone-input").value.trim(), d=document.getElementById("worker-desig-input").value, r=parseFloat(document.getElementById("worker-rate-input").value)||0, a=parseFloat(document.getElementById("worker-adv-input").value)||0;
       const cat = document.querySelector('input[name="worker-cat"]:checked').value;
       if (!n) { alert("Please enter full name"); return; }
-      if (id) { const w=appState.workers.find(i => String(i.id) === String(id)); if(w){ w.name=n; w.phone=p; w.desig=d; w.category=cat; if(cat==='labour'){w.rate=r; appState.advances[w.id]=a;} else {w.rate=0; appState.advances[w.id]=0;} } logActivity(`Edited profile: ${n}`); } 
-      else { const nId=Date.now(); appState.workers.push({ id:nId, name:n, phone:p, desig:d, category:cat, rate: (cat==='labour'?r:0) }); if(cat==='labour') appState.advances[nId]=a; logActivity(`Registered new ${cat}: ${n}`); }
+      if (id) { const w=appState.workers.find(i => String(i.id) === String(id)); if(w){ w.name=n; w.phone=p; w.desig=d; w.category=cat; if(cat==='labour'){w.rate=r; appState.advances[w.id]=a;} else {w.rate=0; appState.advances[w.id]=0;} } } 
+      else { const nId=Date.now(); appState.workers.push({ id:nId, name:n, phone:p, desig:d, category:cat, rate: (cat==='labour'?r:0) }); if(cat==='labour') appState.advances[nId]=a; }
       saveState(); closeModal(); renderAll(); showToast("Profile saved");
     }
     
     function deleteWorker(id) { 
-      const wName = appState.workers.find(i => String(i.id) === String(id))?.name || 'Worker';
       if (confirm("Remove worker from site register? All attendance history will be lost.")) { 
         if(appState.workers) appState.workers = appState.workers.filter(w => String(w.id) !== String(id)); 
         if(appState.attendance) delete appState.attendance[id]; if(appState.advances) delete appState.advances[id]; 
-        saveState(); renderAll(); showToast("Removed permanently"); logActivity(`Deleted profile: ${wName}`);
+        saveState(); renderAll(); showToast("Removed permanently"); 
       } 
+    }
+
+    /* =========================================
+       10. WAGE STATEMENT SLIPS 
+       ========================================= */
+    function populateSlipWorkerSelect() {
+      const select = document.getElementById("slip-worker-select"); if(!select) return;
+      select.innerHTML = '<option value="">-- Choose Labour --</option>';
+      appState.workers.forEach(w => { 
+        if(w.category !== 'staff') {
+          const opt = document.createElement("option"); opt.value = w.id; opt.textContent = `${w.name} (${w.desig})`; select.appendChild(opt); 
+        }
+      });
+      renderWageSlip();
+    }
+
+    function renderWageSlip() {
+      const select = document.getElementById("slip-worker-select"); const display = document.getElementById("wage-slip-display");
+      if(!select || !select.value) { display.innerHTML = '<div class="empty-state">Select a worker above to generate their statement, or click Print ALL.</div>'; return; }
+      if(userRole !== 'admin') { display.innerHTML = '<div class="empty-state">Admin access required to view financial slips.</div>'; return;}
+      
+      const wId = select.value; const w = appState.workers.find(i => String(i.id) === String(wId)); if(!w) return;
+
+      const monthLabel = document.getElementById("month-select").selectedOptions[0].text;
+      const siteLabel = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
+
+      let tDuty = 0, tOT = 0, tDailyAdv = 0;
+      for (let d = 1; d <= 31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); }
+      const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; const netPayable = grossAmt - totalAdv;
+
+      display.innerHTML = `
+        <div class="slip-box" id="slip-print-area">
+          <div style="text-align:center; margin-bottom:12px; border-bottom:2px solid #1E3A8A; padding-bottom:8px;">
+            <h3 style="color:#1E3A8A;">GLOBAL INDUSTRIES</h3><p style="font-size:11px; color:#64748B;">Labour Settlement Slip | ${monthLabel}</p>
+          </div>
+          <div class="slip-row"><span>Site:</span><b>${siteLabel}</b></div>
+          <div class="slip-row"><span>Worker Name:</span><b>${w.name}</b></div>
+          <div class="slip-row"><span>Trade / Contact:</span><span>${w.desig} | ${w.phone || 'N/A'}</span></div>
+          <div class="slip-row"><span>Daily Wage Rate:</span><span>₹${w.rate}/day</span></div>
+          <div class="slip-row"><span>Days Present:</span><span>${tDuty.toFixed(1)} days</span></div>
+          <div class="slip-row"><span>Overtime:</span><span>${tOT.toFixed(1)} hrs</span></div>
+          <div class="slip-row"><span>Gross Earned:</span><b>₹${grossAmt.toFixed(0)}</b></div>
+          <div class="slip-row" style="color:#DC2626;"><span>Advances Deducted:</span><b>- ₹${totalAdv.toFixed(0)}</b></div>
+          <div class="slip-total"><span>NET BALANCE PAYABLE:</span><span>₹${netPayable.toFixed(0)}</span></div>
+        </div>
+        <div style="display:flex; gap:10px;" id="slip-action-buttons">
+          <button class="btn btn-whatsapp" onclick="shareSlipWhatsApp('${w.name}', '${w.desig}', '${monthLabel}', '${tDuty}', '${tOT}', '${w.rate}', '${grossAmt}', '${totalAdv}', '${netPayable}')">📲 Share via WhatsApp</button>
+          <button class="btn btn-primary" onclick="window.print()">🖨️ Print Slip</button>
+        </div>
+      `;
+    }
+
+    function printAllSlips() {
+      if(userRole !== 'admin') { showToast("Admin access required"); return; }
+      if(!appState.workers || appState.workers.length === 0) { alert("No workers to print."); return; }
+      const display = document.getElementById("wage-slip-display");
+      const monthLabel = document.getElementById("month-select").selectedOptions[0].text;
+      const siteLabel = document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text;
+      
+      let allSlipsHTML = '';
+      appState.workers.forEach(w => {
+        if(w.category === 'staff') return; 
+        let tDuty = 0, tOT = 0, tDailyAdv = 0;
+        for (let d = 1; d <= 31; d++) { const r = (appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tDuty += (r.duty||0); tOT += (r.ot||0); tDailyAdv += (r.adv||0); }
+        const grossAmt = (tDuty * w.rate) + (tOT * (w.rate / 8)); const totalAdv = (appState.advances[w.id] || 0) + tDailyAdv; const netPayable = grossAmt - totalAdv;
+
+        allSlipsHTML += `
+          <div class="slip-box">
+            <div style="text-align:center; margin-bottom:12px; border-bottom:2px solid #1E3A8A; padding-bottom:8px;">
+              <h3 style="color:#1E3A8A;">GLOBAL INDUSTRIES</h3><p style="font-size:11px; color:#64748B;">Labour Settlement Slip | ${monthLabel}</p>
+            </div>
+            <div class="slip-row"><span>Site:</span><b>${siteLabel}</b></div>
+            <div class="slip-row"><span>Worker Name:</span><b>${w.name}</b></div>
+            <div class="slip-row"><span>Trade / Contact:</span><span>${w.desig} | ${w.phone || 'N/A'}</span></div>
+            <div class="slip-row"><span>Daily Wage Rate:</span><span>₹${w.rate}/day</span></div>
+            <div class="slip-row"><span>Days Present:</span><span>${tDuty.toFixed(1)} days</span></div>
+            <div class="slip-row"><span>Overtime:</span><span>${tOT.toFixed(1)} hrs</span></div>
+            <div class="slip-row"><span>Gross Earned:</span><b>₹${grossAmt.toFixed(0)}</b></div>
+            <div class="slip-row" style="color:#DC2626;"><span>Advances Deducted:</span><b>- ₹${totalAdv.toFixed(0)}</b></div>
+            <div class="slip-total"><span>NET BALANCE PAYABLE:</span><span>₹${netPayable.toFixed(0)}</span></div>
+          </div>
+        `;
+      });
+      display.innerHTML = allSlipsHTML + `<button class="btn btn-primary" onclick="window.print()" style="margin-top:20px;">🖨️ Print Document</button>`;
+    }
+
+    function shareSlipWhatsApp(name, desig, month, duty, ot, rate, gross, adv, net) {
+      let msg = `*🧾 GLOBAL INDUSTRIES - WAGE STATEMENT*\n`;
+      msg += `*Worker:* ${name} (${desig})\n*Period:* ${month}\n\n`;
+      msg += `- Days Worked: ${duty} days\n- Overtime: ${ot} hrs\n- Daily Wage: ₹${rate}/day\n`;
+      msg += `- Gross Wages: ₹${gross}\n- Advance Deducted: ₹${adv}\n`;
+      msg += `*💰 NET BALANCE PAYABLE: ₹${net}*\n\n_Generated via Global Industries Portal_`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 
     /* DASHBOARD CALCULATIONS */
     function updateDashboard() {
-      const wC = appState.workers ? appState.workers.filter(w => w.category !== 'staff').length : 0; document.getElementById("stat-total-workers").textContent = wC;
+      const wC = appState.workers ? appState.workers.filter(w => w.category !== 'staff').length : 0; 
+      document.getElementById("stat-total-workers").textContent = wC;
       const sD = parseInt(document.getElementById("day-select").value) || 1; 
       let pT=0, tO=0, tN=0;
       
@@ -1179,10 +1247,20 @@
           tO+=wO; const r=w.rate||0; const amt=(wD*r)+(wO*(r/8)); const totA=(appState.advances[w.id]||0)+wA; tN+=(amt-totA); 
         }); 
       }
-      document.getElementById("lbl-present-today").textContent = `Day ${sD} Labour Present`; document.getElementById("stat-present-today").textContent = `${pT} / ${wC}`; document.getElementById("stat-total-ot").textContent = `${tO.toFixed(1)} hrs`; document.getElementById("stat-total-balance").textContent = userRole === 'admin' ? `₹${tN.toLocaleString("en-IN", {maximumFractionDigits:0})}` : '***';
+
+      document.getElementById("lbl-present-today").textContent = `Day ${sD} Labour Present`; 
+      document.getElementById("stat-present-today").textContent = `${pT} / ${wC}`; 
+      document.getElementById("stat-total-ot").textContent = `${tO.toFixed(1)} hrs`; 
+      document.getElementById("stat-total-balance").textContent = userRole === 'admin' ? `₹${tN.toLocaleString("en-IN", {maximumFractionDigits:0})}` : '***';
     }
 
-    function exportDatabase() { if(!requireAuthClick(null, 'admin')) return; const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `GI_DB_Backup_${currentSite}.json`; a.click(); showToast("Backup saved to device"); }
+    /* BACKUP & CSV EXPORT */
+    function exportDatabase() { 
+      if(!requireAuthClick(null, 'admin')) return; 
+      const b = new Blob([JSON.stringify({ sites: availableSites, currentSite: currentSite, appData: appState })], { type: "application/json" }); 
+      const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `GI_DB_Backup_${currentSite}.json`; a.click(); showToast("Backup saved to device"); 
+    }
+    
     function exportToCSV() {
       const mL=document.getElementById("month-select").selectedOptions[0].text, sL=document.getElementById("site-select").options[document.getElementById("site-select").selectedIndex].text.toUpperCase();
       let csv = `GLOBAL INDUSTRIES - ${sL}\nLABOUR ATTENDANCE REGISTER - ${mL}\n\n`;
@@ -1192,7 +1270,10 @@
       if(appState.workers) { 
         appState.workers.forEach(w => { 
           let row=[`"${w.name}"`, `"${w.phone||''}"`, `"${w.desig}"`, `"${w.category||'labour'}"`], tD=0, tO=0, tA=0; 
-          for (let d=1; d<=31; d++) { const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; tD+=(r.duty||0); tO+=(r.ot||0); tA+=(r.adv||0); row.push(r.duty||0, r.ot||0); } 
+          for (let d=1; d<=31; d++) { 
+            const r=(appState.attendance[w.id] && appState.attendance[w.id][d]) || {duty:0,ot:0,adv:0}; 
+            tD+=(r.duty||0); tO+=(r.ot||0); tA+=(r.adv||0); row.push(r.duty||0, r.ot||0); 
+          } 
           const r=w.rate||0, amt=(tD*r)+(tO*(r/8)), fA=(appState.advances[w.id]||0)+tA, bal=amt-fA; 
           row.push(tD, tO, r, amt.toFixed(0), fA.toFixed(0), bal.toFixed(0)); csv += row.join(",") + "\n"; 
         }); 
@@ -1200,6 +1281,7 @@
       const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8;"})); a.download=`GI_Attendance_${sL.replace(/\s+/g,'_')}.csv`; a.click(); 
     }
 
+    document.getElementById("admin-pwd").addEventListener("keypress", function(e) { if (e.key === "Enter") { e.preventDefault(); checkPassword(); } });
     window.onload = init;
   </script>
 </body>
